@@ -158,7 +158,6 @@ void poll() {
 		energy:data?.liveSamples.consumptionEnergy,
 	]
 	generateEvent(dataEvents)
-	generateSampleStats(sensorId)
 
 }
 
