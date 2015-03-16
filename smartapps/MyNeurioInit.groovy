@@ -67,6 +67,12 @@ def initialize() {
 def pollHandler() {
 	log.trace "pollHandler>begin"
 	neurio.poll()
+	String nowInLocalTime = new Date().format("HH", location.timeZone)
+    
+    // generate the stats only at the beginning of the day
+    if (nowInLocalTime == "00") {
+		neurio.generateSampleStats("")
+    }
 	log.trace "pollHandler>end"
 }
 
