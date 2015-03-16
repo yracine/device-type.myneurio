@@ -51,7 +51,7 @@ b) Hit the "+New SmartApp" at the top right corner
 c) Hit the "From Code" tab on the left corner
 
 d) Copy and paste the code from NeurioInit
-under https://github.com/yracine/device-type.myneurio/tree/master/smartapps
+under https://github.com/yracine/device-type.myneurio.groovy/tree/master/smartapps
 
 e) Hit the create button at the bottom
 
