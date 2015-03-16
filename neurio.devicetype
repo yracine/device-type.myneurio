@@ -477,8 +477,8 @@ void getCurrentUserInfo() {
 						log.debug "getCurrentUserInfo>userId=${userid},name=${username},email=${email} not active, exiting..."
 						sendEvent name: "verboseTrace", value: "getCurrentUserInfo>userId=${userid},name=${username},email=${email} not active, exiting..."
 					}
-                	return
-                }
+					return
+				}
                 
 				if (settings.trace) {
 					log.debug "getCurrentUserInfo>userId=${userid},name=${username},email=${email},active=${active}"
