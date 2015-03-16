@@ -418,9 +418,9 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 
 		api('sampleStats', bodyReq) {resp->
 			statusCode = resp.status        
-        	if (statusCode == NEURIO_SUCCESS) {
-            	data?.sampleStats=resp.data
-                data?.sampleStatsCount=data.sampleStats.size()
+        		if (statusCode == NEURIO_SUCCESS) {
+ 				data?.sampleStats=resp.data
+				data?.sampleStatsCount=data.sampleStats.size()
 				if (settings.trace) {
 					log.debug "getSampleStats>sensorId=${sensorId},resp data = ${resp.data}" 
                 
@@ -460,8 +460,8 @@ void getCurrentUserInfo() {
 		}
 		api('currentUserInfo', null) {resp ->
 			statusCode = resp.status        
-        	if (statusCode == NEURIO_SUCCESS) {
-            	data?.user=resp.data
+			if (statusCode == NEURIO_SUCCESS) {
+        			data?.user=resp.data
 				if (settings.trace) {
 					log.debug "getCurrentUserInfo>resp data = ${resp.data}" 
                 
