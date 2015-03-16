@@ -24,8 +24,10 @@ import java.text.SimpleDateFormat
 preferences {
 	input("sensorId", "text", title: "Serial #", description:
 		"The serial number of your Neurio Sensor (no spaces)")
-	input("appKey", "text", title: "App Key", description:
-		"The application key given by Neurio (no spaces)")
+	input("appKey", "text", title: "App Key (public)", description:
+		"The application (public) key given by Neurio (no spaces)")
+	input("privateKey", "text", title: "Private Key", description:
+		"The private key given by Neurio (no spaces)")
 	input("trace", "text", title: "trace", description:
 		"Set it to true to enable tracing (no spaces) or leave it empty (no tracing)"
 	)
@@ -134,9 +136,9 @@ metadata {
 
 void poll() {
     
-	def sensorId= determine_sensor_id("") 	    
 	
 	getCurrentUserInfo()
+	def sensorId= determine_sensor_id("") 	    
 	getLastLiveSamples(sensorId)
     
 	if (settings.trace) {
@@ -469,7 +471,15 @@ void getCurrentUserInfo() {
 				def userid = data.user.id
 				def username = data.user.name
 				def email = data.user.email
-				def active = data.user.status     
+				def active = data.user.status  
+				if (!active) {
+					if (settings.trace) {
+						log.debug "getCurrentUserInfo>userId=${userid},name=${username},email=${email} not active, exiting..."
+						sendEvent name: "verboseTrace", value: "getCurrentUserInfo>userId=${userid},name=${username},email=${email} not active, exiting..."
+					}
+                	return
+                }
+                
 				if (settings.trace) {
 					log.debug "getCurrentUserInfo>userId=${userid},name=${username},email=${email},active=${active}"
 					sendEvent name: "verboseTrace", value: "getCurrentUserInfo>userId=${userId},name=${username},email=${email},active=${active}"
@@ -747,11 +757,11 @@ def determine_sensor_id(sensor_id) {
 
 // Get the appKey for authentication
 private def get_appKey() {
-	return "insert_it_here!!"
+	return settings.appKey
 }    
 // Get the client secret
 private def get_client_secret() {
-	return "insert_it_here!!"
+	return settings.privateKey
 }    
 
 
