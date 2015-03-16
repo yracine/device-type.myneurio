@@ -333,7 +333,7 @@ def generateSampleStats(sensorId) {
 			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
-    def dataStats = ['consEnergyYesterday':data.sampleStats[0].consumptionEnergy]    
+	def dataStats = ['consEnergyYesterday':data.sampleStats[0].consumptionEnergy]    
 
 // generate stats for the last week
 
@@ -345,7 +345,7 @@ def generateSampleStats(sensorId) {
 			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
-    dataStats = dataStats + ['consEnergyWeek':data.sampleStats[0].consumptionEnergy]    
+	dataStats = dataStats + ['consEnergyWeek':data.sampleStats[0].consumptionEnergy]    
 
 // generate stats for the last month
 
@@ -359,14 +359,14 @@ def generateSampleStats(sensorId) {
 			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(oneMonthAgo),ISOdateFormat(endDate),"days",null)
-    dataStats = dataStats + ['consEnergyMonth':data.sampleStats[0].consumptionEnergy]    
+	dataStats = dataStats + ['consEnergyMonth':data.sampleStats[0].consumptionEnergy]    
 
 	generateEvent(dataStats)
 
 }
 
 private def ISOdateFormat(date) {
-    SimpleDateFormat ISO8601format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+ 	SimpleDateFormat ISO8601format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
 	def ISOdate = ISO8601format.format(date)
     
 	return ISOdate
@@ -377,9 +377,9 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 	def NEURIO_SUCCESS=200
     
 	sensorId= determine_sensor_id(sensorId) 	    
-    start = start?.trim()
-    end = end?.trim()
-    granularity=granularity?.trim()
+	start = start?.trim()
+	end = end?.trim()
+	granularity=granularity?.trim()
 	frequency = frequency?.trim()
 	// make sure start and granularity are defined
 	if ((!start) || (!granularity)) {
@@ -387,22 +387,23 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 		sendEvent name: "verboseTrace", value:"getSamplesData>start and granularity are required parameters"
 		return false
 	}
-    // make sure that frequency is a multiple of 5 if granularity is in minutes
-    if ((granularity == 'minutes') && (frequency)) {
+	
+	// make sure that frequency is a multiple of 5 if granularity is in minute
+	if ((granularity == 'minutes') && (frequency)) {
 		if ((frequency.mod(NEURIO_MIN_INTERVAL)) != 0) {
 			log.error "getSamplesData>only multiples of 5 are supported for frequency (${frequency}) when granularity (${granularity}) is in minutes"
 			sendEvent name: "verboseTrace", value:  "getSamplesData>only multiples of 5 are supported for frequency (${frequency}) when granularity (${granularity}) is in minutes"
         	return false
 		}
 	}
-    // make sure granularity is one of the correct values
+	// make sure granularity is one of the correct values
 	if ((granularity != 'minutes') && (granularity != 'hours') && (granularity != 'days') && (granulariry != 'months')) {
 		log.error "getSamplesData>only values of 'minutes, hours, days or months' are supported for granularity (${granularity})"
 		sendEvent name: "verboseTrace", value: "only values of minutes, hours, days or months are supported for granularity (${granularity})"
 		return false
 	}
      
-    def bodyReq="sensorId=" + sensorId + "&start=" + start 
+	def bodyReq="sensorId=" + sensorId + "&start=" + start 
 	if ((end != null) && (end != "")) {
 		bodyReq = bodyReq+ "&end=" + end    	
 	}
@@ -437,8 +438,8 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 					} /* end for samples */
 				} /* end if */                    
 			} else {
-            	def message = resp.message
-                def errors = resp.errors
+				def message = resp.message
+				def errors = resp.errors
 				log.error "getSamplesData>status=${statusCode.toString()},message=${message},errors=${errors}"
 				sendEvent name: "verboseTrace", value:"getSamplesData>status=${statusCode.toString()},message=${message},errors=${errors}"
 			} /* end if statusCode */               
@@ -476,23 +477,23 @@ void getCurrentUserInfo() {
 				data.user?.locationsCount = resp.data.locations.size()
 				data.user.locations.each {
 					def locationId = it.id
-                	def locationName = it.name
-                	def timezone = it.timezone
+					def locationName = it.name
+					def timezone = it.timezone
 					if (settings.trace) {
 						log.debug "getCurrentUserInfo> for username=${username}, found locationId=${locationId},name=${locationName},timezone=${timezone}"
 						sendEvent name: "verboseTrace", value: "getCurrentUserInfo> for username=${username}, found locationId=${locationId},name=${locationName},timezone=${timezone}"
 					}
-                    it?.sensorsCount=it.sensors.size()
-                	it.sensors.each {
+					it?.sensorsCount=it.sensors.size()
+					it.sensors.each {
 						def sensorId = it.id
 						def sensorType = it.sensorType
 						if (settings.trace) {
 							log.debug "getCurrentUserInfo> for location = ${locationName}, found sensorId=${sensorId},type=${sensorType}"
 							sendEvent name: "verboseTrace", value: "getCurrentUserInfo>sensorId=${sensorId},type=${sensorType}"
 						}
-	                    it?.ChannelsCount=it.channels.size()
-                		it.channels.each {
-                       		def channelId = it.channel
+						it?.ChannelsCount=it.channels.size()
+						it.channels.each {
+							def channelId = it.channel
 							def channelName = it.name
 							def channelType = it.channelType
 							if (settings.trace) {
@@ -504,9 +505,9 @@ void getCurrentUserInfo() {
 					} /* end each sensor */                        
 				} /* end each location */                        
 			} else {
-        		statusCode=data.status
-            	def message = data.message
-                def errors = data.errors
+        			statusCode=data.status
+				def message = data.message
+				def errors = data.errors
 				log.error "getCurrentUserInfo>status=${statusCode.toString()},message=${message},errors=${errors}"
 				sendEvent name: "verboseTrace", value:"getCurrentUserInfo>status=${statusCode.toString()},message=${message},errors=${errors}"
 			} /* end if statusCode */                
@@ -670,7 +671,7 @@ void setAuthTokens() {
 			method.uri
 		return
 	} 
-    catch (any) {
+	catch (any) {
 		log.error "setAuthTokens> general error " + method.uri
 		sendEvent name: "verboseTrace", value: "setAuthTokens>general error " +
 			method.uri
