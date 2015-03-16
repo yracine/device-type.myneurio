@@ -26,7 +26,7 @@ definition(
 
 preferences {
 	section("About") {
-		paragraph "Neurio, the smartapp that initializes your Neurio device and polls it on a regular basis"
+		paragraph "NeurioInit, the smartapp that initializes your Neurio device and polls it on a regular basis"
 		paragraph "Version 1.0\n\n" +
 			"If you like this app, please support the developer via PayPal:\n\nyracine@yahoo.com\n\n" +
 			"Copyright©2014 Yves Racine"
