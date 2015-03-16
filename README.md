@@ -1,16 +1,16 @@
 # device-type.myneurio.groovy
-My Ecobee Device:  Custom ecobee device to enable more smart thermostat's capabilities within Smartthings 
+My Ecobee Device:  Custom Neurio device to enable more neurio capabilities within Smartthings 
 
 Author:             Yves Racine
 
 linkedIn profile:   ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
 
-Date:               2014-03-31
+Date:               2015-03-15
 
-Code: https://github.com/yracine/device-type.myecobee
+Code: https://github.com/yracine/device-type.myneurio.groovy
 
 **************************************************************************************************
-If you like My Ecobee Device and related smartapps, please support the developer:
+If you like My Neurio Device and related smartapps, please support the developer:
 
 
 <br/> [![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](
