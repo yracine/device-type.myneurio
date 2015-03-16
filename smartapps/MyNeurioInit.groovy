@@ -29,7 +29,7 @@ preferences {
 		paragraph "MyNeurioInit, the smartapp that initializes your Neurio device and polls it on a regular basis"
 		paragraph "Version 1.0\n\n" +
 			"If you like this app, please support the developer via PayPal:\n\nyracine@yahoo.com\n\n" +
-			"Copyright©2014 Yves Racine"
+			"Copyright©2015 Yves Racine"
 		href url: "http://github.com/yracine", style: "embedded", required: false, title: "More information...",
 		description: "http://github.com/yracine/device-type.myneurio.groovy/blob/master/README.md"
 	}
@@ -63,6 +63,7 @@ def initialize() {
 
 	log.trace "setting poll to ${pollTimer}"
 	schedule("0 0/${pollTimer.toInteger()} * * * ?", pollHandler)
+	neurio.generateSampleStats("")
 }
 
 def pollHandler() {
