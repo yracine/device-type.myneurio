@@ -1,5 +1,5 @@
-# device-type.myneurio.groovy
-My Ecobee Device:  Custom Neurio device to enable more neurio capabilities within Smartthings 
+# device-type.myneurio
+My Neurio Device:  Custom Neurio device to enable more neurio capabilities within Smartthings 
 
 Author:             Yves Racine
 
@@ -7,7 +7,7 @@ linkedIn profile:   ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
 
 Date:               2015-03-15
 
-Code: https://github.com/yracine/device-type.myneurio.groovy
+Code: https://github.com/yracine/device-type.myneurio
 
 **************************************************************************************************
 If you like My Neurio Device and related smartapps, please support the developer:
@@ -33,7 +33,7 @@ b) Hit the "+New SmartDevice" at the top right corner
 
 c) Hit the "From Code" tab on the left corner
 
-d) Copy and paste the code from neurio.device-type.groovy
+d) Copy and paste the code from neurio.devicetype
 under https://github.com/yracine/device-type.myneurio.groovy
 
 e) Hit the create button at the bottom
