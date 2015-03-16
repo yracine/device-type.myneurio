@@ -68,7 +68,7 @@ g) Go back to the code window, and hit the "publish/for me" button at the top ri
  * Name: Your Choice
  * Device Network Id: Your Choice
  * Type: My Neurio Device (should be the last option)
- * Location: Choose the correct location
+ * * Location: Choose the correct location
 
   Hub/Group: (optional) leave blank or set it up to your liking
   
