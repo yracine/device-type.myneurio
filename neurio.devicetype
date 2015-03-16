@@ -5,7 +5,7 @@
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
  *
- *  Code: https://github.com/yracine/device-type.myneurio
+ *  Code: https://github.com/yracine/device-type.myneurio.groovy
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -73,10 +73,9 @@ metadata {
 
 	// UI tile definitions
 	tiles {
-
 		valueTile(	"power","device.power",unit: 'Watts', width: 1, height: 1 )
-        {
-            state(	"power", label:'Power ${currentValue}',
+        	{
+            		state(	"power", label:'Power ${currentValue}',
 					backgroundColors: [
 						[value: 1000, color: "green"],
 						[value: 3000, color: "orange"],
@@ -84,21 +83,21 @@ metadata {
 					]
 				)
 		}
- 		valueTile(	"energy", "device.energy", unit:'kWh',width: 1, height: 1
+		valueTile(	"energy", "device.energy", unit:'kWh',width: 1, height: 1
 				) 
-        {
+        	{
 			state("energy",
 					label:'Energy ${currentValue}',
 					backgroundColors: [
 						[value: 30, color: "green"],
 						[value: 50, color: "orange"],
 						[value: 100, color: "red"]
-                  	]
-                 )
+                  			]
+                 		)
 		}
 		valueTile(	"genPower","device.generationPower",unit: 'Watts',width: 1, height: 1)
-        {
-            state(	"genPower", label:'GenPower ${currentValue}',
+		{
+			state(	"genPower", label:'GenPower ${currentValue}',
 					backgroundColors: [
 						[value: 1000, color: "red"],
 						[value: 3000, color: "orange"],
@@ -108,17 +107,18 @@ metadata {
 		}
  		valueTile(	"genEnergy", "GenEnergy device.generationEnergy", unit: 'kWh',width: 1, height: 1
 				) 
-        {
-			state("genEnergy",
+        	{
+        		state("genEnergy",
 					label:'GenEnergy ${currentValue}', unit: 'kWh',
 					backgroundColors: [
 						[value: 5, color: "red"],
 						[value: 10, color: "orange"],
 						[value: 20, color: "green"]
-                  	]
-                 )
+                  			]
+                	 )
 		}
-        standardTile("refresh", "device.power") {
+		
+		standardTile("refresh", "device.power") {
 			state "default", action:"refresh.refresh", icon:"st.secondary.refresh"
 		}
 
@@ -285,14 +285,15 @@ void getLastLiveSamples(sensorId) {
 	sensorId= determine_sensor_id(sensorId) 	    
 	def statusCode=true
 	int j=0        
-    def bodyReq="sensorId=" + sensorId 
+	def bodyReq="sensorId=" + sensorId 
     
 	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
 
 		api('lastLiveSamples', bodyReq) {resp->
-        	statusCode= resp.status
-        	if (statusCode == NEURIO_SUCCESS) {
-            	data?.liveSamples=resp.data
+		
+			statusCode= resp.status
+        		if (statusCode == NEURIO_SUCCESS) {
+        			data?.liveSamples=resp.data
 				if (settings.trace) {
 					log.debug "getLastLiveSamples>sensorId=${sensorId},resp data = ${resp.data}" 
                 
@@ -310,8 +311,8 @@ void getLastLiveSamples(sensorId) {
 				}
                 
 			} else {
-            	def message = resp.message
-                def errors = resp.errors
+				def message = resp.message
+            			def errors = resp.errors
 				log.error "getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors}"
 				sendEvent name: "verboseTrace", value:"getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors}"
 			}                
