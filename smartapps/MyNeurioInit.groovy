@@ -55,6 +55,7 @@ def updated() {
 
 def initialize() {
 	neurio.setAuthTokens()
+	neurio.getCurrentUserInfo()
 
 	pollHandler()
     	// set up internal poll timer
