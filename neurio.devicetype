@@ -22,12 +22,12 @@ import java.text.SimpleDateFormat
 
 // for the UI
 preferences {
-	input("sensorId", "text", title: "Serial #", description:
-		"The serial number of your Neurio Sensor (no spaces)")
 	input("appKey", "text", title: "App Key (public)", description:
 		"The application (public) key given by Neurio (no spaces)")
 	input("privateKey", "text", title: "Private Key", description:
 		"The private key given by Neurio (no spaces)")
+	input("sensorId", "text", title: "MAC Address (optional, default=first Neurio found)", description:
+		"The MAC address of your Neurio Sensor (no spaces and no ':')")
 	input("trace", "text", title: "trace", description:
 		"Set it to true to enable tracing (no spaces) or leave it empty (no tracing)"
 	)
@@ -75,7 +75,7 @@ metadata {
 
 	// UI tile definitions
 	tiles {
-		valueTile(	"power","device.power",unit: 'Watts', width: 1, height: 1 )
+		valueTile(	"power","device.power",unit: 'Watts', width: 1, height: 1,canChangeIcon: false )
         	{
             		state(	"power", label:'Power ${currentValue}',
 					backgroundColors: [
@@ -85,7 +85,7 @@ metadata {
 					]
 				)
 		}
-		valueTile(	"energy", "device.energy", unit:'kWh',width: 1, height: 1
+		valueTile(	"energy", "device.energy", unit:'kWh',width: 1, height: 1,canChangeIcon: false
 				) 
         	{
 			state("energy",
@@ -97,36 +97,48 @@ metadata {
                   			]
                  		)
 		}
-		valueTile(	"genPower","device.generationPower",unit: 'Watts',width: 1, height: 1)
+		valueTile(	"genPower","device.generationPower",unit: 'Watts',width: 1, height: 1,canChangeIcon: false)
 		{
 			state(	"genPower", label:'GenPower ${currentValue}',
-					backgroundColors: [
-						[value: 1000, color: "red"],
-						[value: 3000, color: "orange"],
-						[value: 3000, color: "green"]
-					]
 				)
 		}
- 		valueTile(	"genEnergy", "GenEnergy device.generationEnergy", unit: 'kWh',width: 1, height: 1
+ 		valueTile(	"genEnergy", "GenEnergy device.generationEnergy", unit: 'kWh',width: 1, height: 1,canChangeIcon: false
 				) 
         	{
         		state("genEnergy",
 					label:'GenEnergy ${currentValue}', unit: 'kWh',
-					backgroundColors: [
-						[value: 5, color: "red"],
-						[value: 10, color: "orange"],
-						[value: 20, color: "green"]
-                  			]
                 	 )
 		}
 		
+		valueTile(	"consEnergyYesterday", "device.consEnergyYesterday", unit:'kWh',width: 1, height: 1,canChangeIcon: false
+				) 
+        	{
+			state("consEnergyYesterday",
+					label:'ConsEnergyYesterday ${currentValue}'
+				)
+                    
+		}
+		valueTile(	"consEnergyWeek", "device.consEnergyWeek", unit:'kWh',width: 1, height: 1,canChangeIcon: false
+				)
+        	{
+			state("consEnergyWeek",
+					label:'ConsEnergyWeek ${currentValue}'
+				)
+		}
+		valueTile(	"consEnergyMonth", "device.consEnergyMonth", unit:'kWh',width: 1, height: 1,canChangeIcon: false
+				)
+        	{
+			state("consEnergyMonth",
+					label:'ConsEnergyMonth ${currentValue}'
+				)
+		}
 		standardTile("refresh", "device.power") {
 			state "default", action:"refresh.refresh", icon:"st.secondary.refresh"
 		}
 
 
 		main(["power", "energy"])
-		details(["power", "energy", "genPower", "genEnergy","refresh"])
+		details(["power", "energy", "genPower", "genEnergy","consEnergyYesterday", "consEnergyWeek", "consEnergyMonth", "refresh"])
 	}
 }
 
@@ -136,8 +148,8 @@ metadata {
 
 void poll() {
     
+//	getCurrentUserInfo() must be called prior to poll()
 	
-	getCurrentUserInfo()
 	def sensorId= determine_sensor_id("") 	    
 	getLastLiveSamples(sensorId)
     
@@ -156,6 +168,8 @@ void poll() {
 		sensorId:data?.user.locations[0]?.sensors[0]?.id,
 		power:data?.liveSamples.consumptionPower,
 		energy:data?.liveSamples.consumptionEnergy,
+		generationPower:data?.liveSamples.generationPower,
+		generationEnergy:data?.liveSamples.generationEnergy
 	]
 	generateEvent(dataEvents)
 
