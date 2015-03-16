@@ -334,7 +334,7 @@ void getLastLiveSamples(sensorId) {
                 
 			} else {
 				def message = resp.message
-            			def errors = resp.errors
+				def errors = resp.errors
 				log.error "getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors}"
 				sendEvent name: "verboseTrace", value:"getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors}"
 			}                
@@ -535,7 +535,7 @@ void getCurrentUserInfo() {
 					} /* end each sensor */                        
 				} /* end each location */                        
 			} else {
-        			statusCode=data.status
+				statusCode=data.status
 				def message = data.message
 				def errors = data.errors
 				log.error "getCurrentUserInfo>status=${statusCode.toString()},message=${message},errors=${errors}"
