@@ -641,7 +641,7 @@ void setAuthTokens() {
 		if (settings.trace) {
 			log.debug "setAuthTokens> resp data= ${resp.data}"
 		}
-    data.auth = resp.data
+		data.auth = resp.data
 		data.auth.access_token = resp.data.access_token
 		data.auth.expires_in = resp.data.expires_in
 		data.auth.token_type = resp.data.token_type
