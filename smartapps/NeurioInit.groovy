@@ -35,7 +35,7 @@ preferences {
 	}
 
 	section("Initialize and regularly polls  this Neurio device") {
-    	input "neurio", "capability.powerMeter", title: "Which Neurio"
+		input "neurio", "capability.powerMeter", title: "Which Neurio"
 	}
 }
 
