@@ -63,7 +63,9 @@ f) Make sure that enable OAuth in Smartapp is active
 
 g) Go back to the code window, and hit the "publish/for me" button at the top right corner 
 
+*************************************************
 3) Create a new device (https://graph.api.smartthings.com/device/list)
+*************************************************
 
  * Name: Your Choice
  * Device Network Id: Your Choice
@@ -73,11 +75,24 @@ g) Go back to the code window, and hit the "publish/for me" button at the top ri
   Hub/Group: (optional) leave blank or set it up to your liking
   
   
+*************************************************
 4) Update device's preferences
+*************************************************
 
     (a) <appKey> public key provided by Neurio (mandatory, no spaces)
     (b) <privateKey> provided by Neurio (mandatory, no spaces)
     (c) <sensorId> (MAC Address of your sensor, optional,default=1st sensor found,no spaces, no ':')
     (d) <trace> when needed, set to true to get more tracing (no spaces)
 
+
+*************************************************
+5) Use SmartSetup and execute My ecobee Init
+*************************************************
+
+
+From your phone or tablet, within the smarttings app and on the main screen, click on '+' at the bottom, scroll right to to My Apps, execute MyNeurioInit
+
+*************************************************
+6) The device should now be populated with your latest Neurio data
+*************************************************
 
