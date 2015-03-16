@@ -75,21 +75,18 @@ metadata {
 
 	// UI tile definitions
 	tiles {
-		valueTile(	"power","device.power",unit: 'Watts', width: 1, height: 1,canChangeIcon: false )
+		valueTile(	"power","device.power",unit: 'Watts', width: 1, height: 1,canChangeIcon: false)
         	{
-            		state(	"power", label:'Power ${currentValue}',
-					backgroundColors: [
-						[value: 1000, color: "green"],
-						[value: 3000, color: "orange"],
-						[value: 5000, color: "red"]
-					]
+            		state(	"power", label:'Power\n${currentValue}W',
+					backgroundColor: "#ffffff"
 				)
 		}
 		valueTile(	"energy", "device.energy", unit:'kWh',width: 1, height: 1,canChangeIcon: false
 				) 
         	{
 			state("energy",
-					label:'Energy ${currentValue}',
+					label:'Energy\n${currentValue}kWh',
+					backgroundColor: "#ffffff",
 					backgroundColors: [
 						[value: 30, color: "green"],
 						[value: 50, color: "orange"],
@@ -97,54 +94,68 @@ metadata {
                   			]
                  		)
 		}
-		valueTile(	"genPower","device.generationPower",unit: 'Watts',width: 1, height: 1,canChangeIcon: false)
+		valueTile(	"genPower", "device.generationPower",unit: 'Watts',width: 1, height: 1,canChangeIcon: false,
+ 					decoration: "flat"
+ 				)
 		{
 			state(	"genPower", label:'GenPower ${currentValue}',
+            		icon: "st.Lighting.light14",
+					backgroundColor: "#ffffff"
 				)
 		}
- 		valueTile(	"genEnergy", "GenEnergy device.generationEnergy", unit: 'kWh',width: 1, height: 1,canChangeIcon: false
+ 		valueTile(	"genEnergy",  "device.generationEnergy", unit: 'kWh',width: 1, height: 1,canChangeIcon: false,
+ 					decoration: "flat"
 				) 
         	{
         		state("genEnergy",
 					label:'GenEnergy ${currentValue}', unit: 'kWh',
-                	 )
+            		icon: "st.Lighting.light14",
+					backgroundColor: "#ffffff"
+				)
 		}
-		
-		valueTile(	"consEnergyYesterday", "device.consEnergyYesterday", unit:'kWh',width: 1, height: 1,canChangeIcon: false
+		 
+		valueTile(	"consEnergyYesterday", "device.consEnergyYesterday", unit:'kWh',width: 2, height: 1,canChangeIcon: false,
+  					decoration: "flat"
 				) 
         	{
 			state("consEnergyYesterday",
-					label:'ConsEnergyYesterday ${currentValue}'
+					label:'Cons Yesterday ${currentValue}kWh',
+					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
+					backgroundColor: "#ffffff"
 				)
-                    
 		}
-		valueTile(	"consEnergyWeek", "device.consEnergyWeek", unit:'kWh',width: 1, height: 1,canChangeIcon: false
+		valueTile(	"consEnergyWeek", "device.consEnergyWeek", unit:'kWh',width: 2, height: 1,canChangeIcon: false,
+  					decoration: "flat",
 				)
         	{
 			state("consEnergyWeek",
-					label:'ConsEnergyWeek ${currentValue}'
+					label:'Cons Week ${currentValue}kWh',
+					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
+					backgroundColor: "#ffffff"
 				)
 		}
-		valueTile(	"consEnergyMonth", "device.consEnergyMonth", unit:'kWh',width: 1, height: 1,canChangeIcon: false
+		valueTile(	"consEnergyMonth", "device.consEnergyMonth", unit:'kWh',width: 2, height: 1,canChangeIcon: false,
+  					decoration: "flat"
 				)
         	{
 			state("consEnergyMonth",
-					label:'ConsEnergyMonth ${currentValue}'
+					label:'Cons Month ${currentValue}kWh',
+					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
+					backgroundColor: "#ffffff"
 				)
 		}
 		standardTile("refresh", "device.power") {
 			state "default", action:"refresh.refresh", icon:"st.secondary.refresh"
 		}
 
-
 		main(["power", "energy"])
-		details(["power", "energy", "genPower", "genEnergy","consEnergyYesterday", "consEnergyWeek", "consEnergyMonth", "refresh"])
+		details(["power", "energy", "genPower", "genEnergy",  "refresh","consEnergyYesterday", "consEnergyWeek", "consEnergyMonth"])
 	}
 }
 
 // handle commands
 
-
+ 
 
 void poll() {
     
@@ -309,10 +320,6 @@ void getLastLiveSamples(sensorId) {
 			statusCode= resp.status
         		if (statusCode == NEURIO_SUCCESS) {
         			data?.liveSamples=resp.data
-				if (settings.trace) {
-					log.debug "getLastLiveSamples>sensorId=${sensorId},resp data = ${resp.data}" 
-                
-				}
 				def consumptionPower = data.liveSamples.consumptionPower
 				def consumptionEnergy = data.liveSamples.consumptionEnergy
 				def generationPower = data.liveSamples.generationPower
@@ -664,7 +671,7 @@ void setAuthTokens() {
 		if (settings.trace) {
 			log.debug "setAuthTokens> resp data= ${resp.data}"
 		}
-		data.auth = resp.data
+		data?.auth = resp.data
 		data.auth.access_token = resp.data.access_token
 		data.auth.expires_in = resp.data.expires_in
 		data.auth.token_type = resp.data.token_type
