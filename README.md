@@ -41,7 +41,7 @@ e) Hit the create button at the bottom
 f) Hit the "publish/for me" button at the top right corner (in the code window)
 
 *************************************************
-2) Create a new smartapp (NeurioInit)
+2) Create a new smartapp (MyNeurioInit)
 *************************************************
 
 a) Go to https://graph.api.smartthings.com/ide/apps
@@ -50,7 +50,7 @@ b) Hit the "+New SmartApp" at the top right corner
 
 c) Hit the "From Code" tab on the left corner
 
-d) Copy and paste the code from NeurioInit
+d) Copy and paste the code from MyNeurioInit
 under https://github.com/yracine/device-type.myneurio.groovy/tree/master/smartapps
 
 e) Hit the create button at the bottom
@@ -71,10 +71,12 @@ g) Go back to the code window, and hit the "publish/for me" button at the top ri
   Location: Choose the correct location
   Hub/Group: (optional) leave blank or set it up to your liking
   
+  
 4) Update device's preferences
 
-    (a) <appKey> provided by Neurio (optional, no spaces)
-    (b) <sensorId> (optional,no spaces)
-    (c) <trace> when needed, set to true to get more tracing (no spaces)
+    (a) <appKey> provided by Neurio (mandatory, no spaces)
+    (b) <privateKey> provided by Neurio (mandatory, no spaces)
+    (c) <sensorId> (MAC Address of your sensor, optional,default=1st sensor found,no spaces, no ':')
+    (d) <trace> when needed, set to true to get more tracing (no spaces)
 
 
