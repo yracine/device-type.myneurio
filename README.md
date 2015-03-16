@@ -75,7 +75,7 @@ g) Go back to the code window, and hit the "publish/for me" button at the top ri
   
 4) Update device's preferences
 
-    (a) <appKey> provided by Neurio (mandatory, no spaces)
+    (a) <appKey> public key provided by Neurio (mandatory, no spaces)
     (b) <privateKey> provided by Neurio (mandatory, no spaces)
     (c) <sensorId> (MAC Address of your sensor, optional,default=1st sensor found,no spaces, no ':')
     (d) <trace> when needed, set to true to get more tracing (no spaces)
