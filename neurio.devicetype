@@ -4,6 +4,7 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
 /**
+ *  /**
  *  My Neurio Device
  *
  *  Copyright 2015 Yves Racine
@@ -143,7 +144,7 @@ metadata {
 					backgroundColor: "#ffffff"
 				)
 		}
-		valueTile(	"consEnergyLastMonth", "device.consEnergyMonth", unit:'kWh',width: 2, height: 1,canChangeIcon: false,
+		valueTile(	"consEnergyLastMonth", "device.consEnergyMonth", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
   					decoration: "flat"
 				)
         	{
@@ -173,7 +174,7 @@ metadata {
 					backgroundColor: "#ffffff"
 				)
 		}
-		valueTile(	"consEnergy2MonthsAgo", "device.consEnergy2MonthsAgo", unit:'kWh',width: 2, height: 1,canChangeIcon: false,
+		valueTile(	"consEnergy2MonthsAgo", "device.consEnergy2MonthsAgo", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
   					decoration: "flat"
 				)
         	{
