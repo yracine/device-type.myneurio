@@ -57,18 +57,13 @@ metadata {
 
 		// metrics
         
+		attribute "consTotalInPeriod","string"
 		attribute "consEnergyYesterday","string"
-		attribute "consPowerYesterday","string"
 		attribute "consEnergyLastWeek","string"
-		attribute "consPowerLastWeek","string"
 		attribute "consEnergyLastMonth","string"
-		attribute "consPowerLastMonth","string"
 		attribute "genEnergyYesterday","string"
-		attribute "genPowerYesterday","string"
 		attribute "genEnergyLastWeek","string"
-		attribute "genPowerLastWeek","string"
 		attribute "genEnergyLastMonth","string"
-		attribute "genPowerLastMonth","string"
 	}
 
 	simulator {
@@ -357,7 +352,8 @@ def generateSampleStats(sensorId) {
 			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
-	def dataStats = ['consEnergyYesterday':data.sampleStats[0].consumptionEnergy]    
+	int totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
+	def dataStats = ['consEnergyYesterday':totalInPeriod]    
 
 // generate stats for the last week
 
@@ -369,7 +365,8 @@ def generateSampleStats(sensorId) {
 			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
-	dataStats = dataStats + ['consEnergyWeek':data.sampleStats[0].consumptionEnergy]    
+	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
+	dataStats = dataStats + ['consEnergyWeek':totalInPeriod]    
 
 // generate stats for the last month
 
@@ -383,10 +380,10 @@ def generateSampleStats(sensorId) {
 			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(oneMonthAgo),ISOdateFormat(endDate),"days",null)
-	dataStats = dataStats + ['consEnergyMonth':data.sampleStats[0].consumptionEnergy]    
-
+	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
+    
+	dataStats = dataStats + ['consEnergyMonth':totalInPeriod]    
 	generateEvent(dataStats)
-
 }
 
 private def ISOdateFormat(date) {
@@ -399,6 +396,7 @@ private def ISOdateFormat(date) {
 def getSampleStats(sensorId,start,end,granularity,frequency) {
 	def NEURIO_MIN_INTERVAL=5
 	def NEURIO_SUCCESS=200
+	int totalConsumedEnergy=0
     
 	sensorId= determine_sensor_id(sensorId) 	    
 	start = start?.trim()
@@ -452,6 +450,7 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 				if (data.sampleStatsCount>0) {                
 					for (i in 0..data.sampleStatsCount-1) {       
 						def consumptionEnergy = data.sampleStats[i].consumptionEnergy
+						totalConsumedEnergy =totalConsumedEnergy + consumptionEnergy
 						def startTime = data.sampleStats[i].start
 						def endTime = data.sampleStats[i].end
 						if (settings.trace) {
@@ -469,6 +468,7 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
+	generateEvent([consTotalInPeriod: totalConsumedEnergy.toString()])
 }
 
 
