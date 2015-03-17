@@ -44,6 +44,7 @@ metadata {
 		command "getSampleStats"
 		command "getLastLiveSamples"
 		command "generateSampleStats"
+        
 		attribute "generationEnergy","string"
 		attribute "generationPower","string"
 		attribute "userid","string"
@@ -673,6 +674,7 @@ void setAuthTokens() {
 			log.debug "setAuthTokens> resp data= ${resp.data}"
 		}
         
+        
 		data?.auth = resp.data
 		data.auth.access_token = resp.data.access_token
 		data.auth.expires_in = resp.data.expires_in
@@ -702,12 +704,7 @@ void setAuthTokens() {
 		sendEvent name: "verboseTrace", value: "setAuthTokens> Auth error " +
 			method.uri
 		return
-	} catch (any) {
-		log.error "setAuthTokens> general error " + method.uri
-		sendEvent name: "verboseTrace", value: "setAuthTokens>general error " +
-			method.uri
-		return
-	}
+	}	        
 
 	// determine token's expire time
 	def authexptime = new Date((now() + (data.auth.expires_in * 60 * 1000))).getTime()
