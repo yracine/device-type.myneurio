@@ -21,8 +21,8 @@ definition(
     category: "My Apps",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png")
-
+    iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png"
+)
 
 preferences {
 	section("About") {
@@ -61,9 +61,10 @@ def initialize() {
     	// set up internal poll timer
 	def pollTimer = 20
 
+	neurio.generateSampleStats("")
 	log.trace "setting poll to ${pollTimer}"
 	schedule("0 0/${pollTimer.toInteger()} * * * ?", pollHandler)
-	neurio.generateSampleStats("")
+
 }
 
 def pollHandler() {
