@@ -137,7 +137,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'"Month cons ${currentValue}kWh',
+					label:'Month cons ${currentValue}kWh',
 					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
 					backgroundColor: "#ffffff"
 				)
