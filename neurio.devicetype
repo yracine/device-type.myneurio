@@ -62,9 +62,15 @@ metadata {
 		attribute "consEnergyDay","string"
 		attribute "consEnergyWeek","string"
 		attribute "consEnergyMonth","string"
+		attribute "consEnergy2DaysAgo","string"
+		attribute "consEnergy2WeeksAgo","string"
+		attribute "consEnergy2MonthsAgo","string"
 		attribute "genEnergyDay","string"
 		attribute "genEnergyWeek","string"
 		attribute "genEnergyMonth","string"
+		attribute "genEnergy2DaysAgo","string"
+		attribute "genEnergy2WeeksAgo","string"
+		attribute "genEnergy2MonthsAgo","string"
 	}
 
 	simulator {
@@ -96,7 +102,7 @@ metadata {
  					decoration: "flat"
  				)
 		{
-			state(	"genPower", label:'GenPower ${currentValue}',
+			state(	"genPower", label:'Gen.Power ${currentValue}',
             		icon: "st.Lighting.light14",
 					backgroundColor: "#ffffff"
 				)
@@ -106,28 +112,28 @@ metadata {
 				) 
         	{
         		state("genEnergy",
-					label:'GenEnergy ${currentValue}', unit: 'kWh',
+					label:'Gen.Energy ${currentValue}', unit: 'kWh',
             		icon: "st.Lighting.light14",
 					backgroundColor: "#ffffff"
 				)
 		}
 		 
-		valueTile(	"consEnergyYesterday", "device.consEnergyDay", unit:'kWh',width: 2, height: 1,canChangeIcon: false,
-  					decoration: "flat"
+		valueTile(	"consEnergyYesterday", "device.consEnergyDay", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
+ 					decoration: "flat"
 				) 
         	{
-			state("default",,
-					label:'Yesterday cons ${currentValue}kWh',
+			state("default",
+					label:'Yesterday ${currentValue}kWh',
 					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
 					backgroundColor: "#ffffff"
 				)
 		}
-		valueTile(	"consEnergyLastWeek", "device.consEnergyWeek", unit:'kWh',width: 2, height: 1,canChangeIcon: false,
-  					decoration: "flat",
+		valueTile(	"consEnergyLastWeek", "device.consEnergyWeek", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
+  					decoration: "flat"
 				)
         	{
-			state("default",,
-					label:'Week cons ${currentValue}kWh',
+			state("default",
+					label:'Week ${currentValue}kWh',
 					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
 					backgroundColor: "#ffffff"
 				)
@@ -137,7 +143,37 @@ metadata {
 				)
         	{
 			state("default",
-					label:'Month cons ${currentValue}kWh',
+					label:'Month ${currentValue}kWh',
+					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"consEnergy2DaysAgo", "device.consEnergy2DaysAgo", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
+ 					decoration: "flat"
+				) 
+        	{
+			state("default",
+					label:'2DaysAgo ${currentValue}kWh',
+					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"consEnergy2WeeksAgo", "device.consEnergy2WeeksAgo", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
+  					decoration: "flat",
+				)
+        	{
+			state("default",
+					label:'2WeeksAgo ${currentValue}kWh',
+					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"consEnergy2MonthsAgo", "device.consEnergy2MonthsAgo", unit:'kWh',width: 2, height: 1,canChangeIcon: false,
+  					decoration: "flat"
+				)
+        	{
+			state("default",
+					label:'2MonthsAgo ${currentValue}kWh',
 					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
 					backgroundColor: "#ffffff"
 				)
@@ -147,7 +183,8 @@ metadata {
 		}
 
 		main(["power", "energy"])
-		details(["power", "energy", "genPower", "genEnergy",  "refresh","consEnergyYesterday", "consEnergyLastWeek", "consEnergyLastMonth"])
+		details(["power", "energy",  "refresh", "genPower", "genEnergy", "consEnergyYesterday", "consEnergy2DaysAgo", "consEnergyLastWeek",  "consEnergy2WeeksAgo",
+        		"consEnergyLastMonth","consEnergy2MonthsAgo"])
 	}
 }
 
@@ -357,6 +394,19 @@ def generateSampleStats(sensorId) {
 	int totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
 	def dataStats = ['consEnergyDay':totalInPeriod]    
 
+// generate stats for 2 days ago
+
+	endDate=startDate
+	startDate = (endDate -2).clearTime()
+
+	if (settings.trace) {
+		log.debug("generateSampleStats>local date/time= ${nowInLocalTime}, date/time startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
+			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+	}
+	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
+	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
+	dataStats = dataStats + ['consEnergy2DaysAgo':totalInPeriod]    
+
 // generate stats for the last week
 
 	endDate = new Date().clearTime()
@@ -370,6 +420,20 @@ def generateSampleStats(sensorId) {
 	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
 	dataStats = dataStats + ['consEnergyWeek':totalInPeriod]    
 
+
+// generate stats for 2 weeks ago
+
+	endDate = startDate
+	startDate = (endDate -7).clearTime()
+
+	if (settings.trace) {
+		log.debug("generateSampleStats>local date/time= ${nowInLocalTime}, date/time startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
+			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+	}
+	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
+	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
+	dataStats = dataStats + ['consEnergy2WeeksAgo':totalInPeriod]    
+
 // generate stats for the last month
 
 	endDate = new Date().clearTime()
@@ -378,14 +442,30 @@ def generateSampleStats(sensorId) {
 	Date oneMonthAgo = oneMonthAgoCal.getTime().clearTime()
 	
 	if (settings.trace) {
-		log.debug("generateSampleStats>local date/time= ${nowInLocalTime}, date/time startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
+		log.debug("generateSampleStats>local date/time= ${nowInLocalTime}, date/time startDate in UTC = ${String.format('%tF %<tT',oneMonthAgo)}," +
 			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(oneMonthAgo),ISOdateFormat(endDate),"days",null)
 	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
-	sendEvent(name: "consEnergyMonth", value: energyValue.toString(), unit: "kWh")                                     									 
     
 	dataStats = dataStats + ['consEnergyMonth':totalInPeriod]  
+
+// generate stats for 2 months ago
+
+	endDate=oneMonthAgo -1
+	Calendar twoMonthsAgoCal = new GregorianCalendar()
+	twoMonthsAgoCal.add(Calendar.MONTH, -2)
+	Date twoMonthsAgo = twoMonthsAgoCal.getTime().clearTime()
+	
+	if (settings.trace) {
+		log.debug("generateSampleStats>local date/time= ${nowInLocalTime}, date/time startDate in UTC = ${String.format('%tF %<tT',twoMonthsAgo)}," +
+			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+	}
+	getSampleStats(sensorId, ISOdateFormat(twoMonthsAgo),ISOdateFormat(endDate),"days",null)
+	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
+    
+	dataStats = dataStats + ['consEnergy2MonthsAgo':totalInPeriod]  
+
 	generateEvent(dataStats)
 
 
