@@ -673,17 +673,6 @@ void setAuthTokens() {
 			log.debug "setAuthTokens> resp data= ${resp.data}"
 		}
         
-		if(!atomicState.accessToken)
-		{
-			log.debug "about to create access token"
-			createAccessToken()
-			atomicState.accessToken = state.accessToken
-            
-		}
-		atomicState.authToken = resp.data.access_token
-		atomicState.expiresIn=resp.data.expires_in
-		atomicState.tokenType = resp.data.token_type
-        
 		data?.auth = resp.data
 		data.auth.access_token = resp.data.access_token
 		data.auth.expires_in = resp.data.expires_in
