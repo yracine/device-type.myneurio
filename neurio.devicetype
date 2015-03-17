@@ -3,6 +3,11 @@
  *
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
+/**
+ *  My Neurio Device
+ *
+ *  Copyright 2015 Yves Racine
+ *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
  *
  *  Code: https://github.com/yracine/device-type.myneurio.groovy
@@ -387,8 +392,8 @@ def generateSampleStats(sensorId) {
 
 	String nowInLocalTime = new Date().format("yyyy-MM-dd HH:mm", location.timeZone)
 	if (settings.trace) {
-		log.debug("generateSampleStats>local date/time= ${nowInLocalTime}, date/time startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateSampleStats>yesterday: local date/time= ${nowInLocalTime}, startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
+			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
 	int totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
@@ -400,8 +405,8 @@ def generateSampleStats(sensorId) {
 	startDate = (endDate -2).clearTime()
 
 	if (settings.trace) {
-		log.debug("generateSampleStats>local date/time= ${nowInLocalTime}, date/time startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateSampleStats>2 days ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
+			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
 	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
@@ -413,10 +418,10 @@ def generateSampleStats(sensorId) {
 	startDate = (endDate -7).clearTime()
 
 	if (settings.trace) {
-		log.debug("generateSampleStats>local date/time= ${nowInLocalTime}, date/time startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateSampleStats>this week (last 7 days): startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
+			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
-	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
+	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"weeks",null)
 	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
 	dataStats = dataStats + ['consEnergyWeek':totalInPeriod]    
 
@@ -427,10 +432,10 @@ def generateSampleStats(sensorId) {
 	startDate = (endDate -7).clearTime()
 
 	if (settings.trace) {
-		log.debug("generateSampleStats>local date/time= ${nowInLocalTime}, date/time startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
+		log.debug("generateSampleStats>2 weeks ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
 			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
-	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
+	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"weeks",null)
 	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
 	dataStats = dataStats + ['consEnergy2WeeksAgo':totalInPeriod]    
 
@@ -442,10 +447,10 @@ def generateSampleStats(sensorId) {
 	Date oneMonthAgo = oneMonthAgoCal.getTime().clearTime()
 	
 	if (settings.trace) {
-		log.debug("generateSampleStats>local date/time= ${nowInLocalTime}, date/time startDate in UTC = ${String.format('%tF %<tT',oneMonthAgo)}," +
-			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateSampleStats>1 month ago: startDate in UTC = ${String.format('%tF %<tT',oneMonthAgo)}," +
+			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
-	getSampleStats(sensorId, ISOdateFormat(oneMonthAgo),ISOdateFormat(endDate),"days",null)
+	getSampleStats(sensorId, ISOdateFormat(oneMonthAgo),ISOdateFormat(endDate),"months",null)
 	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
     
 	dataStats = dataStats + ['consEnergyMonth':totalInPeriod]  
@@ -458,10 +463,10 @@ def generateSampleStats(sensorId) {
 	Date twoMonthsAgo = twoMonthsAgoCal.getTime().clearTime()
 	
 	if (settings.trace) {
-		log.debug("generateSampleStats>local date/time= ${nowInLocalTime}, date/time startDate in UTC = ${String.format('%tF %<tT',twoMonthsAgo)}," +
-			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateSampleStats>2 months ago: startDate in UTC = ${String.format('%tF %<tT',twoMonthsAgo)}," +
+			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
-	getSampleStats(sensorId, ISOdateFormat(twoMonthsAgo),ISOdateFormat(endDate),"days",null)
+	getSampleStats(sensorId, ISOdateFormat(twoMonthsAgo),ISOdateFormat(endDate),"months",null)
 	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
     
 	dataStats = dataStats + ['consEnergy2MonthsAgo':totalInPeriod]  
@@ -504,8 +509,8 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 		}
 	}
 	// make sure granularity is one of the correct values
-	if ((granularity != 'minutes') && (granularity != 'hours') && (granularity != 'days') && (granulariry != 'months')) {
-		log.error "getSamplesData>only values of 'minutes, hours, days or months' are supported for granularity (${granularity})"
+	if ((granularity != 'minutes') && (granularity != 'hours') && (granularity != 'days') && (granularity != 'weeks') && (granularity != 'months')) {
+		log.error "getSamplesData>only values of [minutes, hours, days, weeks or months] are supported for granularity (${granularity})"
 		sendEvent name: "verboseTrace", value: "only values of minutes, hours, days or months are supported for granularity (${granularity})"
 		return false
 	}
