@@ -203,7 +203,7 @@ private void generateEvent(Map results)
 				def isChange = isStateChange(device, name, energyValue.toString())
 				isDisplayed = isChange
                 
-				sendEvent(name: name, value: energyValue.toString(), unit: "kWh")                                     									 
+				sendEvent(name: name, value: energyValue.toString(), unit: "kWh", displayed: isDisplayed)                                     									 
 			} else if (name.toUpperCase().contains("POWER")) { // power variable names contain 'power'
 
 // 			Power variable names contain "power"
