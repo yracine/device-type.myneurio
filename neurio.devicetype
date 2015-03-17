@@ -43,6 +43,7 @@ metadata {
 		command "getCurrentUserInfo"
 		command "getSampleStats"
 		command "getLastLiveSamples"
+		command "generateSampleStats"
 		attribute "generationEnergy","string"
 		attribute "generationPower","string"
 		attribute "userid","string"
@@ -334,7 +335,7 @@ void getLastLiveSamples(sensorId) {
                 
 			} else {
 				def message = resp.message
-				def errors = resp.errors
+            			def errors = resp.errors
 				log.error "getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors}"
 				sendEvent name: "verboseTrace", value:"getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors}"
 			}                
@@ -535,7 +536,7 @@ void getCurrentUserInfo() {
 					} /* end each sensor */                        
 				} /* end each location */                        
 			} else {
-				statusCode=data.status
+        			statusCode=data.status
 				def message = data.message
 				def errors = data.errors
 				log.error "getCurrentUserInfo>status=${statusCode.toString()},message=${message},errors=${errors}"
@@ -671,6 +672,18 @@ void setAuthTokens() {
 		if (settings.trace) {
 			log.debug "setAuthTokens> resp data= ${resp.data}"
 		}
+        
+		if(!atomicState.accessToken)
+		{
+			log.debug "about to create access token"
+			createAccessToken()
+			atomicState.accessToken = state.accessToken
+            
+		}
+		atomicState.authToken = resp.data.access_token
+		atomicState.expiresIn=resp.data.expires_in
+		atomicState.tokenType = resp.data.token_type
+        
 		data?.auth = resp.data
 		data.auth.access_token = resp.data.access_token
 		data.auth.expires_in = resp.data.expires_in
@@ -700,8 +713,7 @@ void setAuthTokens() {
 		sendEvent name: "verboseTrace", value: "setAuthTokens> Auth error " +
 			method.uri
 		return
-	} 
-	catch (any) {
+	} catch (any) {
 		log.error "setAuthTokens> general error " + method.uri
 		sendEvent name: "verboseTrace", value: "setAuthTokens>general error " +
 			method.uri
