@@ -315,8 +315,8 @@ void getLastLiveSamples(sensorId) {
 		api('lastLiveSamples', bodyReq) {resp->
 		
 			statusCode= resp.status
-        		if (statusCode == NEURIO_SUCCESS) {
-        			data?.liveSamples=resp.data
+        	if (statusCode == NEURIO_SUCCESS) {
+        		data?.liveSamples=resp.data
 				def consumptionPower = data.liveSamples.consumptionPower
 				def consumptionEnergy = data.liveSamples.consumptionEnergy
 				def generationPower = data.liveSamples.generationPower
@@ -396,7 +396,7 @@ private def ISOdateFormat(date) {
 def getSampleStats(sensorId,start,end,granularity,frequency) {
 	def NEURIO_MIN_INTERVAL=5
 	def NEURIO_SUCCESS=200
-	int totalConsumedEnergy=0
+    int totalConsumedEnergy=0
     
 	sensorId= determine_sensor_id(sensorId) 	    
 	start = start?.trim()
@@ -450,7 +450,7 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 				if (data.sampleStatsCount>0) {                
 					for (i in 0..data.sampleStatsCount-1) {       
 						def consumptionEnergy = data.sampleStats[i].consumptionEnergy
-						totalConsumedEnergy =totalConsumedEnergy + consumptionEnergy
+                        totalConsumedEnergy =totalConsumedEnergy + consumptionEnergy
 						def startTime = data.sampleStats[i].start
 						def endTime = data.sampleStats[i].end
 						if (settings.trace) {
