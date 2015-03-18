@@ -120,7 +120,7 @@ metadata {
 				) 
         	{
 			state("default",
-					label:'Ytrday\n${currentValue}kWh',
+					label:'Yestrday\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
