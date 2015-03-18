@@ -398,13 +398,13 @@ def generateSampleStats(sensorId) {
 	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
 	dataStats = dataStats + ['consEnergy2DaysAgo':totalInPeriod]    
 
-// generate stats for the last week
+// generate stats for the past week
 
 	endDate = new Date().clearTime()
 	startDate = (endDate -7).clearTime()
 
 	if (settings.trace) {
-		log.debug("generateSampleStats>this week (last 7 days): startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
+		log.debug("generateSampleStats>past week (last 7 days): startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"weeks",null)
@@ -425,7 +425,7 @@ def generateSampleStats(sensorId) {
 	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
 	dataStats = dataStats + ['consEnergy2WeeksAgo':totalInPeriod]    
 
-// generate stats for the last month
+// generate stats for the past month
 
 	endDate = new Date().clearTime()
 	Calendar oneMonthAgoCal = new GregorianCalendar()
@@ -433,7 +433,7 @@ def generateSampleStats(sensorId) {
 	Date oneMonthAgo = oneMonthAgoCal.getTime().clearTime()
 	
 	if (settings.trace) {
-		log.debug("generateSampleStats>1 month ago: startDate in UTC = ${String.format('%tF %<tT',oneMonthAgo)}," +
+		log.debug("generateSampleStats>past month: startDate in UTC = ${String.format('%tF %<tT',oneMonthAgo)}," +
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(oneMonthAgo),ISOdateFormat(endDate),"months",null)
