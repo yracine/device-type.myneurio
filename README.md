@@ -86,7 +86,7 @@ g) Go back to the code window, and hit the "publish/for me" button at the top ri
 
 
 *************************************************
-5) Use SmartSetup and execute My ecobee Init
+5) Use SmartSetup and execute My Neurio Init
 *************************************************
 
 
