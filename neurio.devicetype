@@ -3,12 +3,6 @@
  *
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
-/**
- *  /**
- *  My Neurio Device
- *
- *  Copyright 2015 Yves Racine
- *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
  *
  *  Code: https://github.com/yracine/device-type.myneurio.groovy
@@ -105,32 +99,28 @@ metadata {
                  		)
 		}
 		valueTile(	"genPower", "device.generationPower",unit: 'Watts',width: 1, height: 1,canChangeIcon: false,
- 					decoration: "flat"
  				)
 		{
-			state(	"genPower", label:'Gen.Power ${currentValue}',
-            		icon: "st.Lighting.light14",
+			state(	"genPower", label:'GenPower ${currentValue}',
 					backgroundColor: "#ffffff"
 				)
 		}
  		valueTile(	"genEnergy",  "device.generationEnergy", unit: 'kWh',width: 1, height: 1,canChangeIcon: false,
- 					decoration: "flat"
 				) 
         	{
         		state("genEnergy",
-					label:'Gen.Energy ${currentValue}', unit: 'kWh',
-            		icon: "st.Lighting.light14",
+					label:'GenEnergy ${currentValue}',
 					backgroundColor: "#ffffff"
 				)
 		}
+        
 		 
 		valueTile(	"consEnergyYesterday", "device.consEnergyDay", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
  					decoration: "flat"
 				) 
         	{
 			state("default",
-					label:'Yesterday ${currentValue}kWh',
-					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
+					label:'Ytrday\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -139,8 +129,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'Week ${currentValue}kWh',
-					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
+					label:'Week\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -149,8 +138,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'Month ${currentValue}kWh',
-					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
+					label:'Month\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -159,8 +147,7 @@ metadata {
 				) 
         	{
 			state("default",
-					label:'2DaysAgo ${currentValue}kWh',
-					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
+					label:'2DayAgo\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -169,8 +156,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'2WeeksAgo ${currentValue}kWh',
-					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
+					label:'2WksAgo\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -179,8 +165,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'2MonthsAgo ${currentValue}kWh',
-					icon: "st.quirky.spotter.quirky-spotter-plugged",                    
+					label:'2MOsAgo\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
