@@ -83,6 +83,13 @@ metadata {
         	{
             		state(	"power", label:'Power\n${currentValue}W',
 					backgroundColor: "#ffffff"
+/*
+					backgroundColors: [
+						[value: 500, color: "green"],
+						[value: 3000, color: "orange"],
+						[value: 6000, color: "red"]
+                  			]
+*/                            
 				)
 		}
 		valueTile(	"energy", "device.energy", unit:'kWh',width: 1, height: 1,canChangeIcon: false
@@ -91,11 +98,6 @@ metadata {
 			state("energy",
 					label:'Energy\n${currentValue}kWh',
 					backgroundColor: "#ffffff",
-					backgroundColors: [
-						[value: 30, color: "green"],
-						[value: 50, color: "orange"],
-						[value: 100, color: "red"]
-                  			]
                  		)
 		}
 		valueTile(	"genPower", "device.generationPower",unit: 'Watts',width: 1, height: 1,canChangeIcon: false,
