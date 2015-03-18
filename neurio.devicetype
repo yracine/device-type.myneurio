@@ -165,7 +165,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'2MOsAgo\n${currentValue}kWh',
+					label:'2MoAgo\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
