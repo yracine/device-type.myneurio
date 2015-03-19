@@ -493,7 +493,7 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 		if ((frequency.mod(NEURIO_MIN_INTERVAL)) != 0) {
 			log.error "getSamplesData>only multiples of 5 are supported for frequency (${frequency}) when granularity (${granularity}) is in minutes"
 			sendEvent name: "verboseTrace", value:  "getSamplesData>only multiples of 5 are supported for frequency (${frequency}) when granularity (${granularity}) is in minutes"
-        	return false
+			return false
 		}
 	}
 	// make sure granularity is one of the correct values
