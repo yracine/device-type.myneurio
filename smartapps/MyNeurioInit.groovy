@@ -57,18 +57,18 @@ def initialize() {
 	neurio.setAuthTokens()
 	neurio.getCurrentUserInfo()
 
-	pollHandler()
+	takeAction()
     	// set up internal poll timer
 	def pollTimer = 20
 
 	neurio.generateSampleStats("")
 	log.trace "setting poll to ${pollTimer}"
-	schedule("0 0/${pollTimer.toInteger()} * * * ?", pollHandler)
+	schedule("0 0/${pollTimer.toInteger()} * * * ?",takeAction)
 
 }
 
-def pollHandler() {
-	log.trace "pollHandler>begin"
+def takeAction() {
+	log.trace "takeAction>begin"
 	neurio.poll()
 	String nowInLocalTime = new Date().format("HH", location.timeZone)
     
@@ -76,6 +76,6 @@ def pollHandler() {
 	if (nowInLocalTime == "00") {
 		neurio.generateSampleStats("")
 	}
-	log.trace "pollHandler>end"
+	log.trace "takeAction>end"
 }
 
