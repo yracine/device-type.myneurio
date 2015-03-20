@@ -274,6 +274,10 @@ private def api(method, args, success={}) {
 		if (settings.trace) {
 			log.debug "api> need to refresh tokens"
 		}
+/*
+		refresh_tokens()
+
+*/
 		setAuthTokens()
 	}
 	def methods = [
@@ -633,10 +637,8 @@ private def refresh_tokens() {
 			'Content-Type': "application/json",
 			'charset': "UTF-8"
 			],
-		uri: "${get_URI_ROOT()}/token?" +
-		"grant_type=refresh_token&" +
-		"code=${data.auth.refresh_token}&" +
-		"client_id=${get_appKey()}"
+		uri: "${get_URI_ROOT()}/oauth2/token?", 
+		body: toQueryString([grant_type:"refresh_token",client_id:get_appKey(),client_secret:get_refresh_token()])
 	]
 	if (settings.trace) {
 		log.debug "refresh_tokens> uri = ${method.uri}"
@@ -860,6 +862,12 @@ private def get_client_secret() {
 	return settings.privateKey
 }    
 
+
+// Get the client's refresh token
+
+private def get_refresh_token() {
+	return data.auth.refresh_token
+}    
 
 // Called by My Neurio Init for initial creation of a child Device
 void initialSetup(device_client_id, auth_data, device_tstat_id) {
