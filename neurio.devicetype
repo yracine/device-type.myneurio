@@ -576,7 +576,7 @@ void getCurrentUserInfo() {
 				def username = data.user.name
 				def email = data.user.email
 				def active = data.user.status  
-				if (!active) {
+				if (status != 'active') {
 					if (settings.trace) {
 						log.debug "getCurrentUserInfo>userId=${userid},name=${username},email=${email} not active, exiting..."
 						sendEvent name: "verboseTrace", value: "getCurrentUserInfo>userId=${userid},name=${username},email=${email} not active, exiting..."
