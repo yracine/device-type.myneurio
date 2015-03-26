@@ -239,7 +239,7 @@ private void generateEvent(Map results)
 
 // 			Power variable names contain "power"
 
- 				float powerValue = value.toFloat().round(1)
+ 				float powerValue = value.toFloat().round(0)
 				def isChange = isStateChange(device, name, powerValue.toString())
 				isDisplayed = isChange
 				sendEvent(name: name, value: powerValue.toString(), unit: "Watts")                                     									 
