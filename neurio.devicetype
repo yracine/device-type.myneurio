@@ -82,7 +82,7 @@ metadata {
 	tiles {
 		valueTile(	"power","device.power",unit: 'Watts', width: 1, height: 1,canChangeIcon: false)
         	{
-            		state(	"power", label:'Power\n${currentValue}W',
+            		state(	"power", label:'Power ${currentValue}W',
 					backgroundColor: "#ffffff"
 /*
 					backgroundColors: [
