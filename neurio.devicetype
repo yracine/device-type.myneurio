@@ -230,7 +230,7 @@ private void generateEvent(Map results)
 // 			Energy variable names contain "energy"           
 
 			if ((name.toUpperCase().contains("ENERGY"))) {  
-				float energyValue = getEnergy(value).toFloat().round(2)                
+				float energyValue = getEnergy(value).toFloat().round(1)                
 				def isChange = isStateChange(device, name, energyValue.toString())
 				isDisplayed = isChange
                 
