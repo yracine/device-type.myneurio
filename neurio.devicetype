@@ -38,6 +38,7 @@ metadata {
 		capability "Refresh"
 		capability "Polling"
 		capability "Energy Meter"
+		capability "Actuator"        
 
 		command "setAuthTokens"
 		command "getCurrentUserInfo"
@@ -96,7 +97,7 @@ metadata {
 				) 
         	{
 			state("energy",
-					label:'Energy\n${currentValue}kWh',
+					label:'Energy ${currentValue}kWh',
 					backgroundColor: "#ffffff",
                  		)
 		}
@@ -122,7 +123,7 @@ metadata {
 				) 
         	{
 			state("default",
-					label:'Yestrday\n${currentValue}kWh',
+					label:'Yestrday ${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -131,7 +132,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'Week\n${currentValue}kWh',
+					label:'Week ${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -140,7 +141,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'Month\n${currentValue}kWh',
+					label:'Month ${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -149,7 +150,7 @@ metadata {
 				) 
         	{
 			state("default",
-					label:'2DayAgo\n${currentValue}kWh',
+					label:'2DayAgo ${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -158,7 +159,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'2WksAgo\n${currentValue}kWh',
+					label:'2WksAgo ${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -167,7 +168,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'2MoAgo\n${currentValue}kWh',
+					label:'2MoAgo ${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -233,7 +234,7 @@ private void generateEvent(Map results)
 				def isChange = isStateChange(device, name, energyValue.toString())
 				isDisplayed = isChange
                 
-				sendEvent(name: name, value: energyValue.toString(), unit: "kWh", displayed: isDisplayed)                                     									 
+				sendEvent(name: name, value: energyValue.toString(), unit: "kWh")                                     									 
 			} else if (name.toUpperCase().contains("POWER")) { // power variable names contain 'power'
 
 // 			Power variable names contain "power"
@@ -241,13 +242,13 @@ private void generateEvent(Map results)
  				float powerValue = value.toFloat().round(1)
 				def isChange = isStateChange(device, name, powerValue.toString())
 				isDisplayed = isChange
-				sendEvent(name: name, value: powerValue.toString(), unit: "Watts", displayed: isDisplayed)                                     									 
+				sendEvent(name: name, value: powerValue.toString(), unit: "Watts")                                     									 
 
  			} else {
 				def isChange = isStateChange(device, name, value)
 				isDisplayed = isChange
 
-				sendEvent(name: name, value: value, isStateChange: isChange, displayed: isDisplayed)       
+				sendEvent(name: name, value: value, isStateChange: isChange)       
 			}
 		}
 	}
