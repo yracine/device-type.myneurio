@@ -38,7 +38,6 @@ metadata {
 		capability "Refresh"
 		capability "Polling"
 		capability "Energy Meter"
-		capability "Actuator"        
 
 		command "setAuthTokens"
 		command "getCurrentUserInfo"
@@ -239,7 +238,7 @@ private void generateEvent(Map results)
 
 // 			Power variable names contain "power"
 
- 				int powerValue = value.toInteger()
+ 				Long powerValue = value.toLong()
 				def isChange = isStateChange(device, name, powerValue.toString())
 				isDisplayed = isChange
 				sendEvent(name: name, value: powerValue.toString(), unit: "Watts")                                     									 
@@ -389,7 +388,7 @@ def generateSampleStats(sensorId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
-	int totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
+	Long totalInPeriod =  device.currentValue("consTotalInPeriod").toLong()
 	def dataStats = ['consEnergyDay':totalInPeriod]    
 
 // generate stats for 2 days ago
@@ -402,7 +401,7 @@ def generateSampleStats(sensorId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
-	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
+	totalInPeriod =  device.currentValue("consTotalInPeriod").toLong()
 	dataStats = dataStats + ['consEnergy2DaysAgo':totalInPeriod]    
 
 // generate stats for the past week
@@ -415,7 +414,7 @@ def generateSampleStats(sensorId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"weeks",null)
-	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
+	totalInPeriod =  device.currentValue("consTotalInPeriod").toLong()
 	dataStats = dataStats + ['consEnergyWeek':totalInPeriod]    
 
 
@@ -429,7 +428,7 @@ def generateSampleStats(sensorId) {
 			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"weeks",null)
-	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
+	totalInPeriod =  device.currentValue("consTotalInPeriod").toLong()
 	dataStats = dataStats + ['consEnergy2WeeksAgo':totalInPeriod]    
 
 // generate stats for the past month
@@ -444,7 +443,7 @@ def generateSampleStats(sensorId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(oneMonthAgo),ISOdateFormat(endDate),"months",null)
-	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
+	totalInPeriod =  device.currentValue("consTotalInPeriod").toLong()
     
 	dataStats = dataStats + ['consEnergyMonth':totalInPeriod]  
 
@@ -460,7 +459,7 @@ def generateSampleStats(sensorId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(twoMonthsAgo),ISOdateFormat(endDate),"months",null)
-	totalInPeriod =  device.currentValue("consTotalInPeriod").toInteger()
+	totalInPeriod =  device.currentValue("consTotalInPeriod").toLong()
     
 	dataStats = dataStats + ['consEnergy2MonthsAgo':totalInPeriod]  
 
@@ -479,7 +478,7 @@ private def ISOdateFormat(date) {
 def getSampleStats(sensorId,start,end,granularity,frequency) {
 	def NEURIO_MIN_INTERVAL=5
 	def NEURIO_SUCCESS=200
-	int totalConsumedEnergy=0
+    Long totalConsumedEnergy=0
     
 	sensorId= determine_sensor_id(sensorId) 	    
 	start = start?.trim()
@@ -532,7 +531,7 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 				}
 				if (data.sampleStatsCount>0) {                
 					for (i in 0..data.sampleStatsCount-1) {       
-						def consumptionEnergy = data.sampleStats[i].consumptionEnergy
+						Long consumptionEnergy = data.sampleStats[i].consumptionEnergy.toLong()
 						totalConsumedEnergy =totalConsumedEnergy + consumptionEnergy
 						def startTime = data.sampleStats[i].start
 						def endTime = data.sampleStats[i].end
