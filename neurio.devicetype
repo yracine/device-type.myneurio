@@ -478,7 +478,7 @@ private def ISOdateFormat(date) {
 def getSampleStats(sensorId,start,end,granularity,frequency) {
 	def NEURIO_MIN_INTERVAL=5
 	def NEURIO_SUCCESS=200
-    Long totalConsumedEnergy=0
+	Long totalConsumedEnergy=0
     
 	sensorId= determine_sensor_id(sensorId) 	    
 	start = start?.trim()
