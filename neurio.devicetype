@@ -395,7 +395,7 @@ def generateSampleStats(sensorId) {
 // generate stats for 2 days ago
 
 	endDate=startDate
-	startDate = (endDate -2).clearTime()
+	startDate = (endDate -1).clearTime()
 
 	if (settings.trace) {
 		log.debug("generateSampleStats>2 days ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
