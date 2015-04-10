@@ -58,6 +58,8 @@ metadata {
 		attribute "timezone","string"
 		attribute "sensorId","string"
 
+		// Consumed Energy attributes
+
 		attribute "consTotalInPeriod","string"
 		attribute "consEnergyDay","string"
 		attribute "consEnergyWeek","string"
@@ -65,6 +67,10 @@ metadata {
 		attribute "consEnergy2DaysAgo","string"
 		attribute "consEnergy2WeeksAgo","string"
 		attribute "consEnergy2MonthsAgo","string"
+
+		// Generated Energy attributes
+        
+		attribute "genTotalInPeriod","string"
 		attribute "genEnergyDay","string"
 		attribute "genEnergyWeek","string"
 		attribute "genEnergyMonth","string"
@@ -171,13 +177,72 @@ metadata {
 					backgroundColor: "#ffffff"
 				)
 		}
+        
+		valueTile(	"genEnergyYesterday", "device.genEnergyDay", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
+ 					decoration: "flat"
+				) 
+        	{
+			state("default",
+					label:'Yesterday\nGen ${currentValue}kWh',
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"genEnergyLastWeek", "device.genEnergyWeek", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
+  					decoration: "flat"
+				)
+        	{
+			state("default",
+					label:'Week\nGen ${currentValue}kWh',
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"genEnergyLastMonth", "device.genEnergyMonth", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
+  					decoration: "flat"
+				)
+        	{
+			state("default",
+					label:'Month\nGen ${currentValue}kWh',
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"genEnergy2DaysAgo", "device.genEnergy2DaysAgo", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
+ 					decoration: "flat"
+				) 
+        	{
+			state("default",
+					label:'2DaysAgo\nGen ${currentValue}kWh',
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"genEnergy2WeeksAgo", "device.genEnergy2WeeksAgo", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
+  					decoration: "flat",
+				)
+        	{
+			state("default",
+					label:'2WksAgo\nGen ${currentValue}kWh',
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"genEnergy2MonthsAgo", "device.genEnergy2MonthsAgo", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
+  					decoration: "flat"
+				)
+        	{
+			state("default",
+					label:'2MonthAgo\nGen ${currentValue}kWh',
+					backgroundColor: "#ffffff"
+				)
+		}
+       
 		standardTile("refresh", "device.power") {
 			state "default", action:"refresh.refresh", icon:"st.secondary.refresh"
 		}
 
 		main(["power", "energy"])
 		details(["power", "energy",  "refresh", "genPower", "genEnergy", "consEnergyYesterday", "consEnergy2DaysAgo", "consEnergyLastWeek",  "consEnergy2WeeksAgo",
-        		"consEnergyLastMonth","consEnergy2MonthsAgo"])
+        		"consEnergyLastMonth","consEnergy2MonthsAgo", "genEnergyYesterday", "genEnergy2DaysAgo", "genEnergyLastWeek",  "genEnergy2WeeksAgo",
+        		"genEnergyLastMonth","genEnergy2MonthsAgo"])
+
+
 	}
 }
 
@@ -354,10 +419,10 @@ void getLastLiveSamples(sensorId) {
 			statusCode= resp.status
 			if (statusCode == NEURIO_SUCCESS) {
 				data?.liveSamples=resp.data
-				def consumptionPower = data.liveSamples.consumptionPower
-				def consumptionEnergy = data.liveSamples.consumptionEnergy
-				def generationPower = data.liveSamples.generationPower
-				def generationEnergy = data.liveSamples.generationEnergy
+				def consumptionPower = data.liveSamples?.consumptionPower
+				def consumptionEnergy = data.liveSamples?.consumptionEnergy
+				def generationPower = data.liveSamples?.generationPower
+				def generationEnergy = data.liveSamples?.generationEnergy
 				def timestamp = data.liveSamples.timestamp    
 				if (settings.trace) {
 					log.debug "getLastLiveSamples>sensorId=${sensorId},consumptionPower=${consumptionPower},consumptionEnergy=${consumptionEnergy}" +
@@ -389,8 +454,9 @@ def generateSampleStats(sensorId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
-	Long totalInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	def dataStats = ['consEnergyDay':totalInPeriod]    
+	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
+	Long totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
+	def dataStats = ['consEnergyDay':totalConsInPeriod, 'genEnergyDay':totalGenInPeriod]    
 
 // generate stats for 2 days ago
 
@@ -402,8 +468,9 @@ def generateSampleStats(sensorId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
-	totalInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	dataStats = dataStats + ['consEnergy2DaysAgo':totalInPeriod]    
+	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
+	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
+	dataStats = dataStats + ['consEnergy2DaysAgo':totalConsInPeriod, 'genEnergy2DaysAgo':totalGenInPeriod]    
 
 // generate stats for the past week
 
@@ -415,8 +482,9 @@ def generateSampleStats(sensorId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"weeks",null)
-	totalInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	dataStats = dataStats + ['consEnergyWeek':totalInPeriod]    
+	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
+	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
+	dataStats = dataStats + ['consEnergyWeek':totalConsInPeriod, 'genEnergyWeek':totalGenInPeriod]    
 
 
 // generate stats for 2 weeks ago
@@ -429,8 +497,9 @@ def generateSampleStats(sensorId) {
 			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"weeks",null)
-	totalInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	dataStats = dataStats + ['consEnergy2WeeksAgo':totalInPeriod]    
+	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
+	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
+	dataStats = dataStats + ['consEnergy2WeeksAgo':totalConsInPeriod, 'genEnergy2WeeksAgo':totalGenInPeriod]    
 
 // generate stats for the past month
 
@@ -444,9 +513,9 @@ def generateSampleStats(sensorId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(oneMonthAgo),ISOdateFormat(endDate),"months",null)
-	totalInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-    
-	dataStats = dataStats + ['consEnergyMonth':totalInPeriod]  
+	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
+	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
+	dataStats = dataStats + ['consEnergyMonth':totalConsInPeriod, 'genEnergyMonth':totalGenInPeriod]    
 
 // generate stats for 2 months ago
 
@@ -460,9 +529,9 @@ def generateSampleStats(sensorId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	getSampleStats(sensorId, ISOdateFormat(twoMonthsAgo),ISOdateFormat(endDate),"months",null)
-	totalInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-    
-	dataStats = dataStats + ['consEnergy2MonthsAgo':totalInPeriod]  
+	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
+	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
+	dataStats = dataStats + ['consEnergy2MonthsAgo':totalConsInPeriod, 'genEnergy2MonthsAgo':totalGenInPeriod]    
 
 	generateEvent(dataStats)
 
@@ -480,6 +549,7 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 	def NEURIO_MIN_INTERVAL=5
 	def NEURIO_SUCCESS=200
 	Long totalConsumedEnergy=0
+	Long totalGeneratedEnergy=0
     
 	sensorId= determine_sensor_id(sensorId) 	    
 	start = start?.trim()
@@ -532,13 +602,19 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 				}
 				if (data.sampleStatsCount>0) {                
 					for (i in 0..data.sampleStatsCount-1) {       
-						Long consumptionEnergy = data.sampleStats[i].consumptionEnergy.toLong()
-						totalConsumedEnergy =totalConsumedEnergy + consumptionEnergy
+						def consumptionEnergy = data.sampleStats[i]?.consumptionEnergy
+						if (consumptionEnergy) {
+							totalConsumedEnergy =totalConsumedEnergy + consumptionEnergy.toLong()
+						}                        
+						def generationEnergy = data.sampleStats[i]?.generationEnergy
+						if (generationEnergy) {
+							totalGeneratedEnergy =totalGeneratedEnergy + generationEnergy.toLong()
+						}                        
+
 						def startTime = data.sampleStats[i].start
 						def endTime = data.sampleStats[i].end
 						if (settings.trace) {
-							log.debug "getSampleStats>sensorId=${sensorId},sampleStat no ${i},consumptionEnergy=${consumptionEnergy},start=${startTime},end=${endTime}"
-							sendEvent name: "verboseTrace", value: "getSampleStats>sensorId=${sensorId},sampleStat no ${i},consumptionEnergy=${consumptionEnergy},start=${startTime},end=${endTime} "
+							sendEvent name: "verboseTrace", value: "getSampleStats>sensorId=${sensorId},sampleStat no ${i},consumptionEnergy=${consumptionEnergy},generationEnergy=${generationEnergy},start=${startTime},end=${endTime}"
 						}
                         
 					} /* end for samples */
@@ -551,7 +627,8 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
-	generateEvent([consTotalInPeriod: totalConsumedEnergy.toString()])
+	generateEvent([consTotalInPeriod: totalConsumedEnergy.toString(), genTotalInPeriod:totalGeneratedEnergy.toString()])
+
 }
 
 
@@ -579,14 +656,12 @@ void getCurrentUserInfo() {
 				def active = data.user.status  
 				if (status != 'active') {
 					if (settings.trace) {
-						log.debug "getCurrentUserInfo>userId=${userid},name=${username},email=${email} not active, exiting..."
 						sendEvent name: "verboseTrace", value: "getCurrentUserInfo>userId=${userid},name=${username},email=${email} not active, exiting..."
 					}
 					return
 				}
                 
 				if (settings.trace) {
-					log.debug "getCurrentUserInfo>userId=${userid},name=${username},email=${email},active=${active}"
 					sendEvent name: "verboseTrace", value: "getCurrentUserInfo>userId=${userId},name=${username},email=${email},active=${active}"
 				}
 				data.user?.locationsCount = resp.data.locations.size()
@@ -595,7 +670,6 @@ void getCurrentUserInfo() {
 					def locationName = it.name
 					def timezone = it.timezone
 					if (settings.trace) {
-						log.debug "getCurrentUserInfo> for username=${username}, found locationId=${locationId},name=${locationName},timezone=${timezone}"
 						sendEvent name: "verboseTrace", value: "getCurrentUserInfo> for username=${username}, found locationId=${locationId},name=${locationName},timezone=${timezone}"
 					}
 					it?.sensorsCount=it.sensors.size()
@@ -603,7 +677,6 @@ void getCurrentUserInfo() {
 						def sensorId = it.id
 						def sensorType = it.sensorType
 						if (settings.trace) {
-							log.debug "getCurrentUserInfo> for location = ${locationName}, found sensorId=${sensorId},type=${sensorType}"
 							sendEvent name: "verboseTrace", value: "getCurrentUserInfo>sensorId=${sensorId},type=${sensorType}"
 						}
 						it?.ChannelsCount=it.channels.size()
@@ -612,7 +685,6 @@ void getCurrentUserInfo() {
 							def channelName = it.name
 							def channelType = it.channelType
 							if (settings.trace) {
-								log.debug "getCurrentUserInfo>for sensorId=sensorId, found ChannelId=${channelId},name=${channelName},type=${channelType}"
 								sendEvent name: "verboseTrace", value: "getCurrentUserInfo>ChannelId=${channelId},name=${channelName},type=${channelType}"
 							}
                             
@@ -681,7 +753,6 @@ private def refresh_tokens() {
 		refreshParentTokens()
 	}        
 	if (settings.trace) {
-		log.debug "refresh_tokens> expires in ${data.auth.expires_in} minutes"
 		log.debug "refresh_tokens> data_auth.expires_in in time = ${authexptime}"
 		sendEvent name: "verboseTrace", value:
 			"refresh_tokens>expire in ${data.auth.expires_in} minutes"
