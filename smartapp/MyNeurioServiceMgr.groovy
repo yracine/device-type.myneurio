@@ -191,7 +191,7 @@ def getNeurioSensors() {
 	} catch (java.net.NoRouteToHostException t) {
 		log.error "getNeurioSensor> No route to host - check the URL " + deviceListParams.uri
 	} catch (java.io.IOException e) {
-		log.error "getNeurioSensor> malformed request" +
+		log.error "getNeurioSensor> malformed request " +
 			deviceListParams
     }
 
@@ -303,7 +303,7 @@ private def create_child_devices() {
  			def type = neurio_info[2]
 /*            
 			i++		// Used to simulate many Neurio Devices
-			def labelName = 'My Neurio ' + "${name}_${i}"
+			def labelName = 'My Neurio ' + "${name}:${sensorId}_${i}"
 */                    
 			def labelName = 'My Neurio ' + "${name}:${sensorId}"
 			log.debug "About to create child device with id $dni, sensorId = $sensorId, name=  ${name}"
@@ -364,7 +364,7 @@ def oauthInitUrl() {
 		redirect_uri: buildRedirectUrl()
 	]
 
-	return "https://api.neur.io/v1/oauth2/authorize?" + toQueryString(oauthParams)
+	return "${get_URI_ROOT()}/oauth2/authorize?" + toQueryString(oauthParams)
 }
 
 def buildRedirectUrl() {
@@ -382,15 +382,12 @@ def swapToken() {
 	def stcid = getSmartThingsClientId()
 
 	def tokenParams = [
-/*    
-		grant_type: "authorization_code",
-*/
 		code: params.code,
 		client_id: stcid,
 		redirect_uri: buildRedirectUrl()
 	]
 
-	def tokenUrl = "https://api.neur.io/v1/oauth2/token?" + toQueryString(tokenParams)
+	def tokenUrl = "${get_URI_ROOT()}/oauth2/token?" + toQueryString(tokenParams)
 
 	log.debug "Swapping token $params"
 
@@ -469,7 +466,7 @@ def swapToken() {
 </head>
 <body>
 	<div class="container">
-		<img src="https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png" alt="neurio icon" />
+		<img src="https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo60x60.png" alt="neurio icon" />
 		<img src="https://s3.amazonaws.com/smartapp-icons/Partner/support/connected-device-icn%402x.png" alt="connected device icon" />
 		<img src="https://s3.amazonaws.com/smartapp-icons/Partner/support/st-logo%402x.png" alt="SmartThings logo" />
 		<p>Your Neurio Account is now connected to SmartThings!</p>
