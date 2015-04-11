@@ -469,7 +469,7 @@ def swapToken() {
 </head>
 <body>
 	<div class="container">
-		<img src="https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo60x60.png" alt="neurio icon" />
+		<img src="https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png" alt="neurio icon" />
 		<img src="https://s3.amazonaws.com/smartapp-icons/Partner/support/connected-device-icn%402x.png" alt="connected device icon" />
 		<img src="https://s3.amazonaws.com/smartapp-icons/Partner/support/st-logo%402x.png" alt="SmartThings logo" />
 		<p>Your Neurio Account is now connected to SmartThings!</p>
