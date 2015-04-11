@@ -155,28 +155,28 @@ def getNeurioSensors() {
 /*        
 				int i=0    // Used to simulate many sensors
 */
-				log.debug "getNeurioSensor>resp data = ${resp.data}" 
+				log.debug "getNeurioSensors>resp data = ${resp.data}" 
 				def userid = resp.data.user.id
 				def username = resp.data.user.name
 				def email = resp.data.user.email
 				def active = resp.data.user.status  
 				if (status != 'active') {
-					log.error "getNeurioSensor>userId=${userid},name=${username},email=${email} not active, exiting..."
+					log.error "getNeurioSensors>userId=${userid},name=${username},email=${email} not active, exiting..."
 					return
 				}
                 
-				log.debug "getNeurioSensor>userId=${userId},name=${username},email=${email},active=${active}"
+				log.debug "getNeurioSensors>userId=${userId},name=${username},email=${email},active=${active}"
 				resp.data.user.locations.each {
 					def locationId = it.id
 					def locationName = it.name
 					def timezone = it.timezone
-					log.debug "getNeurioSensor> for username=${username}, found locationId=${locationId},name=${locationName},timezone=${timezone}"
+					log.debug "getNeurioSensors>found locationId=${locationId},name=${locationName},timezone=${timezone}"
 					it.sensors.each {
 						def sensorId = it.id
 						def sensorType = it.sensorType
 						def dni = [ app.id, locationName, sensorType, sensorId, ].join('.')
 						sensors[dni] = sensorId
-						log.debug "getNeurioSensor>sensorId=${sensorId},type=${sensorType}"
+						log.debug "getNeurioSensors>sensorId=${sensorId},type=${sensorType}"
 					} /* end each sensor */                        
 				} /* end each location */                        
 			} else {
@@ -187,11 +187,11 @@ def getNeurioSensors() {
             
     		}        
 	} catch (java.net.UnknownHostException e) {
-		log.error "getNeurioSensor> Unknown host - check the URL " + deviceListParams.uri
+		log.error "getNeurioSensors> Unknown host - check the URL " + deviceListParams.uri
 	} catch (java.net.NoRouteToHostException t) {
-		log.error "getNeurioSensor> No route to host - check the URL " + deviceListParams.uri
+		log.error "getNeurioSensors> No route to host - check the URL " + deviceListParams.uri
 	} catch (java.io.IOException e) {
-		log.error "getNeurioSensor> malformed request " +
+		log.error "getNeurioSensors> malformed request " +
 			deviceListParams
     }
 
