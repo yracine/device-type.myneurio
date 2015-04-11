@@ -44,10 +44,7 @@ metadata {
 		command "getSampleStats"
 		command "getLastLiveSamples"
 		command "generateSampleStats"
-        
-		// metrics
-        
-
+       
 		attribute "generationEnergy","string"
 		attribute "generationPower","string"
 		attribute "userid","string"
