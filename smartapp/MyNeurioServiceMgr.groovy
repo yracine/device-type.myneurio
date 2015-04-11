@@ -346,12 +346,6 @@ def takeAction() {
 		def d = getChildDevice(dni)
 		log.debug "takeAction>Looping thru Neurio Sensors, found id $dni, about to poll"
 		d.poll()
-		String nowInLocalTime = new Date().format("HH", location.timeZone)
-    
-		// generate the stats only at the beginning of the day
-		if (nowInLocalTime == "00") {
-			d.generateSampleStats("")
-		}
     
 	}
 	log.trace "takeAction>end"
