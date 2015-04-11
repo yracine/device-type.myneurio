@@ -44,10 +44,7 @@ metadata {
 		command "getSampleStats"
 		command "getLastLiveSamples"
 		command "generateSampleStats"
-        
-		// metrics
-        
-
+       
 		attribute "generationEnergy","string"
 		attribute "generationPower","string"
 		attribute "userid","string"
@@ -276,6 +273,18 @@ void poll() {
 		generationEnergy:data?.liveSamples.generationEnergy
 	]
 	generateEvent(dataEvents)
+	String nowInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
+        
+	// generate the stats only once every day
+    
+	if (state.lastGeneratedDate != nowInLocalTime) {
+		if (settings.trace) {
+			log.debug "api> about to generateSampleStats, state.lastGeneratedDate= $state.lastGeneratedDate"
+		}
+		    
+		generateSampleStats("")
+		state.lastGeneratedDate= nowInLocalTime       
+	}
 
 }
 
@@ -358,7 +367,6 @@ private def api(method, args, success={}) {
 		]
 	def request = methods.getAt(method)
 	if (settings.trace) {
-		log.debug "api> about to call doRequest with (unencoded) args = ${args}"
 		sendEvent name: "verboseTrace", value:
 			"api> about to call doRequest with (unencoded) args = ${args}"
 	}
