@@ -43,7 +43,7 @@ mappings {
 def about() {
  	dynamicPage(name: "about", install: false, uninstall: true) {
  		section("About") {	
-			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor to SmartThings via cloud-to-cloud integration"
+			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration"
 			paragraph "Version 0.1\n\n" +
 			"If you like this app, please support the developer via PayPal:\n\nyracine@yahoo.com\n\n" +
 			"Copyright©2015 Yves Racine"
