@@ -180,7 +180,7 @@ metadata {
 				) 
         	{
 			state("default",
-					label:'Yesterday\nGen ${currentValue}kWh',
+					label:'Yesterday\nGen\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -189,7 +189,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'Week\nGen ${currentValue}kWh',
+					label:'Week\nGen\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -198,7 +198,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'Month\nGen ${currentValue}kWh',
+					label:'Month\nGen\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -207,7 +207,7 @@ metadata {
 				) 
         	{
 			state("default",
-					label:'2DaysAgo\nGen ${currentValue}kWh',
+					label:'2DaysAgo\nGen\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -216,7 +216,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'2WksAgo\nGen ${currentValue}kWh',
+					label:'2WksAgo\nGen\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -225,7 +225,7 @@ metadata {
 				)
         	{
 			state("default",
-					label:'2MonthAgo\nGen ${currentValue}kWh',
+					label:'2MonthAgo\nGen\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
