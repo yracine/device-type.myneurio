@@ -432,8 +432,6 @@ void getLastLiveSamples(sensorId) {
 				def generationEnergy = data.liveSamples?.generationEnergy
 				def timestamp = data.liveSamples.timestamp    
 				if (settings.trace) {
-					log.debug "getLastLiveSamples>sensorId=${sensorId},consumptionPower=${consumptionPower},consumptionEnergy=${consumptionEnergy}" +
-						",generationPower=${generationPower},generationEnergy=${generationEnergy}"
 					sendEvent name: "verboseTrace", value:"getLastLiveSamples>sensorId=${sensorId},consumptionPower=${consumptionPower},consumptionEnergy=${consumptionEnergy}" +
 						",generationPower=${generationPower},generationEnergy=${generationEnergy}"
 				}
@@ -677,7 +675,7 @@ void getCurrentUserInfo() {
 					def locationName = it.name
 					def timezone = it.timezone
 					if (settings.trace) {
-						sendEvent name: "verboseTrace", value: "getCurrentUserInfo> for username=${username}, found locationId=${locationId},name=${locationName},timezone=${timezone}"
+						sendEvent name: "verboseTrace", value: "getCurrentUserInfo>found locationId=${locationId},name=${locationName},timezone=${timezone}"
 					}
 					it?.sensorsCount=it.sensors.size()
 					it.sensors.each {
@@ -699,7 +697,7 @@ void getCurrentUserInfo() {
 					} /* end each sensor */                        
 				} /* end each location */                        
 			} else {
-        			statusCode=data.status
+				statusCode=data.status
 				def message = data.message
 				def errors = data.errors
 				log.error "getCurrentUserInfo>status=${statusCode.toString()},message=${message},errors=${errors}"
