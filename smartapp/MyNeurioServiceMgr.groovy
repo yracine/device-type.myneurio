@@ -20,9 +20,9 @@ definition(
 	author: "Yves Racine",
 	description: "This smartapp is the Service Manager for My Neurio Device: it instantiates the Neurio devices and polls them on a regular basis",
 	category: "My Apps",
-    iconUrl: "https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo60x60.png",
-    iconX2Url: "https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png",
-    iconX3Url: "https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png"
+	iconUrl: "https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo60x60.png",
+	iconX2Url: "https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png",
+	iconX3Url: "https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png"
 )
 
 
@@ -43,7 +43,7 @@ mappings {
 def about() {
  	dynamicPage(name: "about", install: false, uninstall: true) {
  		section("About") {	
-			paragraph "MyNeurioServiceManager, the smartapp that connects your Neurio Sensor to SmartThings via cloud-to-cloud integration"
+			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor to SmartThings via cloud-to-cloud integration"
 			paragraph "Version 0.9\n\n" +
 			"If you like this app, please support the developer via PayPal:\n\nyracine@yahoo.com\n\n" +
 			"Copyright©2014 Yves Racine"
@@ -148,7 +148,7 @@ def getNeurioSensors() {
 	log.debug "device list params: $deviceListParams"
 
 	def sensors = [:]
-    try {
+	try {
 		httpGet(deviceListParams) { resp ->
 
 			if (resp.status == NEURIO_SUCCESS) {
@@ -185,7 +185,7 @@ def getNeurioSensors() {
 				log.error "Authentication error, invalid authentication method, lack of credentials, etc."
 			}
             
-    	}        
+    		}        
 	} catch (java.net.UnknownHostException e) {
 		log.error "getNeurioSensor> Unknown host - check the URL " + deviceListParams.uri
 	} catch (java.net.NoRouteToHostException t) {
@@ -235,7 +235,7 @@ def refreshAllChildAuthTokens() {
 	For Debugging purposes, due to the fact that logging is not working when called (separate thread)
 		sendPush("refreshAllChildAuthTokens>begin updating $it.deviceNetworkId with $atomicState")
 */
-    	it.refreshChildTokens(atomicState) 
+		it.refreshChildTokens(atomicState) 
 	}
 }
 
