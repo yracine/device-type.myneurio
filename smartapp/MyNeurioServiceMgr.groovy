@@ -153,7 +153,7 @@ def getNeurioSensors() {
 
 			if (resp.status == NEURIO_SUCCESS) {
 /*        
-        		int i=0    // Used to simulate many sensors
+				int i=0    // Used to simulate many sensors
 */
 				log.debug "getNeurioSensor>resp data = ${resp.data}" 
 				def userid = resp.data.user.id
@@ -346,6 +346,13 @@ def takeAction() {
 		def d = getChildDevice(dni)
 		log.debug "takeAction>Looping thru Neurio Sensors, found id $dni, about to poll"
 		d.poll()
+		String nowInLocalTime = new Date().format("HH", location.timeZone)
+    
+		// generate the stats only at the beginning of the day
+		if (nowInLocalTime == "00") {
+			d.generateSampleStats("")
+		}
+    
 	}
 	log.trace "takeAction>end"
 }
@@ -466,7 +473,7 @@ def swapToken() {
 </head>
 <body>
 	<div class="container">
-		<img src="https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo60x60.png" alt="neurio icon" />
+		<img src="https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png" alt="neurio icon" />
 		<img src="https://s3.amazonaws.com/smartapp-icons/Partner/support/connected-device-icn%402x.png" alt="connected device icon" />
 		<img src="https://s3.amazonaws.com/smartapp-icons/Partner/support/st-logo%402x.png" alt="SmartThings logo" />
 		<p>Your Neurio Account is now connected to SmartThings!</p>
