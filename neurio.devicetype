@@ -865,7 +865,7 @@ void generateAppliancesStats(locationId,applianceId,start,end,granularity,minPow
 								"applianceAvgPower=${applianceAvgPower},applianceEventCount=${applianceEventCount}," +
 								"applianceEnergy=${applianceEnergy},statsStart=${statsStart},statsEnd=${statsEnd}" 
 						}
-					}
+					} /* end each stats */
 				} 
 			} else {
 				def message = resp.message
@@ -964,7 +964,7 @@ void generateAppliancesEvents(locationId,applianceId,start,end,minPower="") {
 								"applianceEnergy=${applianceEnergy},eventStart=${eventStart},eventEnd=${eventEnd}" +
 								"eventStatus=${eventStatus},eventIsConfirmed=${eventIsConfirmed}" 
 						}                                
-					} /* end if */
+					} /* end each event */
 				} 
 			} else {
 				def message = resp.message
