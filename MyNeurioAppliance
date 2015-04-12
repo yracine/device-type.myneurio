@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat
 
 // for the UI
 preferences {
-	input("applianceId", "number", title: "(optional,format=0x0000XXXXXXXXXXXX)", description:
+	input("applianceId", "number", title: "applianceId (optional,format= XXXXXXXXXXXXXXXXXXXXXX)", description:
 		"The appliance ID (no spaces and no ':')")
 	input("trace", "text", title: "trace", description:
 		"Set it to true to enable tracing (no spaces) or leave it empty (no tracing)"
