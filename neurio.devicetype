@@ -26,7 +26,7 @@ preferences {
 		"The application (public) key given by Neurio (no spaces)")
 	input("privateKey", "text", title: "Private Key", description:
 		"The private key given by Neurio (no spaces)")
-	input("sensorId", "number", title: "sensorId, MAC Address in hexadecimal (optional,default=first Neurio found,format=0x0000XXXXXXXXXXXX)", description:
+	input("sensorId", "number", title: "sensorId (optional) [default=first Neurio found,MAC Address in hexa,format=0x0000XXXXXXXXXXXX]", description:
 		"The MAC address of your Neurio Sensor (no spaces and no ':')")
 	input("trace", "text", title: "trace", description:
 		"Set it to true to enable tracing (no spaces) or leave it empty (no tracing)"
