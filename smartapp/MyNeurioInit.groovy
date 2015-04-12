@@ -13,6 +13,9 @@
  *  for the specific language governing permissions and limitations under the License.
  *
  */
+
+import groovy.json.JsonSlurper
+
 definition(
     name: "MyNeurioInit",
     namespace: "yracine",
@@ -61,7 +64,6 @@ def initialize() {
     	// set up internal poll timer
 	def pollTimer = 20
 
-	neurio.generateSampleStats("")
 	log.trace "setting poll to ${pollTimer}"
 	schedule("0 0/${pollTimer.toInteger()} * * * ?",takeAction)
 
@@ -69,13 +71,69 @@ def initialize() {
 
 def takeAction() {
 	log.trace "takeAction>begin"
-	neurio.poll()
-	String nowInLocalTime = new Date().format("HH", location.timeZone)
-    
-	// generate the stats only at the beginning of the day
-	if (nowInLocalTime == "00") {
-		neurio.generateSampleStats("")
-	}
+	neurio.poll()	
+/*	
+	get_neurio_appliances_data()
+*/    
 	log.trace "takeAction>end"
 }
 
+
+private def get_neurio_appliances_data() {
+	Boolean foundAppliance=false		
+	def applianceList
+	def applianceFields
+
+	try {
+		neurio.getApplianceList("")
+		applianceList = neurio.currentAppliancesList.toString().minus('[').minus(']').tokenize(',')
+		foundAppliance=true        
+	} catch (any) {
+		log.debug("Not able to get the list of appliances from Neurio")    	
+	}    
+	if (foundAppliance) {
+
+		Date endDate = new Date().clearTime()
+		Date startDate = (endDate -1).clearTime()
+
+		String nowInLocalTime = new Date().format("yyyy-MM-dd HH:mm", location.timeZone)
+		if (settings.trace) {
+			log.debug("get_neurio_appliances_data>yesterday: local date/time= ${nowInLocalTime}, startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
+				"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		}
+		log.debug("list of appliances = $applianceList")    	
+    
+		for (applianceId in applianceList) {
+			log.debug("applianceId=${applianceId}")    	
+			neurio.getApplianceData(applianceId)
+			String applianceData=neurio.currentApplianceData.toString()
+			if (applianceData) {    
+				applianceFields = new JsonSlurper().parseText(applianceData)
+			} else {
+				log.error("get_neurio_appliances_data>applianceData is empty, exiting")
+				return        
+			}    
+			log.debug "get_neurio_appliances_data>applianceFields = $applianceFields"
+
+			if (applianceFields?.size() > 0) {
+				def applianceName=applianceFields?.name
+				def applianceLabel=applianceFields?.label
+				def applianceTags=applianceFields?.tags
+				def applianceCreated=applianceFields?.createdAt
+				def applianceUpdated=applianceFields?.updatedAt
+				log.debug "get_neurio_appliances_data>applianceId= ${applianceId}, applianceName=${applianceName}" +
+					",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
+				            
+    			}
+			// generate Appliance stats & events for yesterday
+		
+			neurio.generateAppliancesStats("",applianceId,startDate,endDate,"days")
+			neurio.generateAppliancesEvents("",applianceId,startDate,endDate)
+		} /* end for */            
+        
+		// generate Location stats & events for yesterday
+		neurio.generateAppliancesStats("","",startDate,endDate,"days")
+		neurio.generateAppliancesEvents("","",startDate,endDate)
+
+	}    
+}
