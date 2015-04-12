@@ -723,7 +723,7 @@ void getApplianceData(applianceId) {
 void getApplianceList(locationId,postData='false') {
 	def NEURIO_SUCCESS=200
 	def appliancesData=[]
-    def appliancesList=""
+	def appliancesList=""
     
 	locationId=determine_location_id(location_id)
 	def statusCode=true
@@ -741,12 +741,12 @@ void getApplianceList(locationId,postData='false') {
 				}
 				data?.appliances=resp.data
 				data.appliances.each {
-                	def applianceId=it.id
-                	def applianceName= it?.name
-                	def applianceLabel= it?.label
-	                def applianceTags= it?.tags
-                	def applianceCreated=it?.createdAt
-                	def applianceUpdated=it?.updatedAt
+					def applianceId=it.id
+					def applianceName= it?.name
+					def applianceLabel= it?.label
+					def applianceTags= it?.tags
+					def applianceCreated=it?.createdAt
+					def applianceUpdated=it?.updatedAt
 					if (settings.trace) {
 						sendEvent name: "verboseTrace", value:"getApplianceList>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
 							",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
@@ -834,8 +834,7 @@ void generateAppliancesStats(locationId,applianceId,start,end,granularity,minPow
 	}
 	int j=0        
 	def statusCode=true
-	data?.appliances.stats=""
-    
+
 	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
 
 		api('appliancesStats', bodyReq) {resp->
@@ -844,17 +843,17 @@ void generateAppliancesStats(locationId,applianceId,start,end,granularity,minPow
 				log.debug "generateApplianceStats>locationId=${locationId},status=${resp.status},resp data = ${resp.data}" 
 				sendEvent name: verboseTrace, value:"generateAppliancesStats>locationId=${locationId},status=${resp.status},resp data = ${resp.data}"                
 			}                
-        	if (statusCode == NEURIO_SUCCESS) {
+			if (statusCode == NEURIO_SUCCESS) {
 				if (resp.data !=[]) {            	
-	 				data.appliances.stats=resp.data
-					data.appliances.stats.each {
+	 				data.stats=resp.data
+					data.stats.each {
 						appliancesStatsData << it
-	        	        applianceId= it.id
-    	        	    def applianceName= it?.name
+						applianceId= it.id
+						def applianceName= it?.name
 						def applianceLabel= it?.label
 						def applianceTags= it?.tags
 						def applianceCreated= it?.createdAt
-                		def applianceUpdated= it?.updatedAt
+						def applianceUpdated= it?.updatedAt
 						def applianceAvgPower= it?.averagePower 
 						def applianceEventCount= it?.eventCount
 						def applianceEnergy= it?.energy
@@ -932,7 +931,6 @@ void generateAppliancesEvents(locationId,applianceId,start,end,minPower="") {
 	int j=0        
 	def statusCode=true
     
-	data?.appliances.events=""
 	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
 
 		api('appliancesEvents', bodyReq) {resp->
@@ -941,18 +939,18 @@ void generateAppliancesEvents(locationId,applianceId,start,end,minPower="") {
 				log.debug "generateAppliancesEvents>locationId=${locationId},status=${resp.status},resp data = ${resp.data}" 
 				sendEvent name: verboseTrace, value:"generateAppliancesEvents>locationId=${locationId},status=${resp.status},resp data = ${resp.data}"                
 			}                
-        	if (statusCode == NEURIO_SUCCESS) {
+			if (statusCode == NEURIO_SUCCESS) {
 				if (resp.data !=[]) {            	
- 					data.appliances.events=resp.data
-					data.appliances.events.each {	
+ 					data.events=resp.data
+					data.events.each {	
 						appliancesEventsData << it
-	                	applianceId= it.appliance.id
-    	            	def applianceName= it.appliance?.name
-        	        	def applianceLabel= it.appliance?.label
-                    	def applianceTags= it.appliance?.tags
-            	    	def applianceCreated= it.appliance?.createdAt
-                		def applianceUpdated= it.appliance?.updatedAt
-						def applianceAvgPower= it?.averagePower 
+	                			applianceId= it.appliance.id
+	                			def applianceName= it.appliance?.name
+        	        			def applianceLabel= it.appliance?.label
+        	        			def applianceTags= it.appliance?.tags
+        	        			def applianceCreated= it.appliance?.createdAt
+                				def applianceUpdated= it.appliance?.updatedAt
+                				def applianceAvgPower= it?.averagePower 
 						def applianceEventGuesses= it?.guesses
 						def applianceEnergy= it?.energy
 						def eventStart= it?.start
