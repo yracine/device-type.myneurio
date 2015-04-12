@@ -44,7 +44,11 @@ metadata {
 		command "getSampleStats"
 		command "getLastLiveSamples"
 		command "generateSampleStats"
-       
+		command "getApplianceData"
+		command "getApplianceList"
+		command "generateAppliancesStats"
+		command "generateAppliancesEvents"
+        
 		attribute "generationEnergy","string"
 		attribute "generationPower","string"
 		attribute "userid","string"
@@ -74,6 +78,13 @@ metadata {
 		attribute "genEnergy2DaysAgo","string"
 		attribute "genEnergy2WeeksAgo","string"
 		attribute "genEnergy2MonthsAgo","string"
+
+		attribute "applianceData","string"
+		attribute "appliancesData","string"
+		attribute "appliancesList","string"
+
+		attribute "appliancesEventsData","string"
+		attribute "appliancesStatsData","string"
 	}
 
 	simulator {
@@ -278,7 +289,7 @@ void poll() {
     
 	if (state.lastGeneratedDate != nowInLocalTime) {
 		if (settings.trace) {
-			log.debug "api> about to generateSampleStats, state.lastGeneratedDate= $state.lastGeneratedDate"
+			log.debug "api> about to generateSampleStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
 		}
 		    
 		generateSampleStats("")
@@ -363,6 +374,18 @@ private def api(method, args, success={}) {
 		'sampleStats': 
 			[uri:"${URI_ROOT}/samples/stats?${args}", 
           		type: 'get'],
+		'appliancesList': 
+			[uri:"${URI_ROOT}/appliances?${args}", 
+          		type: 'get'],
+		'applianceData': 
+			[uri:"${URI_ROOT}/appliances/${args}", 
+          		type: 'get'],
+		'appliancesStats': 
+			[uri:"${URI_ROOT}/appliances/stats?${args}", 
+          		type: 'get'],
+		'appliancesEvents': 
+			[uri:"${URI_ROOT}/appliances/events?${args}", 
+          		type: 'get']
 		]
 	def request = methods.getAt(method)
 	if (settings.trace) {
@@ -446,7 +469,7 @@ void getLastLiveSamples(sensorId) {
 	} /* end while */
 }
 
-def generateSampleStats(sensorId) {
+void generateSampleStats(sensorId) {
 
 // generate stats for yesterday
 
@@ -458,7 +481,7 @@ def generateSampleStats(sensorId) {
 		log.debug("generateSampleStats>yesterday: local date/time= ${nowInLocalTime}, startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
-	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
+	getSampleStats(sensorId,startDate,endDate,"days",null)
 	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
 	Long totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
 	def dataStats = ['consEnergyDay':totalConsInPeriod, 'genEnergyDay':totalGenInPeriod]    
@@ -472,7 +495,7 @@ def generateSampleStats(sensorId) {
 		log.debug("generateSampleStats>2 days ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
-	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"days",null)
+	getSampleStats(sensorId,startDate,endDate,"days",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
 	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
 	dataStats = dataStats + ['consEnergy2DaysAgo':totalConsInPeriod, 'genEnergy2DaysAgo':totalGenInPeriod]    
@@ -486,7 +509,7 @@ def generateSampleStats(sensorId) {
 		log.debug("generateSampleStats>past week (last 7 days): startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
-	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"weeks",null)
+	getSampleStats(sensorId, startDate,endDate,"weeks",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
 	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
 	dataStats = dataStats + ['consEnergyWeek':totalConsInPeriod, 'genEnergyWeek':totalGenInPeriod]    
@@ -501,7 +524,7 @@ def generateSampleStats(sensorId) {
 		log.debug("generateSampleStats>2 weeks ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
 			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
-	getSampleStats(sensorId, ISOdateFormat(startDate),ISOdateFormat(endDate),"weeks",null)
+	getSampleStats(sensorId, startDate,endDate,"weeks",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
 	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
 	dataStats = dataStats + ['consEnergy2WeeksAgo':totalConsInPeriod, 'genEnergy2WeeksAgo':totalGenInPeriod]    
@@ -517,7 +540,7 @@ def generateSampleStats(sensorId) {
 		log.debug("generateSampleStats>past month: startDate in UTC = ${String.format('%tF %<tT',oneMonthAgo)}," +
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
-	getSampleStats(sensorId, ISOdateFormat(oneMonthAgo),ISOdateFormat(endDate),"months",null)
+	getSampleStats(sensorId, oneMonthAgo,endDate,"months",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
 	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
 	dataStats = dataStats + ['consEnergyMonth':totalConsInPeriod, 'genEnergyMonth':totalGenInPeriod]    
@@ -533,7 +556,7 @@ def generateSampleStats(sensorId) {
 		log.debug("generateSampleStats>2 months ago: startDate in UTC = ${String.format('%tF %<tT',twoMonthsAgo)}," +
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
-	getSampleStats(sensorId, ISOdateFormat(twoMonthsAgo),ISOdateFormat(endDate),"months",null)
+	getSampleStats(sensorId, twoMonthsAgo,endDate,"months",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
 	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
 	dataStats = dataStats + ['consEnergy2MonthsAgo':totalConsInPeriod, 'genEnergy2MonthsAgo':totalGenInPeriod]    
@@ -550,22 +573,21 @@ private def ISOdateFormat(date) {
 	return ISOdate
 }
 
-def getSampleStats(sensorId,start,end,granularity,frequency) {
+void getSampleStats(sensorId,start,end,granularity,frequency) {
 	def NEURIO_MIN_INTERVAL=5
 	def NEURIO_SUCCESS=200
 	Long totalConsumedEnergy=0
 	Long totalGeneratedEnergy=0
     
 	sensorId= determine_sensor_id(sensorId) 	    
-	start = start?.trim()
-	end = end?.trim()
 	granularity=granularity?.trim()
 	frequency = frequency?.trim()
+
 	// make sure start and granularity are defined
 	if ((!start) || (!granularity)) {
 		log.error "getSamplesData>start and granularity are required parameters"
 		sendEvent name: "verboseTrace", value:"getSamplesData>start and granularity are required parameters"
-		return false
+		return 
 	}
 	
 	// make sure that frequency is a multiple of 5 if granularity is in minute
@@ -573,19 +595,19 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 		if ((frequency.mod(NEURIO_MIN_INTERVAL)) != 0) {
 			log.error "getSamplesData>only multiples of 5 are supported for frequency (${frequency}) when granularity (${granularity}) is in minutes"
 			sendEvent name: "verboseTrace", value:  "getSamplesData>only multiples of 5 are supported for frequency (${frequency}) when granularity (${granularity}) is in minutes"
-			return false
+			return 
 		}
 	}
 	// make sure granularity is one of the correct values
 	if ((granularity != 'minutes') && (granularity != 'hours') && (granularity != 'days') && (granularity != 'weeks') && (granularity != 'months')) {
 		log.error "getSamplesData>only values of [minutes, hours, days, weeks or months] are supported for granularity (${granularity})"
 		sendEvent name: "verboseTrace", value: "only values of minutes, hours, days or months are supported for granularity (${granularity})"
-		return false
+		return 
 	}
      
-	def bodyReq="sensorId=" + sensorId + "&start=" + start 
+	def bodyReq="sensorId=" + sensorId + "&start=" + ISOdateFormat(start) 
 	if ((end != null) && (end != "")) {
-		bodyReq = bodyReq+ "&end=" + end    	
+		bodyReq = bodyReq+ "&end=" + ISOdateFormat(end)    	
 	}
 	bodyReq = bodyReq+ "&granularity=" + granularity    	
 	if ((frequency != null) && (frequency != "")) {
@@ -636,6 +658,342 @@ def getSampleStats(sensorId,start,end,granularity,frequency) {
 
 }
 
+
+//	applianceId - Id of the appliance 
+
+void getApplianceData(applianceId) {
+	def NEURIO_SUCCESS=200
+	def applianceData=[]
+    
+	def statusCode=true
+	int j=0        
+	def bodyReq=applianceId 
+    
+	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
+
+		api('applianceData', bodyReq) {resp->
+		
+			statusCode= resp.status
+			if (statusCode == NEURIO_SUCCESS) {
+				data?.appliance=resp.data
+                def applianceName=data.appliance?.name
+                def applianceLabel=data.appliance?.label
+                def applianceTags=data.appliance?.tags
+                def applianceCreated=data.appliance?.createdAt
+                def applianceUpdated=data.appliance?.updatedAt
+					                    
+				if (settings.trace) {
+					sendEvent name: "verboseTrace", value:"getApplianceData>applianceId= ${applianceId}, applianceName=${applianceName}" +
+						",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
+				}
+				applianceData << data.appliance  // to be transformed into Json later
+			} else {
+				def message = resp.message
+				def errors = resp.errors
+				log.error "getApplianceData>status=${statusCode.toString()},message=${message},errors=${errors}"
+				sendEvent name: "verboseTrace", value:"getApplianceData>status=${statusCode.toString()},message=${message},errors=${errors}"
+			}                
+		}  /* end api call */              
+	} /* end while */
+	def applianceDataJson=""
+ 
+	if (applianceData != []) {
+    
+		applianceDataJson = new groovy.json.JsonBuilder(applianceData)
+	}
+	
+	if (settings.trace) {
+		log.debug "getApplianceData>applianceDataJson=${applianceDataJson}"
+	}
+	def applianceDataEvents = [
+		applianceData: "${applianceDataJson.toString()}"
+	]
+	if (settings.trace) {
+		log.debug "getApplianceData>applianceDataEvents to be sent= ${applianceDataEvents}"
+	}
+    
+	generateEvent(applianceDataEvents)
+
+}
+
+//	locationId - Id of the location where the sensors are located
+//		By default, the first location found in the user account
+//	postData - indicates whether the data should be posted as event
+
+void getApplianceList(locationId,postData='false') {
+	def NEURIO_SUCCESS=200
+	def appliancesData=[]
+	def appliancesList=""
+    
+	locationId=determine_location_id(location_id)
+	def statusCode=true
+	int j=0        
+	def bodyReq="locationId=" + locationId 
+    
+	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
+
+		api('appliancesList', bodyReq) {resp->
+
+			statusCode= resp.status
+			if (statusCode == NEURIO_SUCCESS) {
+				if (settings.trace) {
+					log.debug "getApplianceList>locationId=${locationId},resp data = ${resp.data}" 
+				}
+				data?.appliancesList=resp.data
+				data.appliancesList.each {
+					def applianceId=it.id
+					def applianceName= it?.name
+					def applianceLabel= it?.label
+					def applianceTags= it?.tags
+					def applianceCreated=it?.createdAt
+					def applianceUpdated=it?.updatedAt
+					if (settings.trace) {
+						sendEvent name: "verboseTrace", value:"getApplianceList>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
+							",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
+					}
+					if (postData == 'true') {
+						if (settings.trace) {
+							log.debug "getApplianceList>adding ${data.appliances[i]} to appliancesData"
+						}
+						appliancesData << it  // to be transformed into Json later
+					}
+					appliancesList = appliancesList + it.id + ','                     
+				} /* end each appliance */                
+			} else {
+				def message = resp.message
+				def errors = resp.errors
+				log.error "getApplianceList>status=${statusCode.toString()},message=${message},errors=${errors}"
+				sendEvent name: "verboseTrace", value:"getApplianceList>status=${statusCode.toString()},message=${message},errors=${errors}"
+			}                
+		}  /* end api call */              
+	} /* end while */
+	def appliancesDataJson=""
+ 
+	if (appliancesData != []) {
+    
+		appliancesDataJson = new groovy.json.JsonBuilder(appliancesData)
+	}
+	
+	if (settings.trace) {
+		log.debug "getApplianceList>appliancesDataJson=${appliancesDataJson}"
+	}
+	def appliancesListEvents = [
+		appliancesData: "${appliancesDataJson.toString()}",
+		appliancesList: "${appliancesList.toString()}"
+	]
+	if (settings.trace) {
+		log.debug "getApplianceList>appliancesListEvents to be sent= ${appliancesListEvents}"
+	}
+    
+	generateEvent(appliancesListEvents)
+
+}
+
+//	locationId - Id of the location where the sensors are located
+//		By default, the first location found in the user account
+//	applianceId - Id of the appliance (not required)
+//	start - start date for the stats generation
+//	end - end date for the stats generation
+//	granularity: in days,weeks, months, or unknown for the stats generation
+//	minPower: min. Power for the events data extraction
+
+void generateAppliancesStats(locationId,applianceId,start,end,granularity,minPower="") {
+	def NEURIO_SUCCESS=200
+	def appliancesStatsData=[]	
+	def bodyReq    
+    
+	locationId=determine_location_id(location_id)
+
+	// make sure start and granularity are defined
+	if ((!start) || (!end) || (!granularity)) {
+		log.error "generateAppliancesStats>start, end and granularity are required parameters"
+		sendEvent name: "verboseTrace", value:"generateAppliancesStats>start, end and granularity are required parameters"
+		return 
+	}
+	
+	granularity=granularity?.trim()
+	minPower = minPower?.trim()
+    
+	// make sure granularity is one of the correct values
+	if ((granularity != 'unknown') && (granularity != 'days') && (granularity != 'weeks') && (granularity != 'months')) {
+		log.error "generateAppliancesStats>only values of [days, weeks, months or unknown] are supported for granularity (${granularity})"
+		sendEvent name: "verboseTrace", value: "only values of minutes, hours, days or months are supported for granularity (${granularity})"
+		return 
+	}
+     
+	if (applianceId) {
+		bodyReq="applianceId=" + applianceId + "&start=" + ISOdateFormat(start) + "&end=" + ISOdateFormat(end)    	
+    
+	} else {
+		bodyReq="locationId=" + locationId + "&start=" + ISOdateFormat(start) + "&end=" + ISOdateFormat(end)    	
+	    
+	}     
+	bodyReq = bodyReq+ "&granularity=" + granularity    	
+	if ((minPower != null) && (minPower != "")) {
+		bodyReq = bodyReq+ "&minPower=" + minPower    	
+	}
+	int j=0        
+	def statusCode=true
+
+	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
+
+		api('appliancesStats', bodyReq) {resp->
+			statusCode = resp.status        
+			if (settings.trace) {
+				log.debug "generateApplianceStats>locationId=${locationId},status=${resp.status},resp data = ${resp.data}" 
+				sendEvent name: verboseTrace, value:"generateAppliancesStats>locationId=${locationId},status=${resp.status},resp data = ${resp.data}"                
+			}                
+			if (statusCode == NEURIO_SUCCESS) {
+				if (resp.data !=[]) {            	
+	 				data.stats=resp.data
+					data.stats.each {
+						appliancesStatsData << it
+						applianceId= it.id
+						def applianceName= it?.name
+						def applianceLabel= it?.label
+						def applianceTags= it?.tags
+						def applianceCreated= it?.createdAt
+						def applianceUpdated= it?.updatedAt
+						def applianceAvgPower= it?.averagePower 
+						def applianceEventCount= it?.eventCount
+						def applianceEnergy= it?.energy
+						def statsStart= it?.start
+						def statsEnd= it?.end
+						if (settings.trace) {
+							sendEvent name: "verboseTrace", value:"generateAppliancesStats>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
+								",applianceLabel=${applianceLabel},applianceTags=${applianceTags}.created=${applianceCreated},updated=${applianceUpdated}," +
+								"applianceAvgPower=${applianceAvgPower},applianceEventCount=${applianceEventCount}," +
+								"applianceEnergy=${applianceEnergy},statsStart=${statsStart},statsEnd=${statsEnd}" 
+						}
+					}
+				} 
+			} else {
+				def message = resp.message
+				def errors = resp.errors
+				log.error "generateAppliancesStats>status=${statusCode.toString()},message=${message},errors=${errors}"
+				sendEvent name: "verboseTrace", value:"generateAppliancesStats>status=${statusCode.toString()},message=${message},errors=${errors}"
+			} /* end if statusCode */               
+		}  /* end api call */              
+	} /* end while */
+
+	def appliancesStatsJson=""
+ 
+	if (appliancesStatsData != []) {
+    
+		appliancesStatsJson = new groovy.json.JsonBuilder(appliancesStatsData)
+	}
+	
+	if (settings.trace) {
+		log.debug "generateAppliancesStats>appliancesStatsJson=${appliancesStatsJson}"
+	}
+	def appliancesStatsEvents = [
+		appliancesStatsData: "${appliancesStatsJson.toString()}"
+	]
+	if (settings.trace) {
+		log.debug "generateAppliancesStats>appliancesStatsEvents to be sent= ${appliancesStatsEvents}"
+	}
+    
+	generateEvent(appliancesStatsEvents)
+}
+
+//	locationId - Id of the location where the sensors are located
+//		By default, the first location found in the user account
+//	applianceId - Id of the appliance (not required)
+//	start - start date for the stats generation
+//	end - end date for the stats generation
+//	minPower: min. Power for the events data extraction
+
+void generateAppliancesEvents(locationId,applianceId,start,end,minPower="") {
+	def NEURIO_SUCCESS=200
+	def appliancesEventsData=[]
+	def bodyReq
+    
+	locationId=determine_location_id(location_id)
+	minPower = minPower?.trim()
+    
+	// make sure start and end are defined
+	if ((!start) || (!end)) {
+		log.error "generateAppliancesEvents>start and end are required parameters"
+		sendEvent name: "verboseTrace", value:"generateAppliancesStats>start and end are required parameters"
+		return 
+	}
+	
+	if (applianceId) {
+		bodyReq="applianceId=" + applianceId + "&start=" + ISOdateFormat(start) + "&end=" + ISOdateFormat(end)    	
+    
+	} else {
+		bodyReq="locationId=" + locationId + "&start=" + ISOdateFormat(start) + "&end=" + ISOdateFormat(end)    	
+	    
+	}     
+	if ((minPower != null) && (minPower != "")) {
+		bodyReq = bodyReq+ "&minPower=" + minPower    	
+	}
+	int j=0        
+	def statusCode=true
+    
+	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
+
+		api('appliancesEvents', bodyReq) {resp->
+			statusCode = resp.status        
+			if (settings.trace) {
+				log.debug "generateAppliancesEvents>locationId=${locationId},status=${resp.status},resp data = ${resp.data}" 
+				sendEvent name: verboseTrace, value:"generateAppliancesEvents>locationId=${locationId},status=${resp.status},resp data = ${resp.data}"                
+			}                
+			if (statusCode == NEURIO_SUCCESS) {
+				if (resp.data !=[]) {            	
+ 					data.events=resp.data
+					data.events.each {	
+						appliancesEventsData << it
+	                			applianceId= it.appliance.id
+	                			def applianceName= it.appliance?.name
+        	        			def applianceLabel= it.appliance?.label
+        	        			def applianceTags= it.appliance?.tags
+        	        			def applianceCreated= it.appliance?.createdAt
+                				def applianceUpdated= it.appliance?.updatedAt
+                				def applianceAvgPower= it?.averagePower 
+						def applianceEventGuesses= it?.guesses
+						def applianceEnergy= it?.energy
+						def eventStart= it?.start
+						def eventEnd= it?.end
+						def eventStatus= it?.status
+						def eventIsConfirmed= it?.isConfirmed
+						if (settings.trace) {
+							sendEvent name: "verboseTrace", value:"generateAppliancesEvents>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
+								",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated},updated=${applianceUpdated}," +
+								"applianceAvgPower=${applianceAvgPower},applianceEventGuesses=${applianceEventGuesses}," +
+								"applianceEnergy=${applianceEnergy},eventStart=${eventStart},eventEnd=${eventEnd}" +
+								"eventStatus=${eventStatus},eventIsConfirmed=${eventIsConfirmed}" 
+						}                                
+					} /* end if */
+				} 
+			} else {
+				def message = resp.message
+				def errors = resp.errors
+				log.error "generateAppliancesEvents>status=${statusCode.toString()},message=${message},errors=${errors}"
+				sendEvent name: "verboseTrace", value:"generateAppliancesEvents>status=${statusCode.toString()},message=${message},errors=${errors}"
+			} /* end if statusCode */               
+		}  /* end api call */              
+	} /* end while */
+
+	def appliancesEventsJson=""
+ 
+	if (appliancesEventsData != []) {
+    
+		appliancesEventsJson = new groovy.json.JsonBuilder(appliancesEventsData)
+	}
+	
+	if (settings.trace) {
+		log.debug "generateAppliancesEvents>appliancesEventsJson=${appliancesEventsJson}"
+	}
+	def appliancesEvents = [
+		appliancesEventsData: "${appliancesEventsJson.toString()}"
+	]
+	if (settings.trace) {
+		log.debug "generateAppliancesEvents>appliancesEvents to be sent= ${appliancesEvents}"
+	}
+    
+	generateEvent(appliancesEvents)
+}
 
 void getCurrentUserInfo() {
 	def NEURIO_SUCCESS=200
@@ -907,9 +1265,31 @@ private def isTokenExpired() {
 	return true
 }
 
+// Determine id from argument or default value (first location found)
+
+private def determine_location_id(location_id) {
+	def locationId
+    
+	if (settings.trace) {
+		log.debug "determine_location_id>begin locationId= ${locationId}"
+	}
+	if ((location_id != null) && (location_id != "")) {
+		locationId = location_id.trim()
+	} else {
+		locationId=data.user.locations[0]?.id
+		if (settings.trace) {
+			log.debug "determine_location_id> locationId from data.locationId= ${locationId}"
+		}
+	}
+	if (settings.trace) {
+		log.debug "determine_location_id>end locationId= ${locationId}"
+	}
+	return locationId
+}
+
 
 // Determine id from settings or initalSetup
-def determine_sensor_id(sensor_id) {
+private def determine_sensor_id(sensor_id) {
 	def sensorId
     
 	if ((sensor_id != null) && (sensor_id != "")) {
