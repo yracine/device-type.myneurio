@@ -676,11 +676,11 @@ void getApplianceData(applianceId) {
 			statusCode= resp.status
 			if (statusCode == NEURIO_SUCCESS) {
 				data?.appliance=resp.data
-                def applianceName=data.appliance?.name
-                def applianceLabel=data.appliance?.label
-                def applianceTags=data.appliance?.tags
-                def applianceCreated=data.appliance?.createdAt
-                def applianceUpdated=data.appliance?.updatedAt
+				def applianceName=data.appliance?.name
+				def applianceLabel=data.appliance?.label
+				def applianceTags=data.appliance?.tags
+				def applianceCreated=data.appliance?.createdAt
+				def applianceUpdated=data.appliance?.updatedAt
 					                    
 				if (settings.trace) {
 					sendEvent name: "verboseTrace", value:"getApplianceData>applianceId= ${applianceId}, applianceName=${applianceName}" +
