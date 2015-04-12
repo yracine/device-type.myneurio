@@ -31,7 +31,9 @@ preferences {
 	input("trace", "text", title: "trace", description:
 		"Set it to true to enable tracing (no spaces) or leave it empty (no tracing)"
 	)
+    
 }
+
 metadata {
 	definition (name: "My Neurio Device", namespace: "yracine", author: "Yves Racine") {
 		capability "Power Meter"
@@ -1326,11 +1328,11 @@ private def get_refresh_token() {
 }    
 
 // Called by My Neurio Init for initial creation of a child Device
-void initialSetup(device_client_id, auth_data, device_tstat_id) {
+void initialSetup(device_client_id, auth_data, device_neurio_id) {
 	settings.trace='true'
 	if (settings.trace) {
 		log.debug "initialSetup>begin"
-		log.debug "initialSetup> device_tstat_Id = ${device_tstat_id}"
+		log.debug "initialSetup> device_neurio_Id = ${device_neurio_id}"
 		log.debug "initialSetup> device_client_id = ${device_client_id}"
 	}	
 	settings.appKey= device_client_id
