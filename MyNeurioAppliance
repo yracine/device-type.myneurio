@@ -48,6 +48,14 @@ metadata {
 		attribute "applianceEventCount","string"
 		attribute "applianceTimeOn","string"
 
+		attribute "eventStart","string"                            
+		attribute "eventEnd","string"
+		attribute "eventStatus","string"
+		attribute "eventIsConfirmed","string"
+		attribute "eventCycleCount","string"							                            
+		attribute "eventAveragePower","string"
+		attribute "eventEnergy","string"
+        
 		// Consumed Energy attributes
 
 		attribute "consTotalInPeriod","string"
@@ -612,9 +620,9 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 						def applianceTags= it.appliance?.tags
 						def applianceCreated= it.appliance?.createdAt
 						def applianceUpdated= it.appliance?.updatedAt
-						def applianceAvgPower= it?.averagePower 
 						def applianceEventGuesses= it?.guesses
-						def applianceEnergy= it?.energy
+						def eventEnergy= it?.energy
+						def eventAvgPower= it?.averagePower 
 						def eventStart= it?.start
 						def eventEnd= it?.end
 						def eventStatus= it?.status
@@ -626,8 +634,8 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 							eventStatus:eventStatus,
 							eventIsConfirmed:eventIsConfirmed,
 							eventCycleCount:eventCycleCount,							                            
-							averagePower: applianceAvgPower,
-							eventEnergy: applianceEnergy,
+							eventAvgPower: eventAvgPower,
+							eventEnergy: eventEnergy
 							]
 						if (settings.trace) {
 							log.debug "generateApplianceEvents>applianceEvents to be sent= ${applianceEvents}"
