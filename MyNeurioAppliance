@@ -620,7 +620,7 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 						def eventStatus= it?.status
 						def eventIsConfirmed= it?.isConfirmed
 						def eventCycleCount= it?.cycleCount
-						applianceEvents = applianceEvent + [
+						applianceEvents = applianceEvents + [
 							eventStart:eventStart,                            
 							eventEnd:eventEnd,
 							eventStatus:eventStatus,
@@ -661,7 +661,7 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 	if (settings.trace) {
 		log.debug "generateApplianceEvents>applianceEventsJson=${applianceEventsJson}"
 	}
-	applianceEvents = applianceEvent + [applianceEventsData: "${applianceEventsJson.toString()}"]
+	applianceEvents = applianceEvents + [applianceEventsData: "${applianceEventsJson.toString()}"]
 	if (settings.trace) {
 		log.debug "generateApplianceEvents>applianceEvents to be sent= ${applianceEvents}"
 	}
