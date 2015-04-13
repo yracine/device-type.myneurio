@@ -7,7 +7,7 @@ linkedIn profile:   ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
 
 Date:               2015-03-15
 
-Code: https://github.com/yracine/device-type.myneurio
+Code: http://github.com/yracine/device-type.myneurio
 
 **************************************************************************************************
 If you like My Neurio Device and related smartapps, please support the developer:
@@ -51,7 +51,7 @@ b) Hit the "+New SmartApp" at the top right corner
 c) Hit the "From Code" tab on the left corner
 
 d) Copy and paste the code from MyNeurioInit
-under https://github.com/yracine/device-type.myneurio/tree/master/smartapps
+under http://github.com/yracine/device-type.myneurio/tree/master/smartapp
 
 e) Hit the create button at the bottom
 
