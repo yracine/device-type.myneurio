@@ -309,7 +309,7 @@ private def create_child_devices() {
 			log.debug "About to create child device with id $dni, sensorId = $sensorId, name=  ${name}"
 			d = addChildDevice(getChildNamespace(), getChildName(), dni, null,
 				[label: "${labelName}"]) 
-			d.initialSetup( getSmartThingsClientId(), atomicState, thermostatId ) 	// initial setup of the Child Device
+			d.initialSetup( getSmartThingsClientId(), atomicState, sensorId ) 	// initial setup of the Child Device
 			log.debug "created ${d.displayName} with id $dni"
 		}
 		else
