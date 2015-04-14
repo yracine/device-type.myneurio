@@ -34,7 +34,7 @@ preferences {
 			"If you like this app, please support the developer via PayPal:\n\nyracine@yahoo.com\n\n" +
 			"Copyright©2015 Yves Racine"
 		href url: "http://github.com/yracine", style: "embedded", required: false, title: "More information...",
-		description: "http://github.com/yracine/device-type.myneurio.groovy/blob/master/README.md"
+		description: "http://github.com/yracine/device-type.myneurio/blob/master/README.md"
 	}
 
 	section("Initialize and regularly polls  this Neurio device") {
