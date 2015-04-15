@@ -1302,7 +1302,7 @@ private def determine_sensor_id(sensor_id) {
 		}
 	} else if ((settings.sensorId == null) || (settings.sensorId  == "")) {
 		settings.appKey = get_appKey() 
-		settings.sensorId = data?.user?.locations[0]?.sensors[0]?.id
+		settings.sensorId = data.auth.sensorId
 		sensorId=settings.sensorId
 		if (settings.trace) {
 			log.debug "determine_sensor_id> sensorId from data.locations= ${sensorId}"
