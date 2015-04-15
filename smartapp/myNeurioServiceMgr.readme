@@ -63,8 +63,9 @@ f) Make sure that enable OAuth in Smartapp is active
 
 g) Go back to the code window, and hit the "publish/for me" button at the top right corner 
 
-3) Optionally, you can activate live logging in the IDE to get more trace in case of any
-issue/error
+*************************************************
+3) Optionally, you can activate live logging for more tracing
+*************************************************
 
 Go to https://graph.api.smartthings.com/ide/logs
 
