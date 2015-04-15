@@ -103,7 +103,7 @@ at the device level (if needed)
 Edit the preferences of MyNeurio Device to enable more tracing
 
 - Go to https://graph.api.smartthings.com/device/list
-- Click in the My Neurio object in the list
+- Click on the My Neurio object in the list
 - Edit the preferences by clicking on 'edit' (middle of the page) 
 - Set the trace input parameter to true 
 
