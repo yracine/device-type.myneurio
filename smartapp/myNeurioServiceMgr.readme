@@ -66,14 +66,8 @@ g) Go back to the code window, and hit the "publish/for me" button at the top ri
 3) Optionally, you can activate live logging in the IDE to get more trace in case of any
 issue/error
 
-a) Go to https://graph.api.smartthings.com/ide/logs
+Go to https://graph.api.smartthings.com/ide/logs
 
-b) You can also edit the preferences of MyNeurio Device to enable more tracing
-
-- Go to https://graph.api.smartthings.com/device/list
-- Click in the My Neurio object in the list
-- Edit the preferences (middle of the page)
-- Set the trace input parameter to true 
 
 *************************************************
 4) Use SmartSetup and execute My NeurioServiceMgr
@@ -93,10 +87,23 @@ https://graph.api.smartthings.com/device/list
 
 You can click on any new My Neurio object created and see its attributes populated.
 
+
 *************************************************
 5) Under the SmartThings app (on your tablet or smartphone), you should then
 see the new Object under the 'Things' shortcut on the dashboard
 *************************************************
+
+*************************************************
+5) After instantiation of MyNeurio Object, you can enable more tracing 
+at the device level (if needed)
+*************************************************
+
+Edit the preferences of MyNeurio Device to enable more tracing
+
+- Go to https://graph.api.smartthings.com/device/list
+- Click in the My Neurio object in the list
+- Edit the preferences by clicking on 'edit' (middle of the page) 
+- Set the trace input parameter to true 
 
 
 
