@@ -393,10 +393,14 @@ def swapToken() {
 	log.debug "Swapping token $params"
 
 	def jsonMap
-	httpPost(uri:tokenUrl) { resp ->
-		jsonMap = resp.data
+	try {	
+		httpPost(uri:tokenUrl) { resp ->
+			jsonMap = resp.data
+		}
+	} catch (any) {
+		
+		log.error ("error swapping token: $resp.status")		
 	}
-
 	log.debug "Swapped token for $jsonMap"
 	debugEvent ("swapped token for $jsonMap", true)
 
@@ -497,7 +501,7 @@ def getChildName() { "My Neurio Device" }
 
 def getServerUrl() { return "https://graph.api.smartthings.com" }
 
-def getSmartThingsClientId() { "U7g46rOEQqiIicUpQCOFrQ" }
+def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" }
 
 
 def debugEvent(message, displayEvent) {
