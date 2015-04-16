@@ -1348,6 +1348,7 @@ void initialSetup(device_client_id, auth_data, device_neurio_id) {
 		log.debug "initialSetup>end"
 	}
 	getCurrentUserInfo()
+	poll()
 }
 
 def toQueryString(Map m) {
