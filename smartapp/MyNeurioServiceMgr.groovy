@@ -33,12 +33,24 @@ preferences {
 }
 
 mappings {
+
+	path("/auth") {
+		action: [
+		  GET: "auth"
+		]
+	}
+
 	path("/swapToken") {
 		action: [
 			GET: "swapToken"
 		]
 	}
 }
+
+def auth() {
+	redirect location: oauthInitUrl()
+}
+
 
 def about() {
  	dynamicPage(name: "about", install: false, uninstall: true) {
@@ -86,7 +98,7 @@ def authPage() {
 		}
 	}
 
-	def redirectUrl = oauthInitUrl()
+	def redirectUrl = buildRedirectUrl("auth")
 
 	log.debug "RedirectUrl = ${redirectUrl}"
 
@@ -368,11 +380,19 @@ def oauthInitUrl() {
 	return "${get_URI_ROOT()}/oauth2/authorize?" + toQueryString(oauthParams)
 }
 
+
+def buildRedirectUrl(action = "swapToken")
+{
+	log.debug "buildRedirectUrl, atomicState.accessToken=${atomicState.accessToken}," +
+		serverUrl + "/api/token/${atomicState.accessToken}/smartapps/installations/${app.id}/${action}"
+	return serverUrl + "/api/token/${atomicState.accessToken}/smartapps/installations/${app.id}/${action}"
+}
+/*
 def buildRedirectUrl() {
 	log.debug "buildRedirectUrl, atomicState.accessToken=${atomicState.accessToken}"
 	return serverUrl + "/api/token/${atomicState.accessToken}/smartapps/installations/${app.id}/swapToken"
 }
-
+*/
 def swapToken() {
 	log.debug "swapping token: $params"
 	debugEvent ("swapping token: $params", true)
@@ -387,14 +407,16 @@ def swapToken() {
 		client_id: stcid,
 		redirect_uri: buildRedirectUrl()
 	]
-
-	def tokenUrl = "${get_URI_ROOT()}/oauth2/token?" + toQueryString(tokenParams)
+	def tokenMethod = [
+		uri:"${get_URI_ROOT()}/oauth2/token?",
+		body: toQueryString(tokenParams)
+	]
 
 	log.debug "Swapping token $params"
 
 	def jsonMap
 	try {	
-		httpPost(uri:tokenUrl) { resp ->
+		httpPost(tokenMethod) { resp ->
 			jsonMap = resp.data
 		}
 	} catch (any) {
