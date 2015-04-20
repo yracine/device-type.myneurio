@@ -1,1360 +1,543 @@
 /**
- *  My Neurio Device
+ *  MyNeurioServiceMgr
  *
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
- *  Refer to readme file for installation instructions.
- *
- *  Code: https://github.com/yracine/device-type.myneurio.groovy
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
+ *  Unless required by applicable lax or agreed to in writing, software distributed under the License is distributed
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
  *
  */
+definition(
+	name: "MyNeurioServiceMgr",
+	namespace: "yracine",
+	author: "Yves Racine",
+	description: "This smartapp is the Service Manager for My Neurio Device: it instantiates the Neurio devices and polls them on a regular basis",
+	category: "My Apps",
+	iconUrl: "https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo60x60.png",
+	iconX2Url: "https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png",
+	iconX3Url: "https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png"
+)
 
-import java.text.SimpleDateFormat
 
-// for the UI
 preferences {
-	input("appKey", "text", title: "App Key (public)", description:
-		"The application (public) key given by Neurio (no spaces)")
-	input("privateKey", "text", title: "Private Key", description:
-		"The private key given by Neurio (no spaces)")
-	input("sensorId", "number", title: "sensorId (optional) [default=first Neurio found,MAC Address in hexa,format=0x0000XXXXXXXXXXXX]", description:
-		"The MAC address of your Neurio Sensor (no spaces and no ':')")
-	input("trace", "text", title: "trace", description:
-		"Set it to true to enable tracing (no spaces) or leave it empty (no tracing)"
-	)
-    
+	page(name: "about", title: "About", nextPage: "auth")
+	page(name: "auth", title: "Neurio", content:"authPage", nextPage:"deviceList")
+	page(name: "deviceList", title: "Neurio", content:"NeurioDeviceList", install:true)
 }
 
-metadata {
-	definition (name: "My Neurio Device", namespace: "yracine", author: "Yves Racine") {
-		capability "Power Meter"
-		capability "Refresh"
-		capability "Polling"
-		capability "Energy Meter"
+mappings {
 
-		command "setAuthTokens"
-		command "getCurrentUserInfo"
-		command "getSampleStats"
-		command "getLastLiveSamples"
-		command "generateSampleStats"
-		command "getApplianceData"
-		command "getApplianceList"
-		command "generateAppliancesStats"
-		command "generateAppliancesEvents"
-        
-		attribute "generationEnergy","string"
-		attribute "generationPower","string"
-		attribute "userid","string"
-		attribute "username", "string"
-		attribute "email","string"
-		attribute "locationId","string"
-		attribute "locationName","string"
-		attribute "timezone","string"
-		attribute "sensorId","string"
-
-		// Consumed Energy attributes
-
-		attribute "consTotalInPeriod","string"
-		attribute "consEnergyDay","string"
-		attribute "consEnergyWeek","string"
-		attribute "consEnergyMonth","string"
-		attribute "consEnergy2DaysAgo","string"
-		attribute "consEnergy2WeeksAgo","string"
-		attribute "consEnergy2MonthsAgo","string"
-
-		// Generated Energy attributes
-        
-		attribute "genTotalInPeriod","string"
-		attribute "genEnergyDay","string"
-		attribute "genEnergyWeek","string"
-		attribute "genEnergyMonth","string"
-		attribute "genEnergy2DaysAgo","string"
-		attribute "genEnergy2WeeksAgo","string"
-		attribute "genEnergy2MonthsAgo","string"
-
-		attribute "applianceData","string"
-		attribute "appliancesData","string"
-		attribute "appliancesList","string"
-
-		attribute "appliancesEventsData","string"
-		attribute "appliancesStatsData","string"
+	path("/auth") {
+		action: [
+		  GET: "auth"
+		]
 	}
 
-	simulator {
-		// TODO: define status and reply messages here
-	}
-
-	// UI tile definitions
-	tiles {
-		valueTile(	"power","device.power",unit: 'Watts', width: 1, height: 1,canChangeIcon: false)
-        	{
-            		state(	"power", label:'Power\n${currentValue}W',
-					backgroundColor: "#ffffff"
-/*
-					backgroundColors: [
-						[value: 500, color: "green"],
-						[value: 3000, color: "orange"],
-						[value: 6000, color: "red"]
-                  			]
-*/                            
-				)
-		}
-		valueTile(	"energy", "device.energy", unit:'kWh',width: 1, height: 1,canChangeIcon: false
-				) 
-        	{
-			state("energy",
-					label:'Energy\n ${currentValue}kWh',
-					backgroundColor: "#ffffff",
-                 		)
-		}
-		valueTile(	"genPower", "device.generationPower",unit: 'Watts',width: 1, height: 1,canChangeIcon: false,
- 				)
-		{
-			state(	"genPower", label:'GenPower\n${currentValue}',
-					backgroundColor: "#ffffff"
-				)
-		}
- 		valueTile(	"genEnergy",  "device.generationEnergy", unit: 'kWh',width: 1, height: 1,canChangeIcon: false,
-				) 
-        	{
-        		state("genEnergy",
-					label:'GenEnergy\n${currentValue}',
-					backgroundColor: "#ffffff"
-				)
-		}
-        
-		 
-		valueTile(	"consEnergyYesterday", "device.consEnergyDay", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
- 					decoration: "flat"
-				) 
-        	{
-			state("default",
-					label:'Yesterday\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-		valueTile(	"consEnergyLastWeek", "device.consEnergyWeek", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
-  					decoration: "flat"
-				)
-        	{
-			state("default",
-					label:'Week\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-		valueTile(	"consEnergyLastMonth", "device.consEnergyMonth", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
-  					decoration: "flat"
-				)
-        	{
-			state("default",
-					label:'Month\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-		valueTile(	"consEnergy2DaysAgo", "device.consEnergy2DaysAgo", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
- 					decoration: "flat"
-				) 
-        	{
-			state("default",
-					label:'2DaysAgo\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-		valueTile(	"consEnergy2WeeksAgo", "device.consEnergy2WeeksAgo", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
-  					decoration: "flat",
-				)
-        	{
-			state("default",
-					label:'2WksAgo\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-		valueTile(	"consEnergy2MonthsAgo", "device.consEnergy2MonthsAgo", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
-  					decoration: "flat"
-				)
-        	{
-			state("default",
-					label:'2MonthAgo\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-        
-		valueTile(	"genEnergyYesterday", "device.genEnergyDay", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
- 					decoration: "flat"
-				) 
-        	{
-			state("default",
-					label:'Yesterday\nGen\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-		valueTile(	"genEnergyLastWeek", "device.genEnergyWeek", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
-  					decoration: "flat"
-				)
-        	{
-			state("default",
-					label:'Week\nGen\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-		valueTile(	"genEnergyLastMonth", "device.genEnergyMonth", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
-  					decoration: "flat"
-				)
-        	{
-			state("default",
-					label:'Month\nGen\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-		valueTile(	"genEnergy2DaysAgo", "device.genEnergy2DaysAgo", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
- 					decoration: "flat"
-				) 
-        	{
-			state("default",
-					label:'2DaysAgo\nGen\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-		valueTile(	"genEnergy2WeeksAgo", "device.genEnergy2WeeksAgo", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
-  					decoration: "flat",
-				)
-        	{
-			state("default",
-					label:'2WksAgo\nGen\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-		valueTile(	"genEnergy2MonthsAgo", "device.genEnergy2MonthsAgo", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
-  					decoration: "flat"
-				)
-        	{
-			state("default",
-					label:'2MonthAgo\nGen\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-       
-		standardTile("refresh", "device.power") {
-			state "default", action:"refresh.refresh", icon:"st.secondary.refresh"
-		}
-
-		main(["power", "energy"])
-		details(["power", "energy",  "refresh", "genPower", "genEnergy", "consEnergyYesterday", "consEnergy2DaysAgo", "consEnergyLastWeek",  "consEnergy2WeeksAgo",
-        		"consEnergyLastMonth","consEnergy2MonthsAgo", "genEnergyYesterday", "genEnergy2DaysAgo", "genEnergyLastWeek",  "genEnergy2WeeksAgo",
-        		"genEnergyLastMonth","genEnergy2MonthsAgo"])
-
-
+	path("/swapToken") {
+		action: [
+			GET: "swapToken"
+		]
 	}
 }
 
-// handle commands
-
- 
-
-void poll() {
-    
-//	getCurrentUserInfo() must be called prior to poll()
-	
-	def sensorId= determine_sensor_id("") 	    
-	getLastLiveSamples(sensorId)
-    
-	if (settings.trace) {
-		sendEvent name: "verboseTrace", value:
-			"poll>sensorId = ${sensorId}"
-	}
-
-	def dataEvents = [
-		userid:data?.user.id,
-		username:data?.user.name,
-		email:data?.user.email,
-		locationName:data?.user.locations[0].name,
-		timezone:data?.user.locations[0].timezone,
-		sensorId:data?.user.locations[0]?.sensors[0]?.id,
-		power:data?.liveSamples.consumptionPower,
-		energy:data?.liveSamples.consumptionEnergy,
-		generationPower:data?.liveSamples.generationPower,
-		generationEnergy:data?.liveSamples.generationEnergy
-	]
-	generateEvent(dataEvents)
-	String nowInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
-        
-	// generate the stats only once every day
-    
-	if (state.lastGeneratedDate != nowInLocalTime) {
-		if (settings.trace) {
-			log.debug "api> about to generateSampleStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
-		}
-		    
-		generateSampleStats("")
-		state.lastGeneratedDate= nowInLocalTime       
-	}
-
+def auth() {
+	redirect location: oauthInitUrl()
 }
 
 
-private void generateEvent(Map results)
-{
-	if (settings.trace) {
-		log.debug "generateEvents>parsing data $results"
-	}
-    
-	if(results)
+def about() {
+ 	dynamicPage(name: "about", install: false, uninstall: true) {
+ 		section("About") {	
+			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration"
+			paragraph "Version 0.1\n\n" +
+			"If you like this app, please support the developer via PayPal:\n\nyracine@yahoo.com\n\n" +
+			"Copyright©2015 Yves Racine"
+			href url:"http://github.com/yracine/device-type.myneurio", style:"embedded", required:false, title:"More information...", 
+			description: "http://github.com/yracine/device-type.myneurio"
+		}
+	}        
+}
+
+def authPage() {
+	log.debug "authPage()"
+
+	if(!atomicState.accessToken)
 	{
-		results.each { name, value ->
-			def isDisplayed = true
+		log.debug "about to create access token"
+		createAccessToken()
+		atomicState.accessToken = state.accessToken
+	}
 
-// 			Energy variable names contain "energy"           
 
-			if ((name.toUpperCase().contains("ENERGY"))) {  
-				Double energyValue = getEnergy(value).toDouble().round()
-				String energyValueString = String.format("%5d", energyValue.intValue())                
-				def isChange = isStateChange(device, name, energyValueString)
-				isDisplayed = isChange
-                
-				sendEvent(name: name, value: energyValueString, unit: "kWh")                                     									 
-			} else if (name.toUpperCase().contains("POWER")) { // power variable names contain 'power'
+	def description = "Required"
+	def uninstallAllowed = false
+	def oauthTokenProvided = false
 
-// 			Power variable names contain "power"
+	if(atomicState.authToken)
+	{
+		log.debug "atomicState.authToken in authPage= ${atomicState.authToken}"
 
- 				Long powerValue = value.toLong()
-				def isChange = isStateChange(device, name, powerValue.toString())
-				isDisplayed = isChange
-				sendEvent(name: name, value: powerValue.toString(), unit: "Watts")                                     									 
+		// TODO: Check if it's valid
+		if(true)
+		{
+			description = "You are connected."
+			uninstallAllowed = true
+			oauthTokenProvided = true
+		}
+		else
+		{
+			description = "Required" // Worth differentiating here vs. not having atomicState.authToken? 
+			oauthTokenProvided = false
+		}
+	}
 
- 			} else {
-				def isChange = isStateChange(device, name, value)
-				isDisplayed = isChange
+	def redirectUrl = buildRedirectUrl("auth")
 
-				sendEvent(name: name, value: value, isStateChange: isChange)       
+	log.debug "RedirectUrl = ${redirectUrl}"
+
+	// get rid of next button until the user is actually auth'd
+
+	if (!oauthTokenProvided) {
+
+		return dynamicPage(name: "auth", title: "Login", nextPage:null, uninstall:uninstallAllowed) {
+			section(){
+				paragraph "Tap below to log in to the Neurio portal and authorize SmartThings access. Be sure to scroll down on page 2 and press the 'Allow' button."
+				href url:redirectUrl, style:"embedded", required:true, title:"My Neurio", description:description
 			}
 		}
-	}
-}
 
+	} else {
 
-
-
-private def getEnergy(value) {
-
-	// conversion from watts-sec to KWh 
-	return (value/ (60*60*1000))
-}
-
-void refresh() {
-	poll()
-}
-private def api(method, args, success={}) {
-	String URI_ROOT = "${get_URI_ROOT()}"
-	if (!isLoggedIn()) {
-		login()
-	}
-	if (isTokenExpired()) {
-		if (settings.trace) {
-			log.debug "api> need to refresh tokens"
+		return dynamicPage(name: "auth", title: "Log In", nextPage:"deviceList", uninstall:uninstallAllowed) {
+			section(){
+				paragraph "Tap Next to continue to setup your Neurio Sensors."
+				href url:redirectUrl, style:"embedded", state:"complete", title:"My Neurio", description:description
+			}
 		}
-/*
-		refresh_tokens()
 
-*/
-		setAuthTokens()
 	}
-	def methods = [
-		'currentUserInfo': 
-			[uri:"${URI_ROOT}/users/current", type: 'get'],
-		'lastLiveSamples': 
-			[uri:"${URI_ROOT}/samples/live/last?${args}", 
-          		type: 'get'],
-		'sampleStats': 
-			[uri:"${URI_ROOT}/samples/stats?${args}", 
-          		type: 'get'],
-		'appliancesList': 
-			[uri:"${URI_ROOT}/appliances?${args}", 
-          		type: 'get'],
-		'applianceData': 
-			[uri:"${URI_ROOT}/appliances/${args}", 
-          		type: 'get'],
-		'appliancesStats': 
-			[uri:"${URI_ROOT}/appliances/stats?${args}", 
-          		type: 'get'],
-		'appliancesEvents': 
-			[uri:"${URI_ROOT}/appliances/events?${args}", 
-          		type: 'get']
-		]
-	def request = methods.getAt(method)
-	if (settings.trace) {
-		sendEvent name: "verboseTrace", value:
-			"api> about to call doRequest with (unencoded) args = ${args}"
-	}
-	doRequest(request.uri, args, request.type, success)
+
+
 }
 
-// Need to be authenticated in before this is called. So don't call this. Call api.
-private def doRequest(uri, args, type, success) {
-	def params = [
-		uri: uri,
-		headers: [
-			'Authorization': "${data.auth.token_type} ${data.auth.access_token}",
-			'Content-Type': "application/json",
-			'charset': "UTF-8",
-			'Accept': "application/json"
-		],
-		body: args
+def NeurioDeviceList() {
+	log.debug "NeurioDeviceList()"
+
+	def neurioSensors = getNeurioSensors()
+
+	log.debug "device list: $neurioSensors"
+
+	def p = dynamicPage(name: "deviceList", title: "Select Your Sensor(s)", uninstall: true) {
+		section(""){
+			paragraph "Tap below to see the list of Neurio Sensors available in your Neurio account and select the ones you want to connect to SmartThings."
+			input(name: "NeurioSensors", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioSensors])
+		}
+	}
+
+	log.debug "list p: $p"
+	return p
+}
+
+def getNeurioSensors() {
+	def NEURIO_SUCCESS=200
+
+	log.debug "getting Neurio devices list"
+	def deviceListParams = [
+		uri: "${get_URI_ROOT()}",
+		path: "/users/current",
+		headers: ["Authorization": "Bearer ${atomicState.authToken}"],
+		Accept: "application/json"
 	]
+
+	log.debug "_______AUTH______ ${atomicState.authToken}"
+	log.debug "device list params: $deviceListParams"
+
+	def sensors = [:]
 	try {
-		if (settings.trace) {
-//			sendEvent name: "verboseTrace", value: "doRequest>token= ${data.auth.access_token}"
-			sendEvent name: "verboseTrace", value:
-				"doRequest>about to ${type} with uri ${params.uri}, args= ${args}"
-				log.debug "doRequest> ${type}> uri ${params.uri}, args= ${args}"
-		}
-		if (type == 'post') {
-			httpPostJson(params, success) 
-		} else if (type == 'get') {
-			params.body = null // parameters already in the URL request
-			httpGet(params, success) 
-		}
-	} catch (java.net.UnknownHostException e) {
-		log.error "doRequest> Unknown host - check the URL " + params.uri
-		sendEvent name: "verboseTrace", value: "doRequest> Unknown host"
-	} catch (java.net.NoRouteToHostException e) {
-		log.error "doRequest> No route to host - check the URL " + params.uri
-		sendEvent name: "verboseTrace", value: "doRequest> No route to host"
-	} catch (java.io.IOException e) {
-		log.error "doRequest> general or malformed request error " + params.body
-		sendEvent name: "verboseTrace", value:
-			"doRequest> general or malformed request body error " + params.body
-	}
-}
+		httpGet(deviceListParams) { resp ->
 
-
-void getLastLiveSamples(sensorId) {
-	def NEURIO_SUCCESS=200
-
-	sensorId= determine_sensor_id(sensorId) 	    
-	def statusCode=true
-	int j=0        
-	def bodyReq="sensorId=" + sensorId 
-    
-	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
-
-		api('lastLiveSamples', bodyReq) {resp->
-		
-			statusCode= resp.status
-			if (statusCode == NEURIO_SUCCESS) {
-				data?.liveSamples=resp.data
-				def consumptionPower = data.liveSamples?.consumptionPower
-				def consumptionEnergy = data.liveSamples?.consumptionEnergy
-				def generationPower = data.liveSamples?.generationPower
-				def generationEnergy = data.liveSamples?.generationEnergy
-				def timestamp = data.liveSamples.timestamp    
-				if (settings.trace) {
-					sendEvent name: "verboseTrace", value:"getLastLiveSamples>sensorId=${sensorId},consumptionPower=${consumptionPower},consumptionEnergy=${consumptionEnergy}" +
-						",generationPower=${generationPower},generationEnergy=${generationEnergy}"
-				}
-                
-			} else {
-				def message = resp.message
-            			def errors = resp.errors
-				log.error "getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors}"
-			}                
-		}  /* end api call */              
-	} /* end while */
-}
-
-void generateSampleStats(sensorId) {
-
-// generate stats for yesterday
-
-	Date endDate = new Date().clearTime()
-	Date startDate = (endDate -1).clearTime()
-
-	String nowInLocalTime = new Date().format("yyyy-MM-dd HH:mm", location.timeZone)
-	if (settings.trace) {
-		log.debug("generateSampleStats>yesterday: local date/time= ${nowInLocalTime}, startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
-	}
-	getSampleStats(sensorId,startDate,endDate,"days",null)
-	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	Long totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
-	def dataStats = ['consEnergyDay':totalConsInPeriod, 'genEnergyDay':totalGenInPeriod]    
-
-// generate stats for 2 days ago
-
-	endDate=startDate
-	startDate = (endDate -1).clearTime()
-
-	if (settings.trace) {
-		log.debug("generateSampleStats>2 days ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
-	}
-	getSampleStats(sensorId,startDate,endDate,"days",null)
-	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
-	dataStats = dataStats + ['consEnergy2DaysAgo':totalConsInPeriod, 'genEnergy2DaysAgo':totalGenInPeriod]    
-
-// generate stats for the past week
-
-	endDate = new Date().clearTime()
-	startDate = (endDate -7).clearTime()
-
-	if (settings.trace) {
-		log.debug("generateSampleStats>past week (last 7 days): startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
-	}
-	getSampleStats(sensorId, startDate,endDate,"weeks",null)
-	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
-	dataStats = dataStats + ['consEnergyWeek':totalConsInPeriod, 'genEnergyWeek':totalGenInPeriod]    
-
-
-// generate stats for 2 weeks ago
-
-	endDate = startDate
-	startDate = (endDate -7).clearTime()
-
-	if (settings.trace) {
-		log.debug("generateSampleStats>2 weeks ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
-	}
-	getSampleStats(sensorId, startDate,endDate,"weeks",null)
-	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
-	dataStats = dataStats + ['consEnergy2WeeksAgo':totalConsInPeriod, 'genEnergy2WeeksAgo':totalGenInPeriod]    
-
-// generate stats for the past month
-
-	endDate = new Date().clearTime()
-	Calendar oneMonthAgoCal = new GregorianCalendar()
-	oneMonthAgoCal.add(Calendar.MONTH, -1)
-	Date oneMonthAgo = oneMonthAgoCal.getTime().clearTime()
-	
-	if (settings.trace) {
-		log.debug("generateSampleStats>past month: startDate in UTC = ${String.format('%tF %<tT',oneMonthAgo)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
-	}
-	getSampleStats(sensorId, oneMonthAgo,endDate,"months",null)
-	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
-	dataStats = dataStats + ['consEnergyMonth':totalConsInPeriod, 'genEnergyMonth':totalGenInPeriod]    
-
-// generate stats for 2 months ago
-
-	endDate=oneMonthAgo -1
-	Calendar twoMonthsAgoCal = new GregorianCalendar()
-	twoMonthsAgoCal.add(Calendar.MONTH, -2)
-	Date twoMonthsAgo = twoMonthsAgoCal.getTime().clearTime()
-	
-	if (settings.trace) {
-		log.debug("generateSampleStats>2 months ago: startDate in UTC = ${String.format('%tF %<tT',twoMonthsAgo)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
-	}
-	getSampleStats(sensorId, twoMonthsAgo,endDate,"months",null)
-	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	totalGenInPeriod =  device.currentValue("genTotalInPeriod").toLong()
-	dataStats = dataStats + ['consEnergy2MonthsAgo':totalConsInPeriod, 'genEnergy2MonthsAgo':totalGenInPeriod]    
-
-	generateEvent(dataStats)
-
-
-}
-
-private def ISOdateFormat(date) {
- 	SimpleDateFormat ISO8601format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-	def ISOdate = ISO8601format.format(date)
-    
-	return ISOdate
-}
-
-void getSampleStats(sensorId,start,end,granularity,frequency) {
-	def NEURIO_MIN_INTERVAL=5
-	def NEURIO_SUCCESS=200
-	Long totalConsumedEnergy=0
-	Long totalGeneratedEnergy=0
-    
-	sensorId= determine_sensor_id(sensorId) 	    
-	granularity=granularity?.trim()
-	frequency = frequency?.trim()
-
-	// make sure start and granularity are defined
-	if ((!start) || (!granularity)) {
-		log.error "getSamplesData>start and granularity are required parameters"
-		sendEvent name: "verboseTrace", value:"getSamplesData>start and granularity are required parameters"
-		return 
-	}
-	
-	// make sure that frequency is a multiple of 5 if granularity is in minute
-	if ((granularity == 'minutes') && (frequency)) {
-		if ((frequency.mod(NEURIO_MIN_INTERVAL)) != 0) {
-			log.error "getSamplesData>only multiples of 5 are supported for frequency (${frequency}) when granularity (${granularity}) is in minutes"
-			sendEvent name: "verboseTrace", value:  "getSamplesData>only multiples of 5 are supported for frequency (${frequency}) when granularity (${granularity}) is in minutes"
-			return 
-		}
-	}
-	// make sure granularity is one of the correct values
-	if ((granularity != 'minutes') && (granularity != 'hours') && (granularity != 'days') && (granularity != 'weeks') && (granularity != 'months')) {
-		log.error "getSamplesData>only values of [minutes, hours, days, weeks or months] are supported for granularity (${granularity})"
-		sendEvent name: "verboseTrace", value: "only values of minutes, hours, days or months are supported for granularity (${granularity})"
-		return 
-	}
-     
-	def bodyReq="sensorId=" + sensorId + "&start=" + ISOdateFormat(start) 
-	if ((end != null) && (end != "")) {
-		bodyReq = bodyReq+ "&end=" + ISOdateFormat(end)    	
-	}
-	bodyReq = bodyReq+ "&granularity=" + granularity    	
-	if ((frequency != null) && (frequency != "")) {
-		bodyReq = bodyReq+ "&frequency=" + frequency    	
-	}
-	int j=0        
-	def statusCode=true
-    
-	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
-
-		api('sampleStats', bodyReq) {resp->
-			statusCode = resp.status        
-        		if (statusCode == NEURIO_SUCCESS) {
- 				data?.sampleStats=resp.data
-				data?.sampleStatsCount=data.sampleStats.size()
-				if (settings.trace) {
-					log.debug "getSampleStats>sensorId=${sensorId},resp data = ${resp.data}" 
-                
-				}
-				if (data.sampleStatsCount>0) {                
-					for (i in 0..data.sampleStatsCount-1) {       
-						def consumptionEnergy = data.sampleStats[i]?.consumptionEnergy
-						if (consumptionEnergy) {
-							totalConsumedEnergy =totalConsumedEnergy + consumptionEnergy.toLong()
-						}                        
-						def generationEnergy = data.sampleStats[i]?.generationEnergy
-						if (generationEnergy) {
-							totalGeneratedEnergy =totalGeneratedEnergy + generationEnergy.toLong()
-						}                        
-
-						def startTime = data.sampleStats[i].start
-						def endTime = data.sampleStats[i].end
-						if (settings.trace) {
-							sendEvent name: "verboseTrace", value: "getSampleStats>sensorId=${sensorId},sampleStat no ${i},consumptionEnergy=${consumptionEnergy},generationEnergy=${generationEnergy},start=${startTime},end=${endTime}"
-						}
-                        
-					} /* end for samples */
-				} /* end if */                    
-			} else {
-				def message = resp.message
-				def errors = resp.errors
-				log.error "getSamplesData>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"getSamplesData>status=${statusCode.toString()},message=${message},errors=${errors}"
-			} /* end if statusCode */               
-		}  /* end api call */              
-	} /* end while */
-	generateEvent([consTotalInPeriod: totalConsumedEnergy.toString(), genTotalInPeriod:totalGeneratedEnergy.toString()])
-
-}
-
-
-//	applianceId - Id of the appliance 
-
-void getApplianceData(applianceId) {
-	def NEURIO_SUCCESS=200
-	def applianceData=[]
-    
-	def statusCode=true
-	int j=0        
-	def bodyReq=applianceId 
-    
-	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
-
-		api('applianceData', bodyReq) {resp->
-		
-			statusCode= resp.status
-			if (statusCode == NEURIO_SUCCESS) {
-				data?.appliance=resp.data
-				if (settings.trace) {
-					def applianceName=data.appliance?.name
-					def applianceLabel=data.appliance?.label
-					def applianceTags=data.appliance?.tags
-					def applianceCreated=data.appliance?.createdAt
-					def applianceUpdated=data.appliance?.updatedAt
-					                    
-					sendEvent name: "verboseTrace", value:"getApplianceData>applianceId= ${applianceId}, applianceName=${applianceName}" +
-						",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
-				}
-				applianceData << data.appliance  // to be transformed into Json later
-			} else {
-				def message = resp.message
-				def errors = resp.errors
-				log.error "getApplianceData>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"getApplianceData>status=${statusCode.toString()},message=${message},errors=${errors}"
-			}                
-		}  /* end api call */              
-	} /* end while */
-	def applianceDataJson=""
- 
-	if (applianceData != []) {
-    
-		applianceDataJson = new groovy.json.JsonBuilder(applianceData)
-	}
-	
-	if (settings.trace) {
-		log.debug "getApplianceData>applianceDataJson=${applianceDataJson}"
-	}
-	def applianceDataEvents = [
-		applianceData: "${applianceDataJson.toString()}"
-	]
-	if (settings.trace) {
-		log.debug "getApplianceData>applianceDataEvents to be sent= ${applianceDataEvents}"
-	}
-    
-	generateEvent(applianceDataEvents)
-
-}
-
-//	locationId - Id of the location where the sensors are located
-//		By default, the first location found in the user account
-//	postData - indicates whether the data should be posted as event
-
-void getApplianceList(locationId,postData='false') {
-	def NEURIO_SUCCESS=200
-	def appliancesData=[]
-	def appliancesList=""
-    
-	locationId=determine_location_id(location_id)
-	def statusCode=true
-	int j=0        
-	def bodyReq="locationId=" + locationId 
-    
-	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
-
-		api('appliancesList', bodyReq) {resp->
-
-			statusCode= resp.status
-			if (statusCode == NEURIO_SUCCESS) {
-				if (settings.trace) {
-					log.debug "getApplianceList>locationId=${locationId},resp data = ${resp.data}" 
-				}
-				data?.appliancesList=resp.data
-				data.appliancesList.each {
-					if (settings.trace) {
-						def applianceId=it.id
-						def applianceName= it?.name
-						def applianceLabel= it?.label
-						def applianceTags= it?.tags
-						def applianceCreated=it?.createdAt
-						def applianceUpdated=it?.updatedAt
-						sendEvent name: "verboseTrace", value:"getApplianceList>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
-							",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
-					}
-					if (postData == 'true') {
-						if (settings.trace) {
-							log.debug "getApplianceList>adding ${data.appliances[i]} to appliancesData"
-						}
-						appliancesData << it  // to be transformed into Json later
-					}
-					appliancesList = appliancesList + it.id + ','                     
-				} /* end each appliance */                
-			} else {
-				def message = resp.message
-				def errors = resp.errors
-				log.error "getApplianceList>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"getApplianceList>status=${statusCode.toString()},message=${message},errors=${errors}"
-			}                
-		}  /* end api call */              
-	} /* end while */
-	def appliancesDataJson=""
- 
-	if (appliancesData != []) {
-    
-		appliancesDataJson = new groovy.json.JsonBuilder(appliancesData)
-	}
-	
-	if (settings.trace) {
-		log.debug "getApplianceList>appliancesDataJson=${appliancesDataJson}"
-	}
-	def appliancesListEvents = [
-		appliancesData: "${appliancesDataJson.toString()}",
-		appliancesList: "${appliancesList.toString()}"
-	]
-	if (settings.trace) {
-		log.debug "getApplianceList>appliancesListEvents to be sent= ${appliancesListEvents}"
-	}
-    
-	generateEvent(appliancesListEvents)
-
-}
-
-//	locationId - Id of the location where the sensors are located
-//		By default, the first location found in the user account
-//	applianceId - Id of the appliance (not required)
-//	start - start date for the stats generation
-//	end - end date for the stats generation
-//	granularity: in days,weeks, months, or unknown for the stats generation
-//	minPower: min. Power for the events data extraction
-
-void generateAppliancesStats(locationId,applianceId,start,end,granularity,minPower="") {
-	def NEURIO_SUCCESS=200
-	def appliancesStatsData=[]	
-	def bodyReq    
-    
-	locationId=determine_location_id(location_id)
-
-	// make sure start and granularity are defined
-	if ((!start) || (!end) || (!granularity)) {
-		log.error "generateAppliancesStats>start, end and granularity are required parameters"
-		sendEvent name: "verboseTrace", value:"generateAppliancesStats>start, end and granularity are required parameters"
-		return 
-	}
-	
-	granularity=granularity?.trim()
-	minPower = minPower?.trim()
-    
-	// make sure granularity is one of the correct values
-	if ((granularity != 'unknown') && (granularity != 'days') && (granularity != 'weeks') && (granularity != 'months')) {
-		log.error "generateAppliancesStats>only values of [days, weeks, months or unknown] are supported for granularity (${granularity})"
-		sendEvent name: "verboseTrace", value: "only values of minutes, hours, days or months are supported for granularity (${granularity})"
-		return 
-	}
-     
-	if (applianceId) {
-		bodyReq="applianceId=" + applianceId + "&start=" + ISOdateFormat(start) + "&end=" + ISOdateFormat(end)    	
-    
-	} else {
-		bodyReq="locationId=" + locationId + "&start=" + ISOdateFormat(start) + "&end=" + ISOdateFormat(end)    	
-	    
-	}     
-	bodyReq = bodyReq+ "&granularity=" + granularity    	
-	if ((minPower != null) && (minPower != "")) {
-		bodyReq = bodyReq+ "&minPower=" + minPower    	
-	}
-	int j=0        
-	def statusCode=true
-
-	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
-
-		api('appliancesStats', bodyReq) {resp->
-			statusCode = resp.status        
-			if (settings.trace) {
-				log.debug "generateApplianceStats>locationId=${locationId},status=${resp.status},resp data = ${resp.data}" 
-				sendEvent name: verboseTrace, value:"generateAppliancesStats>locationId=${locationId},status=${resp.status},resp data = ${resp.data}"                
-			}                
-			if (statusCode == NEURIO_SUCCESS) {
-				if (resp.data !=[]) {            	
-	 				data.stats=resp.data
-					data.stats.each {
-						appliancesStatsData << it
-						applianceId= it.id
-						if (settings.trace) {
-							def applianceName= it?.name
-							def applianceLabel= it?.label
-							def applianceTags= it?.tags
-							def applianceCreated= it?.createdAt
-							def applianceUpdated= it?.updatedAt
-							def applianceAvgPower= it?.averagePower 
-							def applianceEventCount= it?.eventCount
-							def applianceEnergy= it?.energy
-							def statsStart= it?.start
-							def statsEnd= it?.end
-							sendEvent name: "verboseTrace", value:"generateAppliancesStats>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
-								",applianceLabel=${applianceLabel},applianceTags=${applianceTags}.created=${applianceCreated},updated=${applianceUpdated}," +
-								"applianceAvgPower=${applianceAvgPower},applianceEventCount=${applianceEventCount}," +
-								"applianceEnergy=${applianceEnergy},statsStart=${statsStart},statsEnd=${statsEnd}" 
-						}
-					} /* end each stats */
-				} 
-			} else {
-				def message = resp.message
-				def errors = resp.errors
-				log.error "generateAppliancesStats>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"generateAppliancesStats>status=${statusCode.toString()},message=${message},errors=${errors}"
-			} /* end if statusCode */               
-		}  /* end api call */              
-	} /* end while */
-
-	def appliancesStatsJson=""
- 
-	if (appliancesStatsData != []) {
-    
-		appliancesStatsJson = new groovy.json.JsonBuilder(appliancesStatsData)
-	}
-	
-	if (settings.trace) {
-		log.debug "generateAppliancesStats>appliancesStatsJson=${appliancesStatsJson}"
-	}
-	def appliancesStatsEvents = [
-		appliancesStatsData: "${appliancesStatsJson.toString()}"
-	]
-	if (settings.trace) {
-		log.debug "generateAppliancesStats>appliancesStatsEvents to be sent= ${appliancesStatsEvents}"
-	}
-    
-	generateEvent(appliancesStatsEvents)
-}
-
-//	locationId - Id of the location where the sensors are located
-//		By default, the first location found in the user account
-//	applianceId - Id of the appliance (not required)
-//	start - start date for the stats generation
-//	end - end date for the stats generation
-//	minPower: min. Power for the events data extraction
-
-void generateAppliancesEvents(locationId,applianceId,start,end,minPower="") {
-	def NEURIO_SUCCESS=200
-	def appliancesEventsData=[]
-	def bodyReq
-    
-	locationId=determine_location_id(location_id)
-	minPower = minPower?.trim()
-    
-	// make sure start and end are defined
-	if ((!start) || (!end)) {
-		log.error "generateAppliancesEvents>start and end are required parameters"
-		sendEvent name: "verboseTrace", value:"generateAppliancesStats>start and end are required parameters"
-		return 
-	}
-	
-	if (applianceId) {
-		bodyReq="applianceId=" + applianceId + "&start=" + ISOdateFormat(start) + "&end=" + ISOdateFormat(end)    	
-    
-	} else {
-		bodyReq="locationId=" + locationId + "&start=" + ISOdateFormat(start) + "&end=" + ISOdateFormat(end)    	
-	    
-	}     
-	if ((minPower != null) && (minPower != "")) {
-		bodyReq = bodyReq+ "&minPower=" + minPower    	
-	}
-	int j=0        
-	def statusCode=true
-    
-	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
-
-		api('appliancesEvents', bodyReq) {resp->
-			statusCode = resp.status        
-			if (settings.trace) {
-				log.debug "generateAppliancesEvents>locationId=${locationId},status=${resp.status},resp data = ${resp.data}" 
-				sendEvent name: verboseTrace, value:"generateAppliancesEvents>locationId=${locationId},status=${resp.status},resp data = ${resp.data}"                
-			}                
-			if (statusCode == NEURIO_SUCCESS) {
-				if (resp.data !=[]) {            	
- 					data.events=resp.data
-					data.events.each {	
-						appliancesEventsData << it
-						applianceId= it.appliance.id
-						if (settings.trace) {
-							def applianceName= it.appliance?.name
-							def applianceLabel= it.appliance?.label
-							def applianceTags= it.appliance?.tags
-							def applianceCreated= it.appliance?.createdAt
-							def applianceUpdated= it.appliance?.updatedAt
-							def applianceAvgPower= it?.averagePower 
-							def applianceEventGuesses= it?.guesses
-							def applianceEnergy= it?.energy
-							def eventStart= it?.start
-							def eventEnd= it?.end
-							def eventStatus= it?.status
-							def eventIsConfirmed= it?.isConfirmed
-							sendEvent name: "verboseTrace", value:"generateAppliancesEvents>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
-								",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated},updated=${applianceUpdated}," +
-								"applianceAvgPower=${applianceAvgPower},applianceEventGuesses=${applianceEventGuesses}," +
-								"applianceEnergy=${applianceEnergy},eventStart=${eventStart},eventEnd=${eventEnd}" +
-								"eventStatus=${eventStatus},eventIsConfirmed=${eventIsConfirmed}" 
-						}                                
-					} /* end each event */
-				} 
-			} else {
-				def message = resp.message
-				def errors = resp.errors
-				log.error "generateAppliancesEvents>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"generateAppliancesEvents>status=${statusCode.toString()},message=${message},errors=${errors}"
-			} /* end if statusCode */               
-		}  /* end api call */              
-	} /* end while */
-
-	def appliancesEventsJson=""
- 
-	if (appliancesEventsData != []) {
-    
-		appliancesEventsJson = new groovy.json.JsonBuilder(appliancesEventsData)
-	}
-	
-	if (settings.trace) {
-		log.debug "generateAppliancesEvents>appliancesEventsJson=${appliancesEventsJson}"
-	}
-	def appliancesEvents = [
-		appliancesEventsData: "${appliancesEventsJson.toString()}"
-	]
-	if (settings.trace) {
-		log.debug "generateAppliancesEvents>appliancesEvents to be sent= ${appliancesEvents}"
-	}
-    
-	generateEvent(appliancesEvents)
-}
-
-void getCurrentUserInfo() {
-	def NEURIO_SUCCESS=200
-
-	def statusCode=true
-	int j=0        
-	while ((statusCode != NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
-
-		if (settings.trace) {
-			log.debug "getCurrentUserInfo>about to call api"
-		}
-		api('currentUserInfo', null) {resp ->
-			statusCode = resp.status        
-			if (statusCode == NEURIO_SUCCESS) {
-        			data?.user=resp.data
-				if (settings.trace) {
-					log.debug "getCurrentUserInfo>resp data = ${resp.data}" 
-                
-				}
-				def userid = data.user.id
-				def username = data.user.name
-				def email = data.user.email
-				def active = data.user.status  
+			if (resp.status == NEURIO_SUCCESS) {
+/*        
+				int i=0    // Used to simulate many sensors
+*/
+				log.debug "getNeurioSensors>resp data = ${resp.data}" 
+				def userid = resp.data.user.id
+				def username = resp.data.user.name
+				def email = resp.data.user.email
+				def active = resp.data.user.status  
 				if (status != 'active') {
-					if (settings.trace) {
-						sendEvent name: "verboseTrace", value: "getCurrentUserInfo>userId=${userid},name=${username},email=${email} not active, exiting..."
-					}
+					log.error "getNeurioSensors>userId=${userid},name=${username},email=${email} not active, exiting..."
 					return
 				}
                 
-				if (settings.trace) {
-					sendEvent name: "verboseTrace", value: "getCurrentUserInfo>userId=${userId},name=${username},email=${email},active=${active}"
-				}
-				data.user?.locationsCount = resp.data.locations.size()
-				data.user.locations.each {
+				log.debug "getNeurioSensors>userId=${userId},name=${username},email=${email},active=${active}"
+				resp.data.user.locations.each {
 					def locationId = it.id
 					def locationName = it.name
 					def timezone = it.timezone
-					if (settings.trace) {
-						sendEvent name: "verboseTrace", value: "getCurrentUserInfo>found locationId=${locationId},name=${locationName},timezone=${timezone}"
-					}
-					it?.sensorsCount=it.sensors.size()
+					log.debug "getNeurioSensors>found locationId=${locationId},name=${locationName},timezone=${timezone}"
 					it.sensors.each {
 						def sensorId = it.id
 						def sensorType = it.sensorType
-						if (settings.trace) {
-							sendEvent name: "verboseTrace", value: "getCurrentUserInfo>sensorId=${sensorId},type=${sensorType}"
-						}
-						it?.ChannelsCount=it.channels.size()
-						it.channels.each {
-							def channelId = it.channel
-							def channelName = it.name
-							def channelType = it.channelType
-							if (settings.trace) {
-								sendEvent name: "verboseTrace", value: "getCurrentUserInfo>ChannelId=${channelId},name=${channelName},type=${channelType}"
-							}
-                            
-						} /* end each channel */                        
+						def dni = [ app.id, locationName, sensorType, sensorId, ].join('.')
+						sensors[dni] = sensorId
+						log.debug "getNeurioSensors>sensorId=${sensorId},type=${sensorType}"
 					} /* end each sensor */                        
 				} /* end each location */                        
 			} else {
-				statusCode=data.status
-				def message = data.message
-				def errors = data.errors
-				log.error "getCurrentUserInfo>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"getCurrentUserInfo>status=${statusCode.toString()},message=${message},errors=${errors}"
-			} /* end if statusCode */                
-		}  /* end api call */              
-	} /* end while */
-}
+				log.debug "http status: ${resp.status}"
 
-
-private def refresh_tokens() {
-	def method = 
-	[
-		headers: [
-			'Content-Type': "application/json",
-			'charset': "UTF-8"
-			],
-		uri: "${get_URI_ROOT()}/oauth2/token?", 
-		body: toQueryString([grant_type:"refresh_token",client_id:get_appKey(),client_secret:get_refresh_token()])
-	]
-	if (settings.trace) {
-		log.debug "refresh_tokens> uri = ${method.uri}"
-	}
-	def successRefreshTokens = {resp ->
-		if (settings.trace) {
-			log.debug "refresh_tokens> response = ${resp.data}"
-		}
-		data.auth.access_token = resp.data.access_token
-		data.auth.refresh_token = resp.data.refresh_token
-		data.auth.expires_in = resp.data.expires_in
-		data.auth.token_type = resp.data.token_type
-		data.auth.scope = resp.data.scope
-	}
-	try {
-		httpPostJson(method, successRefreshTokens)
-	} catch (java.net.UnknownHostException e) {
-		log.error "refresh_tokens> Unknown host - check the URL " + method.uri
-		sendEvent name: "verboseTrace", value: "refresh_tokens> Unknown host"
-		return false
-	} catch (java.net.NoRouteToHostException t) {
-		log.error "refresh_tokens> No route to host - check the URL " + method.uri
-		sendEvent name: "verboseTrace", value: "refresh_tokens> No route to host"
-		return false
-	} catch (java.io.IOException e) {
-		log.error "refresh_tokens> Authentication error, neurio servers cannot be reached at "
-		sendEvent name: "verboseTrace", value: "refresh_tokens> Auth error"
-		return false
-	} catch (any) {
-		log.error "refresh_tokens> general error " + method.uri
-		sendEvent name: "verboseTrace", value:
-			"refresh_tokens> general error at ${method.uri}"
-		return false
-	}
-	def authexptime = new Date((now() + (data.auth.expires_in * 60 * 1000))).getTime()
-	data.auth.authexptime = authexptime
-
-	if (data.auth.sensorId) {		// Created by initalSetup, need to refresh Parent tokens and other children
-		refreshParentTokens()
-	}        
-	if (settings.trace) {
-		log.debug "refresh_tokens> data_auth.expires_in in time = ${authexptime}"
-		sendEvent name: "verboseTrace", value:
-			"refresh_tokens>expire in ${data.auth.expires_in} minutes"
-	}
-	return true
-}
-
-void refreshChildTokens(auth) {
-	if (settings.trace) {
-		log.debug "refreshChildTokens>begin token auth= $auth"
-	}
-	data.auth.access_token = auth.authToken
-	data.auth.refresh_token = auth.refreshToken
-	data.auth.expires_in = auth.expiresIn
-	data.auth.token_type = auth.tokenType
-	data.auth.scope = auth.scope
-	data.auth.authexptime = auth.authexptime
-	if (settings.trace) {
-		log.debug "refreshChildTokens>end data.auth=$data.auth"
-	}
-}
-
-private void refreshParentTokens() {
-	if (settings.trace) {
-		log.debug "refreshParentTokens>begin data.auth = ${data.auth}"
-	}
-	if (settings.trace) {
-		log.debug "refreshParentTokens>auth=$auth, about to call parent.setParentAuthTokens"
-	}         
-	parent.setParentAuthTokens(data.auth)
-	if (settings.trace) {
-		log.debug "refreshParentTokens>end"
-	}         
-}
-
-private void login() {
-	if (settings.trace) {
-		log.debug "login> about to call setAuthTokens"
-	}
-	if (data?.auth?.sensorId) {
-    	// Created by initalSetup
-		if (settings.trace) {
-			log.debug "login> about to call refreshThisChildAuthTokens"
-		}
-		parent.refreshThisChildAuthTokens(this)
-	} else { 
-		setAuthTokens()
-	}    
-	if (!isLoggedIn) {
-		if (settings.trace) {
-			log.debug "login> no access_token..., failed"
-		}
-		return
-	}
-}
-
-
-
-void setAuthTokens() {
-	def method = 
-	[
-		headers: [
-			'charset': "UTF-8",
-			'Content-Type': "application/x-www-form-urlencoded"
-			],
-		uri: "${get_URI_ROOT()}/oauth2/token?",
-		body: toQueryString([grant_type:"client_credentials",client_id:get_appKey(),client_secret:get_client_secret()])
-	]
-	def successTokens = {resp ->
-		if (settings.trace) {
-			log.debug "setAuthTokens> resp data= ${resp.data}"
-		}
-        
-        
-		data?.auth = resp.data
-		data.auth.access_token = resp.data.access_token
-		data.auth.expires_in = resp.data.expires_in
-		data.auth.token_type = resp.data.token_type
-		if (settings.trace) {
-			log.debug "setAuthTokens> accessToken= ${data.auth.access_token}," +
-				"tokenType=${data.auth.token_type}"
-		}
-	}
-	try {
-		httpPostJson(method, successTokens)
-
-	} catch (java.net.UnknownHostException e) {
-		log.error "setAuthTokens> Unknown host - check the URL " + method.uri
-		sendEvent name: "verboseTrace", value: "setAuthTokens> Unknown host " +
-			method.uri
-		return
-	} catch (java.net.NoRouteToHostException t) {
-		log.error "setAuthTokens> No route to host - check the URL " + method.uri
-		sendEvent name: "verboseTrace", value: "setAuthTokens> No route to host" +
-			method.uri
-		return
-	} catch (java.io.IOException e) {
-		log.error "setAuthTokens> Auth error, neurio servers cannot be reached at " +
-			method.uri
-		sendEvent name: "verboseTrace", value: "setAuthTokens> Auth error " +
-			method.uri
-		return
-	}	        
-
-	// determine token's expire time
-	def authexptime = new Date((now() + (data.auth.expires_in * 60 * 1000))).getTime()
-	data.auth.authexptime = authexptime
-	if (settings.trace) {
-		log.debug "setAuthTokens> expires in ${data.auth.expires_in} minutes"
-		log.debug "setAuthTokens> data_auth.expires_in in time = ${authexptime}"
-		sendEvent name: "verboseTrace", value:
-			"setAuthTokens>expire in ${data.auth.expires_in} minutes"
-	}
-}
-private def isLoggedIn() {
-	if (data.auth == null) {
-		if (settings.trace) {
-			log.debug "isLoggedIn> no data auth"
-		}
-		return false
-	} else {
-		if (data.auth.access_token == null) {
-			if (settings.trace) {
-				log.debug "isLoggedIn> no access token"
-				return false
+				log.error "Authentication error, invalid authentication method, lack of credentials, etc."
 			}
-		}
-	}
-	return true
-}
-private def isTokenExpired() {
-	def buffer_time_expiration=5   // set a 5 min. buffer time before token expiration to avoid auth_err 
-	def time_check_for_exp = now() + (buffer_time_expiration * 60 * 1000);
-	if (settings.trace) {
-		log.debug "isTokenExpired> check expires_in: ${data.auth.authexptime} > time check for exp: ${time_check_for_exp}"
-	}
-	if (data.auth.authexptime > time_check_for_exp) {
-		if (settings.trace) {
-			log.debug "isTokenExpired> not expired"
-		}
-		return false
-	}
-	if (settings.trace) {
-		log.debug "isTokenExpired> expired"
-	}
-	return true
+            
+    		}        
+	} catch (java.net.UnknownHostException e) {
+		log.error "getNeurioSensors> Unknown host - check the URL " + deviceListParams.uri
+	} catch (java.net.NoRouteToHostException t) {
+		log.error "getNeurioSensors> No route to host - check the URL " + deviceListParams.uri
+	} catch (java.io.IOException e) {
+		log.error "getNeurioSensors> malformed request " +
+			deviceListParams
+    }
+
+	log.debug "sensors: $sensors"
+
+	return sensors
 }
 
-// Determine id from argument or default value (first location found)
+def setParentAuthTokens(auth_data) {
+/*
+	For Debugging purposes, due to the fact that logging is not working when called (separate thread)
+	sendPush("setParentAuthTokens>begin auth_data: $auth_data")
+*/
 
-private def determine_location_id(location_id) {
-	def locationId
+	atomicState.refreshToken = auth_data?.refresh_token
+	atomicState.authToken = auth_data?.access_token
+	atomicState.expiresIn=auth_data?.expires_in
+	atomicState.tokenType = auth_data?.token_type
+	atomicState.authexptime= auth_data?.authexptime
+	refreshAllChildAuthTokens()
+/*
+	For Debugging purposes, due to the fact that logging is not working when called (separate thread)
+	sendPush("setParentAuthTokens>New atomicState: $atomicState")
+*/
+}
+
+def refreshAllChildAuthTokens() {
+/*
+	For Debugging purposes, due to the fact that logging is not working when called (separate thread)
+	sendPush("refreshAllChildAuthTokens>begin updating children with $atomicState")
+*/
+
+	def children= getChildDevices()
+/*
+	For Debugging purposes, due to the fact that logging is not working when called (separate thread)
+	sendPush("refreshAllChildAuthtokens> refreshing ${children.size()} thermostats")
+*/
+
+	children.each { 
+/*
+	For Debugging purposes, due to the fact that logging is not working when called (separate thread)
+		sendPush("refreshAllChildAuthTokens>begin updating $it.deviceNetworkId with $atomicState")
+*/
+		it.refreshChildTokens(atomicState) 
+	}
+}
+
+def refreshThisChildAuthTokens(child) {
+/*
+	For Debugging purposes, due to the fact that logging is not working when called (separate thread)
+	sendPush("refreshThisChildAuthTokens>begin child id: ${child.device.deviceNetworkId}, updating it with ${atomicState}")
+*/
+	child.refreshChildTokens(atomicState)
+
+/*
+	For Debugging purposes, due to the fact that logging is not working when called (separate thread)
+	sendPush("refreshThisChildAuthTokens>end")
+*/
+}
+
+
+
+def installed() {
+	log.debug "Installed with settings: ${settings}"
+
+	initialize()
+}
+
+def updated() {
+	log.debug "Updated with settings: ${settings}"
+
+	unsubscribe()
+	initialize()
+}
+
+
+private def delete_child_devices() {
+	def delete
+	// Delete any that are no longer in settings
+	if(!NeurioSensors)
+	{
+		log.debug "deleting all Neurio Sensors"
+		delete = getAllChildDevices()
+	}
+	else
+	{
+		delete = getChildDevices().findAll { !NeurioSensors.contains(it.deviceNetworkId) }
+	}
+
+	log.debug "deleting ${delete.size()} Neurio Sensors"
+	delete.each { deleteChildDevice(it.deviceNetworkId) }
+
+}
+
+private def create_child_devices() {
+
+   	int i =0
+	def devices = NeurioSensors.collect { dni ->
+
+		def d = getChildDevice(dni)
+		log.debug "Looping thru Neurio Sensors, found id $dni"
+
+		if(!d)
+		{
+			log.debug "atomicState (i=$i) $atomicState "
+			def neurio_info  = dni.tokenize('.')
+			def sensorId = neurio_info.last()
+ 			def name = neurio_info[1]
+ 			def type = neurio_info[2]
+/*            
+			i++		// Used to simulate many Neurio Devices
+			def labelName = 'My Neurio ' + "${name}:${sensorId}_${i}"
+*/                    
+			def labelName = 'My Neurio ' + "${name}:${sensorId}"
+			log.debug "About to create child device with id $dni, sensorId = $sensorId, name=  ${name}"
+			d = addChildDevice(getChildNamespace(), getChildName(), dni, null,
+				[label: "${labelName}"]) 
+			d.initialSetup( getSmartThingsClientId(), atomicState, sensorId ) 	// initial setup of the Child Device
+			log.debug "created ${d.displayName} with id $dni"
+		}
+		else
+		{
+			log.debug "found ${d.displayName} with id $dni already exists"
+		}
+
+	}
+
+	log.debug "created ${devices.size()} Neurio sensors"
+
+
+
+}
+
+def initialize() {
     
-	if (settings.trace) {
-		log.debug "determine_location_id>begin locationId= ${locationId}"
-	}
-	if ((location_id != null) && (location_id != "")) {
-		locationId = location_id.trim()
-	} else {
-		locationId=data.user.locations[0]?.id
-		if (settings.trace) {
-			log.debug "determine_location_id> locationId from data.locationId= ${locationId}"
-		}
-	}
-	if (settings.trace) {
-		log.debug "determine_location_id>end locationId= ${locationId}"
-	}
-	return locationId
-}
+	log.debug "initialize"
 
-
-// Determine id from settings or initalSetup
-private def determine_sensor_id(sensor_id) {
-	def sensorId
+	delete_child_devices()	
+	create_child_devices()
     
-	if ((sensor_id != null) && (sensor_id != "")) {
-		sensorId = sensor_id.trim()
-	} else if ((settings.sensorId != null) && (settings.sensorId  != "")) {
-		sensorId = settings.sensorId.trim()
-		if (settings.trace) {
-			log.debug "determine_sensor_id> sensorId = ${settings.sensorId}"
-		}
-	} else if ((settings.sensorId == null) || (settings.sensorId  == "")) {
-		settings.appKey = get_appKey() 
-		settings.sensorId = data.auth.sensorId
-		sensorId=settings.sensorId
-		if (settings.trace) {
-			log.debug "determine_sensor_id> sensorId from data.locations= ${sensorId}"
-		}
-	}
-	return sensorId
+	takeAction()
+	// set up internal poll timer
+	def pollTimer = 20
+
+	log.trace "setting poll to ${pollTimer}"
+	schedule("0 0/${pollTimer.toInteger()} * * * ?", takeAction)
 }
 
-// Get the appKey for authentication
-private def get_appKey() {
-	return settings.appKey
-}    
-// Get the client secret
-private def get_client_secret() {
-	return settings.privateKey
-}    
-
-
-// Get the client's refresh token
-
-private def get_refresh_token() {
-	return data.auth.refresh_token
-}    
-
-// Called by My Neurio Init for initial creation of a child Device
-void initialSetup(device_client_id, auth_data, device_neurio_id) {
-	settings.trace='true'
-	if (settings.trace) {
-		log.debug "initialSetup>begin"
-		log.debug "initialSetup> device_neurio_Id = ${device_neurio_id}"
-		log.debug "initialSetup> device_client_id = ${device_client_id}"
-	}	
-	settings.appKey= device_client_id
-	settings.sensorId = device_neurio_id
-
-	data?.auth = settings    
-	data.auth.access_token = auth_data.authToken
-	data.auth.expires_in = auth_data.expiresIn
-	data.auth.token_type = auth_data.tokenType
-	if (settings.trace) {
-		log.debug "initialSetup> settings = $settings"
-		log.debug "initialSetup> data_auth = $data.auth"
-		log.debug "initialSetup>end"
+def takeAction() {
+	log.trace "takeAction>begin"
+	def devices = NeurioSensors.collect { dni ->
+		def d = getChildDevice(dni)
+		log.debug "takeAction>Looping thru Neurio Sensors, found id $dni, about to poll"
+		d.poll()
+    
 	}
-	getCurrentUserInfo()
-	poll()
+	log.trace "takeAction>end"
+}
+
+
+def oauthInitUrl() {
+	log.debug "oauthInitUrl"
+	def stcid = getSmartThingsClientId();
+
+	atomicState.oauthInitState = UUID.randomUUID().toString()
+
+	def oauthParams = [
+		response_type: "code",
+		client_id: stcid,
+		state: atomicState.oauthInitState,
+		redirect_uri: buildRedirectUrl()
+	]
+
+	return "${get_URI_ROOT()}/oauth2/authorize?" + toQueryString(oauthParams)
+}
+
+
+def buildRedirectUrl(action = "swapToken")
+{
+	log.debug "buildRedirectUrl, atomicState.accessToken=${atomicState.accessToken}," +
+		serverUrl + "/api/token/${atomicState.accessToken}/smartapps/installations/${app.id}/${action}"
+	return serverUrl + "/api/token/${atomicState.accessToken}/smartapps/installations/${app.id}/${action}"
+}
+/*
+def buildRedirectUrl() {
+	log.debug "buildRedirectUrl, atomicState.accessToken=${atomicState.accessToken}"
+	return serverUrl + "/api/token/${atomicState.accessToken}/smartapps/installations/${app.id}/swapToken"
+}
+*/
+def swapToken() {
+	log.debug "swapping token: $params"
+	debugEvent ("swapping token: $params", true)
+
+	def code = params.code
+	def oauthState = params.state
+
+	def stcid = getSmartThingsClientId()
+
+	def tokenParams = [
+		code: params.code,
+		client_id: stcid,
+		redirect_uri: buildRedirectUrl()
+	]
+	def tokenMethod = [
+		uri:"${get_URI_ROOT()}/oauth2/token?",
+		body: toQueryString(tokenParams)
+	]
+
+	log.debug "Swapping token $params"
+
+	def jsonMap
+	try {	
+		httpPost(tokenMethod) { resp ->
+			jsonMap = resp.data
+		}
+	} catch (any) {
+		
+		log.error ("error swapping token: $resp.status")		
+	}
+	log.debug "Swapped token for $jsonMap"
+	debugEvent ("swapped token for $jsonMap", true)
+
+	atomicState.refreshToken = jsonMap.refresh_token
+	atomicState.authToken = jsonMap.access_token
+	atomicState.expiresIn=jsonMap.expires_in
+	atomicState.tokenType = jsonMap.token_type
+	def authexptime = new Date((now() + (atomicState.expiresIn * 60 * 1000))).getTime()
+	atomicState.authexptime = authexptime
+
+
+	def html = """
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=640">
+<title>Withings Connection</title>
+<style type="text/css">
+	@font-face {
+		font-family: 'Swiss 721 W01 Thin';
+		src: url('https://s3.amazonaws.com/smartapp-icons/Partner/fonts/swiss-721-thin-webfont.eot');
+		src: url('https://s3.amazonaws.com/smartapp-icons/Partner/fonts/swiss-721-thin-webfont.eot?#iefix') format('embedded-opentype'),
+			 url('https://s3.amazonaws.com/smartapp-icons/Partner/fonts/swiss-721-thin-webfont.woff') format('woff'),
+			 url('https://s3.amazonaws.com/smartapp-icons/Partner/fonts/swiss-721-thin-webfont.ttf') format('truetype'),
+			 url('https://s3.amazonaws.com/smartapp-icons/Partner/fonts/swiss-721-thin-webfont.svg#swis721_th_btthin') format('svg');
+		font-weight: normal;
+		font-style: normal;
+	}
+	@font-face {
+		font-family: 'Swiss 721 W01 Light';
+		src: url('https://s3.amazonaws.com/smartapp-icons/Partner/fonts/swiss-721-light-webfont.eot');
+		src: url('https://s3.amazonaws.com/smartapp-icons/Partner/fonts/swiss-721-light-webfont.eot?#iefix') format('embedded-opentype'),
+			 url('https://s3.amazonaws.com/smartapp-icons/Partner/fonts/swiss-721-light-webfont.woff') format('woff'),
+			 url('https://s3.amazonaws.com/smartapp-icons/Partner/fonts/swiss-721-light-webfont.ttf') format('truetype'),
+			 url('https://s3.amazonaws.com/smartapp-icons/Partner/fonts/swiss-721-light-webfont.svg#swis721_lt_btlight') format('svg');
+		font-weight: normal;
+		font-style: normal;
+	}
+	.container {
+		width: 560px;
+		padding: 40px;
+		/*background: #eee;*/
+		text-align: center;
+	}
+	img {
+		vertical-align: middle;
+	}
+	img:nth-child(2) {
+		margin: 0 30px;
+	}
+	p {
+		font-size: 2.2em;
+		font-family: 'Swiss 721 W01 Thin';
+		text-align: center;
+		color: #666666;
+		padding: 0 40px;
+		margin-bottom: 0;
+	}
+/*
+	p:last-child {
+		margin-top: 0px;
+	}
+*/
+	span {
+		font-family: 'Swiss 721 W01 Light';
+	}
+</style>
+</head>
+<body>
+	<div class="container">
+		<img src="https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png" alt="neurio icon" />
+		<img src="https://s3.amazonaws.com/smartapp-icons/Partner/support/connected-device-icn%402x.png" alt="connected device icon" />
+		<img src="https://s3.amazonaws.com/smartapp-icons/Partner/support/st-logo%402x.png" alt="SmartThings logo" />
+		<p>Your Neurio Account is now connected to SmartThings!</p>
+		<p>Click 'Done' to finish setup.</p>
+	</div>
+</body>
+</html>
+"""
+
+	render contentType: 'text/html', data: html
+}
+
+def getChildDeviceIdsString() {
+	return NeurioSensors.collect { it.split(/\./).last() }.join(',')
+}
+
+def toJson(Map m) {
+	return new org.codehaus.groovy.grails.web.json.JSONObject(m).toString()
 }
 
 def toQueryString(Map m) {
 	return m.collect { k, v -> "${k}=${URLEncoder.encode(v.toString())}" }.sort().join("&")
 }
 
+def getChildNamespace() { "yracine" }
+def getChildName() { "My Neurio Device" }
+
+def getServerUrl() { return "https://graph.api.smartthings.com" }
+
+def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" }
+
+
+def debugEvent(message, displayEvent) {
+
+	def results = [
+		name: "appdebug",
+		descriptionText: message,
+		displayed: displayEvent
+	]
+	log.debug "Generating AppDebug Event: ${results}"
+	sendEvent (results)
+}
+
 private def get_URI_ROOT() {
 	return "https://api.neur.io/v1"
 }
+    
