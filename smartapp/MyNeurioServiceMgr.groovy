@@ -403,6 +403,7 @@ def swapToken() {
 	def stcid = getSmartThingsClientId()
 
 	def tokenParams = [
+		grant_type: "authorization_code",
 		code: params.code,
 		client_id: stcid,
 		redirect_uri: buildRedirectUrl()
