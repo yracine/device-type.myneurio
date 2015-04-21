@@ -185,11 +185,11 @@ void poll() {
 			"poll>sensorId = ${applianceId}"
 	}
 	Date endDate = new Date()
-	Date startDate = state.lastEndDate    
+	Date startDate = new Date(state.lastEndDate)    
 	if ((!startDate) || (endDate - startDate>1)) {
 		startDate= endDate -1        
 	}    
-	state.lastEndDate=endDate    
+	state.lastEndDate=endDate.getTime()   
 	generateApplianceStats("",startDate,endDate,"days",null,'false')
 	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
 	Long avgPowerInPeriod =  device.currentValue("avgPowerInPeriod").toLong()
@@ -774,7 +774,7 @@ private def determine_appliance_id(appliance_id) {
 	if ((appliance_id != null) && (appliance_id != "")) {
 		applianceId = appliance_id.trim()
 	} else {
-		applianceId=data?.auth.appliance.id
+		applianceId=data?.auth.applianceId
 		if (settings.trace) {
 			log.debug "determine_appliance_id> applianceId from data.auth.appliance.id"
 		}
