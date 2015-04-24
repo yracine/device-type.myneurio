@@ -805,8 +805,7 @@ void initialSetup(auth_data, device_neurio_id) {
 		log.debug "initialSetup> data_auth = $data.auth"
 		log.debug "initialSetup>end"
 	}
-	Date endDate = new Date()
-	state.lastEndDate=endDate        
+	state.lastEndDate=now()      
 	generateApplianceAllStats(device_neurio_id)
 }
 
