@@ -588,18 +588,17 @@ private def get_neurio_appliances_data(neurio) {
 			if (applianceFields?.size() > 0) {
 				applianceName=applianceFields?.name.toString()
 				applianceLabel=applianceFields?.label
-				applianceTags=applianceFields?.tags
 				applianceCreated=applianceFields?.createdAt
 				applianceUpdated=applianceFields?.updatedAt
 				log.debug "get_neurio_appliances_data>applianceId= ${applianceId}, applianceName=${applianceName}" +
-					",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
+					",applianceLabel=${applianceLabel},created=${applianceCreated}, updated=${applianceUpdated}"
 				            
 			}
-			def dni = [app.id, getNeurioApplianceChildName(),applianceName, applianceId].join('.')
+			def dni = [app.id, getNeurioApplianceChildName(),applianceLabel, applianceId].join('.')
 			def d = getChildDevice(dni)
 
 			if (!d) {
-				def labelName = "${getNeurioApplianceChildName()} ${applianceName}"
+				def labelName = "${getNeurioApplianceChildName()} ${applianceLabel}"
 
 				log.debug "About to create child device with id $dni, labelName=  ${labelName}"
 				d = addChildDevice(getChildNamespace(), getNeurioApplianceChildName(), dni, null, [label: "${labelName}", completedSetup: true])
