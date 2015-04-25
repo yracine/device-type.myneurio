@@ -95,8 +95,8 @@ metadata {
 					backgroundColor: "#ffffff",
                  		)
 		}
-		valueTile(	"name", "device.applianceName",width: 2, height: 1,canChangeIcon: false
-				) 
+		valueTile(	"name", "device.applianceLabel",width: 2, height: 1,canChangeIcon: false,
+  					decoration: "flat"				) 
         	{
 			state("default",
 					label:'${currentValue}',
@@ -104,7 +104,8 @@ metadata {
                  		)
 		}
 
-		valueTile(	"timeOn", "device.applianceTimeOn", unit:'minutes',width: 1, height: 1,canChangeIcon: false
+		valueTile(	"timeOn", "device.applianceTimeOn", unit:'minutes',width: 1, height: 1,canChangeIcon: false,
+  					decoration: "flat"
 				) 
         	{
 			state("timeOn",
@@ -160,7 +161,7 @@ metadata {
 		}
         
 		standardTile("refresh", "device.power") {
-			state "default", action:"refresh.refresh", icon:"st.secondary.refresh"
+			state "default", action:"polling.poll", icon:"st.secondary.refresh"
 		}
 
 		main(["power", "energy"])
@@ -196,7 +197,6 @@ void poll() {
     
 	def dataEvents = [
 		applianceId:data?.stats[0].appliance.id,
-		applianceName:data?.stats[0].appliance?.name,
 		applianceLabel:data?.stats[0].appliance?.label,
 		applianceCreatedAt:data?.stats[0].appliance.createdAt,
 		applianceUpdatedAt:data?.stats[0].appliance?.UpdatedAt,
@@ -355,10 +355,6 @@ private def doRequest(uri, args, type, success) {
 	} catch (java.net.NoRouteToHostException e) {
 		log.error "doRequest> No route to host - check the URL " + params.uri
 		sendEvent name: "verboseTrace", value: "doRequest> No route to host"
-	} catch (java.io.IOException e) {
-		log.error "doRequest> general or malformed request error " + params
-		sendEvent name: "verboseTrace", value:
-			"doRequest> general or malformed request body error " + params
 	}
 }
 
@@ -505,9 +501,6 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 				if (resp.data !=[]) {            	
 	 				data.stats=resp.data
 					data.stats.each {
-						if (postData=='true') {                    
-							applianceStatsData << it
-						}                            
 						def applianceName= it?.name
 						def applianceLabel= it?.label
 						def applianceTags= it?.tags
@@ -518,6 +511,21 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 						def applianceEnergy= it?.energy
 						def statsStart= it?.start
 						def statsEnd= it?.end
+						if (postData=='true') {                    
+							applianceStatsData << it
+/*                            
+							applianceStatsData << it?.id 
+                            applianceStatsData << it.name 
+                            applianceStatsData << it.label
+                            applianceStatsData << it.createdAt 
+                            applianceStatsData << it.updatedAt 
+                            applianceStatsData << it?.averagePower 
+                            applianceStatsData << it?.eventCount 
+                            applianceStatsData << it?.energy 
+                            applianceStatsData << it?.start 
+                            applianceStatsData << it?.end 
+*/                            
+						}                            
 						if (applianceEnergy) {
 							totalConsumedEnergy =totalConsumedEnergy + applianceEnergy.toLong()
 						}                        
@@ -613,9 +621,6 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 				if (resp.data !=[]) {            	
  					data.events=resp.data
 					data.events.each {	
-						if (postData=='true') {                    
-							applianceEventsData << it
-						}                            
 						applianceId= it.appliance.id
 						def applianceName= it.appliance?.name
 						def applianceLabel= it.appliance?.label
@@ -639,6 +644,22 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 							eventAvgPower: eventAvgPower,
 							eventEnergy: eventEnergy
 							]
+						if (postData=='true') {                    
+							applianceEventsData << it
+/*                            
+                            applianceEventsData << it.appliance?.name
+                            applianceEventsData << it.appliance?.label
+                            applianceEventsData << it.appliance?.createdAt
+                            applianceEventsData << it.appliance?.updatedAt
+                            applianceEventsData << it?.energy
+                            applianceEventsData << it?.averagePower
+                            applianceEventsData << it?.start
+                            applianceEventsData << it?.end
+                            applianceEventsData << it?.status
+                            applianceEventsData << it?.isConfirmed 
+                            applianceEventsData << it?.cycleCount  
+*/                            
+						}                            
 						if (settings.trace) {
 							log.debug "generateApplianceEvents>applianceEvents to be sent= ${applianceEvents}"
 						}
