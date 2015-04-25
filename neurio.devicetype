@@ -344,6 +344,9 @@ private void generateEvent(Map results)
 
 
 private def getEnergy(value) {
+	if (value ==null) {
+		return 0    
+	}
 
 	// conversion from watts-sec to KWh 
 	return (value/ (60*60*1000))
