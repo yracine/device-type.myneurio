@@ -14,11 +14,14 @@
  *  for the specific language governing permissions and limitations under the License.
  *
  */
+ 
+import groovy.json.JsonSlurper
+ 
 definition(
 	name: "MyNeurioServiceMgr",
 	namespace: "yracine",
 	author: "Yves Racine",
-	description: "This smartapp is the Service Manager for My Neurio Device: it instantiates the Neurio devices and polls them on a regular basis",
+	description: "This smartapp is the Service Manager for My Neurio Device: it instantiates the Neurio device(s) & appliances and polls them on a regular basis",
 	category: "My Apps",
 	iconUrl: "https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo60x60.png",
 	iconX2Url: "https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png",
@@ -55,13 +58,14 @@ def auth() {
 def about() {
  	dynamicPage(name: "about", install: false, uninstall: true) {
  		section("About") {	
-			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration"
-			paragraph "Version 0.1\n\n" +
+			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration" +
+            	" and polls your Neurio appliance data on a regular interval"
+			paragraph "Version 0.8\n\n" +
 			"If you like this app, please support the developer via PayPal:\n\nyracine@yahoo.com\n\n" +
 			"Copyright©2015 Yves Racine"
 			href url:"http://github.com/yracine/device-type.myneurio", style:"embedded", required:false, title:"More information...", 
 			description: "http://github.com/yracine/device-type.myneurio"
-		}
+		} and 
 	}        
 }
 
@@ -150,10 +154,10 @@ def getNeurioSensors() {
 
 	log.debug "getting Neurio devices list"
 	def deviceListParams = [
-		uri: "${get_URI_ROOT()}",
-		path: "/users/current",
+		uri: "${get_URI_ROOT()}/users/current",
 		headers: ["Authorization": "Bearer ${atomicState.authToken}"],
-		Accept: "application/json"
+		Accept: "application/json",
+		charset: "UTF-8"
 	]
 
 	log.debug "_______AUTH______ ${atomicState.authToken}"
@@ -168,17 +172,18 @@ def getNeurioSensors() {
 				int i=0    // Used to simulate many sensors
 */
 				log.debug "getNeurioSensors>resp data = ${resp.data}" 
-				def userid = resp.data.user.id
-				def username = resp.data.user.name
-				def email = resp.data.user.email
-				def active = resp.data.user.status  
+				def jsonMap =resp.data
+				def userid = jsonMap.id
+				def username = jsonMap.name
+				def email = jsonMap.email
+				def status = jsonMap.status  
 				if (status != 'active') {
 					log.error "getNeurioSensors>userId=${userid},name=${username},email=${email} not active, exiting..."
 					return
 				}
                 
 				log.debug "getNeurioSensors>userId=${userId},name=${username},email=${email},active=${active}"
-				resp.data.user.locations.each {
+				jsonMap.locations.each {
 					def locationId = it.id
 					def locationName = it.name
 					def timezone = it.timezone
@@ -356,10 +361,16 @@ def takeAction() {
 	log.trace "takeAction>begin"
 	def devices = NeurioSensors.collect { dni ->
 		def d = getChildDevice(dni)
-		log.debug "takeAction>Looping thru Neurio Sensors, found id $dni, about to poll"
+		log.debug "takeAction>looping thru Neurio Sensors, found id $dni, about to poll"
 		d.poll()
+		log.debug "takeAction>about to get Neurio Appliance data and instantiate Appliance objects"
+		get_neurio_appliances_data(d)
     
 	}
+    
+
+    
+
 	log.trace "takeAction>end"
 }
 
@@ -406,6 +417,7 @@ def swapToken() {
 		grant_type: "authorization_code",
 		code: params.code,
 		client_id: stcid,
+		client_secret: getSmartThingsPrivateKey(),        
 		redirect_uri: buildRedirectUrl()
 	]
 	def tokenMethod = [
@@ -420,9 +432,9 @@ def swapToken() {
 		httpPost(tokenMethod) { resp ->
 			jsonMap = resp.data
 		}
-	} catch (any) {
+	} catch ( e) {
 		
-		log.error ("error swapping token: $resp.status")		
+		log.error ("exception ${e}, error swapping token: $resp.status")		
 	}
 	log.debug "Swapped token for $jsonMap"
 	debugEvent ("swapped token for $jsonMap", true)
@@ -519,13 +531,6 @@ def toQueryString(Map m) {
 	return m.collect { k, v -> "${k}=${URLEncoder.encode(v.toString())}" }.sort().join("&")
 }
 
-def getChildNamespace() { "yracine" }
-def getChildName() { "My Neurio Device" }
-
-def getServerUrl() { return "https://graph.api.smartthings.com" }
-
-def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" }
-
 
 def debugEvent(message, displayEvent) {
 
@@ -538,7 +543,92 @@ def debugEvent(message, displayEvent) {
 	sendEvent (results)
 }
 
+    
+private def get_neurio_appliances_data(neurio) {
+	Boolean foundAppliance=false		
+	def applianceList
+	def applianceFields
+	String applianceName
+	def applianceLabel
+	def applianceTags
+	def applianceCreated
+	def applianceUpdated
+
+	try {
+		neurio.getApplianceList("")
+		applianceList = neurio.currentAppliancesList.toString().minus('[').minus(']').tokenize(',')
+		foundAppliance=true        
+	} catch (any) {
+		log.debug("Not able to get the list of appliances from Neurio")    	
+	}    
+	if (foundAppliance) {
+
+		Date endDate = new Date().clearTime()
+		Date startDate = (endDate -1).clearTime()
+
+		String nowInLocalTime = new Date().format("yyyy-MM-dd HH:mm", location.timeZone)
+		if (settings.trace) {
+			log.debug("get_neurio_appliances_data>yesterday: local date/time= ${nowInLocalTime}, startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
+				"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		}
+		log.debug("list of appliances = $applianceList")    	
+    
+		for (applianceId in applianceList) {
+			log.debug("applianceId=${applianceId}")    	
+			neurio.getApplianceData(applianceId)
+			String applianceData=neurio.currentApplianceData.toString()
+			if (applianceData) {    
+				applianceFields = new JsonSlurper().parseText(applianceData)
+			} else {
+				log.error("get_neurio_appliances_data>applianceData is empty, exiting")
+				return        
+			}    
+			log.debug "get_neurio_appliances_data>applianceFields = $applianceFields"
+
+			if (applianceFields?.size() > 0) {
+				applianceName=applianceFields?.name.toString()
+				applianceLabel=applianceFields?.label
+				applianceTags=applianceFields?.tags
+				applianceCreated=applianceFields?.createdAt
+				applianceUpdated=applianceFields?.updatedAt
+				log.debug "get_neurio_appliances_data>applianceId= ${applianceId}, applianceName=${applianceName}" +
+					",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
+				            
+			}
+			def dni = [app.id, getNeurioApplianceChildName(),applianceName, applianceId].join('.')
+			def d = getChildDevice(dni)
+
+			if (!d) {
+				def labelName = "${getNeurioApplianceChildName()} ${applianceName}"
+
+				log.debug "About to create child device with id $dni, labelName=  ${labelName}"
+				d = addChildDevice(getChildNamespace(), getNeurioApplianceChildName(), dni, null, [label: "${labelName}", completedSetup: true])
+				d.initialSetup(atomicState, applianceId)
+				log.debug "created ${d.displayName} with id $dni"
+			} else {
+				log.debug "initialize>found ${d.displayName} with id $dni already exists"
+			}            
+
+			// generate Appliance stats & events since yesterday
+			d.poll()					
+		} /* end for */            
+        
+	}    
+}
+
+
 private def get_URI_ROOT() {
 	return "https://api.neur.io/v1"
 }
-    
+
+def getNeurioApplianceChildName() {"My Neurio Appliance"}
+
+def getChildNamespace() { "yracine" }
+
+def getChildName() { "My Neurio Device" }
+
+def getServerUrl() { return "https://graph.api.smartthings.com" }
+
+def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" }
+
+def getSmartThingsPrivateKey() { "" }
