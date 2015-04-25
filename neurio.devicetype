@@ -431,10 +431,6 @@ private def doRequest(uri, args, type, success) {
 	} catch (java.net.NoRouteToHostException e) {
 		log.error "doRequest> No route to host - check the URL " + params.uri
 		sendEvent name: "verboseTrace", value: "doRequest> No route to host"
-	} catch (java.io.IOException e) {
-		log.error "doRequest> general or malformed request error " + params
-		sendEvent name: "verboseTrace", value:
-			"doRequest> general or malformed request body error " + params
 	}
 }
 
