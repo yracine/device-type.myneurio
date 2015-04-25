@@ -243,8 +243,8 @@ metadata {
 				)
 		}
        
-		standardTile("refresh", "device.power") {
-			state "default", action:"refresh.refresh", icon:"st.secondary.refresh"
+		standardTile("refresh", "device.power", inactiveLabel: false, decoration: "flat") {
+			state "default", action:"polling.poll", icon:"st.secondary.refresh"
 		}
 
 		main(["power", "energy"])
@@ -365,7 +365,7 @@ private def api(method, args, success={}) {
 		refresh_tokens()
 
 */
-		setAuthTokens()
+		login()
 	}
 	def methods = [
 		'currentUserInfo': 
@@ -429,9 +429,9 @@ private def doRequest(uri, args, type, success) {
 		log.error "doRequest> No route to host - check the URL " + params.uri
 		sendEvent name: "verboseTrace", value: "doRequest> No route to host"
 	} catch (java.io.IOException e) {
-		log.error "doRequest> general or malformed request error " + params.body
+		log.error "doRequest> general or malformed request error " + params
 		sendEvent name: "verboseTrace", value:
-			"doRequest> general or malformed request body error " + params.body
+			"doRequest> general or malformed request body error " + params
 	}
 }
 
@@ -1152,16 +1152,16 @@ private void refreshParentTokens() {
 }
 
 private void login() {
-	if (settings.trace) {
-		log.debug "login> about to call setAuthTokens"
-	}
-	if (data?.auth?.sensorId) {
+	if (data?.auth.sensorId) {
     	// Created by initalSetup
 		if (settings.trace) {
 			log.debug "login> about to call refreshThisChildAuthTokens"
 		}
 		parent.refreshThisChildAuthTokens(this)
 	} else { 
+		if (settings.trace) {
+			log.debug "login> about to call setAuthTokens, data auth=$data?.auth"
+		}
 		setAuthTokens()
 	}    
 	if (!isLoggedIn) {
@@ -1335,11 +1335,13 @@ void initialSetup(device_client_id, auth_data, device_neurio_id) {
 	}	
 	settings.appKey= device_client_id
 	settings.sensorId = device_neurio_id
-
+	settings.trace='true'
 	data?.auth = settings    
 	data.auth.access_token = auth_data.authToken
 	data.auth.expires_in = auth_data.expiresIn
 	data.auth.token_type = auth_data.tokenType
+	data.auth.authexptime= auth_data?.authexptime
+    
 	if (settings.trace) {
 		log.debug "initialSetup> settings = $settings"
 		log.debug "initialSetup> data_auth = $data.auth"
