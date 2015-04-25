@@ -59,7 +59,7 @@ metadata {
 		// Consumed Energy attributes
 
 		attribute "consTotalInPeriod","string"
-		attribute "avgPowerInPeriod","string"
+		attribute "consAvgInPeriod","string"
 		attribute "consEnergyDay","string"
 		attribute "consEnergyWeek","string"
 		attribute "consEnergyMonth","string"
@@ -192,7 +192,7 @@ void poll() {
 	state.lastEndDate=endDate.getTime()   
 	generateApplianceStats("",startDate,endDate,"days",null,'false')
 	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	Long avgPowerInPeriod =  device.currentValue("avgPowerInPeriod").toLong()
+	Long avgPowerInPeriod =  device.currentValue("consAvgInPeriod").toLong()
     
 	def dataEvents = [
 		applianceId:data?.stats[0].appliance.id,
@@ -300,11 +300,7 @@ private def api(method, args, success={}) {
 		if (settings.trace) {
 			log.debug "api> need to refresh tokens"
 		}
-/*
-		refresh_tokens()
-
-*/
-		setAuthTokens()
+		login()
 	}
 	def methods = [
 		'appliancesStats': 
@@ -354,9 +350,9 @@ private def doRequest(uri, args, type, success) {
 		log.error "doRequest> No route to host - check the URL " + params.uri
 		sendEvent name: "verboseTrace", value: "doRequest> No route to host"
 	} catch (java.io.IOException e) {
-		log.error "doRequest> general or malformed request error " + params.body
+		log.error "doRequest> general or malformed request error " + params
 		sendEvent name: "verboseTrace", value:
-			"doRequest> general or malformed request body error " + params.body
+			"doRequest> general or malformed request body error " + params
 	}
 }
 
@@ -559,8 +555,8 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 	}
 	def applianceStatsEvents = [
 		applianceStatsData: "${applianceStatsJson.toString()}",
-		avgPowerInPeriod:avgPower,       
-		consTotalInPeriod:totalConsumedEnergy
+		consAvgInPeriod:avgPower.toString(),       
+		consTotalInPeriod:totalConsumedEnergy.toString()
 	]
 	if (settings.trace) {
 		log.debug "generateApplianceStats>applianceStatsEvents to be sent= ${applianceStatsEvents}"
@@ -774,7 +770,7 @@ private def determine_appliance_id(appliance_id) {
 	if ((appliance_id != null) && (appliance_id != "")) {
 		applianceId = appliance_id.trim()
 	} else {
-		applianceId=data?.auth.applianceId
+		applianceId=data?.auth?.applianceId
 		if (settings.trace) {
 			log.debug "determine_appliance_id> applianceId from data.auth.appliance.id"
 		}
