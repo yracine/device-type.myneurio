@@ -198,7 +198,6 @@ void poll() {
 		applianceId:data?.stats[0].appliance.id,
 		applianceName:data?.stats[0].appliance?.name,
 		applianceLabel:data?.stats[0].appliance?.label,
-		applianceTags:data?.stats[0].appliance?.tags,
 		applianceCreatedAt:data?.stats[0].appliance.createdAt,
 		applianceUpdatedAt:data?.stats[0].appliance?.UpdatedAt,
 		applianceTimeOn:data?.stats[0].appliance?.timeOn,
@@ -277,12 +276,19 @@ private void generateEvent(Map results)
 
 private def getEnergy(value) {
 
+	if (value ==null) {
+		return 0    
+	}
 	// conversion from watts-sec to KWh 
 	return (value/ (60*60*1000))
 }
 
 private def getTimeInMinutes(value) {
 
+	if (value ==null) {
+		return 0    
+	}
+    
 	// conversion from sec to minutes 
 	return (value/ 60)
 }
