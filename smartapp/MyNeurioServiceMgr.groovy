@@ -363,9 +363,10 @@ def takeAction() {
 		def d = getChildDevice(dni)
 		log.debug "takeAction>looping thru Neurio Sensors, found id $dni, about to poll"
 		d.poll()
+/*        
 		log.debug "takeAction>about to get Neurio Appliance data and instantiate Appliance objects"
 		get_neurio_appliances_data(d)
-    
+*/    
 	}
     
 
@@ -398,12 +399,6 @@ def buildRedirectUrl(action = "swapToken")
 		serverUrl + "/api/token/${atomicState.accessToken}/smartapps/installations/${app.id}/${action}"
 	return serverUrl + "/api/token/${atomicState.accessToken}/smartapps/installations/${app.id}/${action}"
 }
-/*
-def buildRedirectUrl() {
-	log.debug "buildRedirectUrl, atomicState.accessToken=${atomicState.accessToken}"
-	return serverUrl + "/api/token/${atomicState.accessToken}/smartapps/installations/${app.id}/swapToken"
-}
-*/
 def swapToken() {
 	log.debug "swapping token: $params"
 	debugEvent ("swapping token: $params", true)
@@ -506,7 +501,7 @@ def swapToken() {
 </head>
 <body>
 	<div class="container">
-		<img src="https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png" alt="neurio icon" />
+		<img src="https://s3-us-west-2.amazonaws.com/neurio/community/NeurioAppLogo72x72.png" width="216" height="216" alt="neurio icon" />
 		<img src="https://s3.amazonaws.com/smartapp-icons/Partner/support/connected-device-icn%402x.png" alt="connected device icon" />
 		<img src="https://s3.amazonaws.com/smartapp-icons/Partner/support/st-logo%402x.png" alt="SmartThings logo" />
 		<p>Your Neurio Account is now connected to SmartThings!</p>
@@ -544,7 +539,7 @@ def debugEvent(message, displayEvent) {
 }
 
     
-private def get_neurio_appliances_data(neurio) {
+private void get_neurio_appliances_data(neurio) {
 	Boolean foundAppliance=false		
 	def applianceList
 	def applianceFields
@@ -601,7 +596,7 @@ private def get_neurio_appliances_data(neurio) {
 				def labelName = "${getNeurioApplianceChildName()} ${applianceLabel}"
 
 				log.debug "About to create child device with id $dni, labelName=  ${labelName}"
-				d = addChildDevice(getChildNamespace(), getNeurioApplianceChildName(), dni, null, [label: "${labelName}", completedSetup: true])
+				d = addChildDevice(getChildNamespace(), getNeurioApplianceChildName(), dni, null, [label: "${labelName}"])
 				d.initialSetup(atomicState, applianceId)
 				log.debug "created ${d.displayName} with id $dni"
 			} else {
@@ -630,4 +625,4 @@ def getServerUrl() { return "https://graph.api.smartthings.com" }
 
 def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" }
 
-def getSmartThingsPrivateKey() { "" }
+def getSmartThingsPrivateKey() {  }
