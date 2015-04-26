@@ -394,7 +394,6 @@ private def delete_child_devices() {
 
 private def create_child_devices() {
 
-   	int i =0
 	def devices = NeurioSensors.collect { dni ->
 
 		def d = getChildDevice(dni)
@@ -402,14 +401,10 @@ private def create_child_devices() {
 
 		if(!d)
 		{
-			log.debug "atomicState (i=$i) $atomicState "
+			log.debug "atomicState $atomicState "
 			def neurio_info  = dni.tokenize('.')
 			def sensorId = neurio_info.last()
  			def locationName = neurio_info[1]
-/*            
-			i++		// Used to simulate many Neurio Devices
-			def labelName = 'My Neurio ' + "${name}:${sensorId}_${i}"
-*/                    
 			def labelName = 'My Neurio ' + "${locationName}:${sensorId}"
 			log.debug "About to create child device with id $dni, sensorId = $sensorId, locationName=  ${locationName}"
 			d = addChildDevice(getChildNamespace(), getChildName(), dni, null,
