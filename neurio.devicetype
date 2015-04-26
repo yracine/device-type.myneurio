@@ -1163,9 +1163,9 @@ private void login() {
 		}
 		setAuthTokens()
 	}    
-	if (!isLoggedIn) {
+	if (!isLoggedIn()) {
 		if (settings.trace) {
-			log.debug "login> no access_token..., failed"
+			log.debug "login> no auth_token..., failed"
 		}
 		return
 	}
