@@ -688,13 +688,14 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 			if (statusCode == NEURIO_SUCCESS) {
 				if (resp.data !=[]) {            	
  					data.events=resp.data
-					data.appliance_events.each {	
-						applianceId= it.appliance.id
+					data.events.each {	
+						if (settings.trace) {
+							log.debug "generateApplianceEvents>looping on events for applianceId=${applianceId}" 
+							sendEvent name: verboseTrace, value:"generateApplianceEvents>looping on events for applianceId=${applianceId}"                
+						}                
 						def applianceName= it.appliance?.name
 						def applianceLabel= it.appliance?.label
 						def applianceTags= it.appliance?.tags
-						def applianceCreated= it.appliance?.createdAt
-						def applianceUpdated= it.appliance?.updatedAt
 						def eventGuesses= it?.guesses
 						def eventEnergy= it?.energy
 						def eventAvgPower= it?.averagePower 
@@ -714,12 +715,12 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 						]
 						if (settings.trace) {
 							log.debug "generateApplianceEvents>applianceId= ${applianceId},applianceName=${applianceName}" +
-								",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated},updated=${applianceUpdated}," +
+								",applianceLabel=${applianceLabel},applianceTags=${applianceTags}," +
 								"eventAvgPower=${eventAvgPower},eventGuesses=${eventGuesses}," +
 								"eventEnergy=${eventEnergy},eventStart=${eventStart},eventEnd=${eventEnd}" +
 								"eventStatus=${eventStatus},eventIsConfirmed=${eventIsConfirmed}" 
 							sendEvent name: "verboseTrace", value:"generateApplianceEvents>applianceId= ${applianceId},applianceName=${applianceName}" +
-								",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated},updated=${applianceUpdated}," +
+								",applianceLabel=${applianceLabel},applianceTags=${applianceTags}," +
 								"eventAvgPower=${eventAvgPower},eventGuesses=${eventGuesses}," +
 								"eventEnergy=${eventEnergy},eventStart=${eventStart},eventEnd=${eventEnd}" +
 								"eventStatus=${eventStatus},eventIsConfirmed=${eventIsConfirmed}" 
