@@ -81,13 +81,15 @@ The smartapp will ask you to authenticate on the Neurio portal (by pressing on M
 after the authentication, will show you the list of sensor(s) under your Neurio Account (by pressing 'Next' at the top right
 corner). 
 
-You can then select the sensor(s) to be exposed to SmartThings.
+On the next page, you can then select the sensor(s) to be exposed to SmartThings.
 
-After pressing 'Done', il will instantiate the MyNeurio object under 
+After pressing 'Next', on the following page, you can also select the appliance(s) to be exposed to SmartThings.
+
+After pressing 'Done', il will instantiate the MyNeurio and My appliances objects under 
 
 https://graph.api.smartthings.com/device/list
 
-You can click on any new My Neurio object created and see its attributes populated.
+You can click on any new My Neurio and My Appliance objects created and see their populated attributes.
 
 
 *************************************************
