@@ -183,7 +183,7 @@ void poll() {
     
 	if (settings.trace) {
 		sendEvent name: "verboseTrace", value:
-			"poll>applianceId = ${applianceId}"
+			"poll>applianceId = ${applianceId},about to call getApplianceData()"
 		log.debug "poll>applianceId = ${applianceId}, about to call getApplianceData()"
 	}
 	getApplianceData(applianceId)
@@ -193,6 +193,11 @@ void poll() {
 		startDate= endDate -1        
 	}    
 	state.lastEndDate=endDate.getTime()   
+	if (settings.trace) {
+		sendEvent name: "verboseTrace", value:
+			"poll>applianceId = ${applianceId} about to call generateApplianceStats"
+		log.debug "poll>applianceId = ${applianceId}, about to call generateApplianceStats()"
+	}
 	generateApplianceStats("",startDate,endDate,"days",null,'false')
 	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
 	Long avgPowerInPeriod =  device.currentValue("consAvgInPeriod").toLong()
@@ -203,20 +208,43 @@ void poll() {
 		applianceLabel:data?.appliance?.label,
 		applianceCreatedAt:data?.appliance?.createdAt,
 		applianceUpdatedAt:data?.appliance?.updatedAt,
-		applianceEventCount:data?.stats[0].appliance?.eventCount,
-		applianceTimeOn:data?.stats[0].appliance?.timeOn,
 		power:avgPowerInPeriod,
 		energy:consTotalInPeriod
 	]
+
+	try {
+		if (data?.stats[0]?.appliance?.eventCount) {
+			dataEvents = dataEvents + [applianceEventCount: data.stats[0].appliance.eventCount]
+		}		
+		if (data?.stats[0]?.appliance?.timeOn) {
+			dataEvents = dataEvents + [applianceTimeOn: data.stats[0].appliance.timeOn]
+		}
+	} catch (any) {
+		log.debug ("poll>applianceId = ${applianceId}, missing some stats values")    
+		exit
+	}    
+	if (settings.trace) {
+		sendEvent name: "verboseTrace", value:
+			"poll>applianceId = ${applianceId}, about to call generateEvent()"
+		log.debug "poll>applianceId = ${applianceId}, about to call generateEvent()"
+	}
 	generateEvent(dataEvents)
-	generateApplianceEvents("",startDate,endDate,"",'true')
+    
 	String nowInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
         
 	// generate the stats only once every day
     
 	if (state.lastGeneratedStatsDate != nowInLocalTime) {
 		if (settings.trace) {
-			log.debug "api> about to generateSampleStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
+			sendEvent name: "verboseTrace", value:
+				"poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
+			log.debug "poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
+		}
+		generateApplianceEvents("",startDate,endDate,"",'true')
+		if (settings.trace) {
+			sendEvent name: "verboseTrace", value:
+				"poll> about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
+			log.debug "poll> about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
 		}
 		    
 		generateApplianceAllStats("")
@@ -229,7 +257,7 @@ void poll() {
 private void generateEvent(Map results)
 {
 	if (settings.trace) {
-		log.debug "generateEvents>parsing data $results"
+		log.debug "generateEvent>parsing data $results"
 	}
     
 	if(results)
@@ -473,6 +501,8 @@ void getApplianceData(applianceId) {
 					def applianceTags=data.appliance?.tags
 					def applianceCreated=data.appliance?.createdAt
 					def applianceUpdated=data.appliance?.updatedAt
+					log.debug "getApplianceData>applianceId= ${applianceId}, applianceName=${applianceName}" +
+						",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
 					                    
 					sendEvent name: "verboseTrace", value:"getApplianceData>applianceId= ${applianceId}, applianceName=${applianceName}" +
 						",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
@@ -566,6 +596,10 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 							nbAvgPowerRecords++                            
 						}                        
 						if (settings.trace) {
+							log.debug "generateApplianceStats>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
+								",applianceLabel=${applianceLabel},applianceTags=${applianceTags}.created=${applianceCreated},updated=${applianceUpdated}," +
+								"applianceAvgPower=${applianceAvgPower},applianceEventCount=${applianceEventCount}," +
+								"applianceEnergy=${applianceEnergy},statsStart=${statsStart},statsEnd=${statsEnd}" 
 							sendEvent name: "verboseTrace", value:"generateApplianceStats>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
 								",applianceLabel=${applianceLabel},applianceTags=${applianceTags}.created=${applianceCreated},updated=${applianceUpdated}," +
 								"applianceAvgPower=${applianceAvgPower},applianceEventCount=${applianceEventCount}," +
@@ -762,9 +796,9 @@ private void login() {
 	} else { 
 		log.error("login>error, not created by initialSetup")
 	}    
-	if (!isLoggedIn) {
+	if (!isLoggedIn()) {
 		if (settings.trace) {
-			log.debug "login> no access_token..., failed"
+			log.debug "login> no auth_token..., failed"
 		}
 		return
 	}
@@ -848,10 +882,10 @@ void initialSetup(auth_data, device_neurio_id) {
 	if (settings.trace) {
 		log.debug "initialSetup> settings = $settings"
 		log.debug "initialSetup> data_auth = $data.auth"
-		log.debug "initialSetup> about to call poll()"
+		log.debug "initialSetup> about to call getApplianceData()"
 
 	}
-	poll()
+	getApplianceData(settings.applianceId)
     
 	if (settings.trace) {
 		log.debug "initialSetup>end"
