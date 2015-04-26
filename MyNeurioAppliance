@@ -206,6 +206,7 @@ void poll() {
 		applianceId:data?.appliance?.id,
 		applianceName:data?.appliance?.name,
 		applianceLabel:data?.appliance?.label,
+		applianceTags:data?.appliance?.tags.toString().minus('[').minus(']'),
 		applianceCreatedAt:data?.appliance?.createdAt,
 		applianceUpdatedAt:data?.appliance?.updatedAt,
 		power:avgPowerInPeriod,
@@ -884,8 +885,10 @@ void initialSetup(auth_data, device_neurio_id) {
 		log.debug "initialSetup> about to call getApplianceData()"
 
 	}
+/*    
 	getApplianceData(settings.applianceId)
-    
+*/
+	poll()
 	if (settings.trace) {
 		log.debug "initialSetup>end"
 	}
