@@ -557,18 +557,6 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 						def statsEnd= it?.end
 						if (postData=='true') {                    
 							applianceStatsData << it
-/*                            
-							applianceStatsData << it?.id 
-                            applianceStatsData << it.name 
-                            applianceStatsData << it.label
-                            applianceStatsData << it.createdAt 
-                            applianceStatsData << it.updatedAt 
-                            applianceStatsData << it?.averagePower 
-                            applianceStatsData << it?.eventCount 
-                            applianceStatsData << it?.energy 
-                            applianceStatsData << it?.start 
-                            applianceStatsData << it?.end 
-*/                            
 						}                            
 						if (applianceEnergy) {
 							totalConsumedEnergy =totalConsumedEnergy + applianceEnergy.toLong()
@@ -664,7 +652,7 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 			if (statusCode == NEURIO_SUCCESS) {
 				if (resp.data !=[]) {            	
  					data.events=resp.data
-					data.events.each {	
+					data.appliance_events.each {	
 						applianceId= it.appliance.id
 						def applianceName= it.appliance?.name
 						def applianceLabel= it.appliance?.label
@@ -688,21 +676,9 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 							eventAvgPower: eventAvgPower,
 							eventEnergy: eventEnergy
 							]
+						generateEvent(applianceEvents)
 						if (postData=='true') {                    
 							applianceEventsData << it
-/*                            
-                            applianceEventsData << it.appliance?.name
-                            applianceEventsData << it.appliance?.label
-                            applianceEventsData << it.appliance?.createdAt
-                            applianceEventsData << it.appliance?.updatedAt
-                            applianceEventsData << it?.energy
-                            applianceEventsData << it?.averagePower
-                            applianceEventsData << it?.start
-                            applianceEventsData << it?.end
-                            applianceEventsData << it?.status
-                            applianceEventsData << it?.isConfirmed 
-                            applianceEventsData << it?.cycleCount  
-*/                            
 						}                            
 						if (settings.trace) {
 							log.debug "generateApplianceEvents>applianceEvents to be sent= ${applianceEvents}"
@@ -736,7 +712,7 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 	if (settings.trace) {
 		log.debug "generateApplianceEvents>applianceEventsJson=${applianceEventsJson}"
 	}
-	applianceEvents = applianceEvents + [applianceEventsData: "${applianceEventsJson.toString()}"]
+	applianceEvents =[applianceEventsData: "${applianceEventsJson.toString()}"]
 	if (settings.trace) {
 		log.debug "generateApplianceEvents>applianceEvents to be sent= ${applianceEvents}"
 	}
@@ -867,13 +843,19 @@ void initialSetup(auth_data, device_neurio_id) {
 	data.auth.access_token = auth_data.authToken
 	data.auth.expires_in = auth_data.expiresIn
 	data.auth.token_type = auth_data.tokenType
+
+	state.lastEndDate= (new Date() -1).getTime()     
 	if (settings.trace) {
 		log.debug "initialSetup> settings = $settings"
 		log.debug "initialSetup> data_auth = $data.auth"
+		log.debug "initialSetup> about to call poll()"
+
+	}
+	poll()
+    
+	if (settings.trace) {
 		log.debug "initialSetup>end"
 	}
-	state.lastEndDate=now()      
-	generateApplianceAllStats(device_neurio_id)
 }
 
 def toQueryString(Map m) {
