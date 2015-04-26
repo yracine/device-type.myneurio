@@ -180,12 +180,13 @@ void poll() {
     
 	
 	def applianceId= determine_appliance_id("") 	    
-	getApplianceData(applianceId)
     
 	if (settings.trace) {
 		sendEvent name: "verboseTrace", value:
-			"poll>sensorId = ${applianceId}"
+			"poll>applianceId = ${applianceId}"
+		log.debug "poll>applianceId = ${applianceId}, about to call getApplianceData()"
 	}
+	getApplianceData(applianceId)
 	Date endDate = new Date()
 	Date startDate = new Date(state.lastEndDate)    
 	if ((!startDate) || (endDate - startDate>1)) {
