@@ -292,7 +292,7 @@ private def getNeurioAppliances(locationId) {
 		log.error "getNeurioSensors> No route to host - check the URL " + deviceListParams.uri
     }
 
-	log.debug "sensors: $appliances"
+	log.debug "appliances: $appliances"
 
 	return appliances
 }
@@ -434,7 +434,6 @@ private def create_child_devices() {
 
 private def create_child_appliances() {
 
-   	int i =0
 	    
 	def devices = NeurioAppliances.collect { dni ->
 
