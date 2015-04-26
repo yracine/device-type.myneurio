@@ -701,22 +701,22 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 						def eventStatus= it?.status
 						def eventIsConfirmed= it?.isConfirmed
 						def eventCycleCount= it?.cycleCount
-						applianceEvents = applianceEvents + [
+						applianceEvents = [
 							eventStart:eventStart,                            
 							eventEnd:eventEnd,
 							eventStatus:eventStatus,
 							eventIsConfirmed:eventIsConfirmed,
 							eventCycleCount:eventCycleCount,							                            
 							eventAvgPower: eventAvgPower,
-							eventEnergy: eventEnergy
-							]
+\							eventEnergy: eventEnergy
+						]
+						if (settings.trace) {
+							log.debug "generateApplianceEvents>applianceEvents to be sent= ${applianceEvents}"
+						}
 						generateEvent(applianceEvents)
 						if (postData=='true') {                    
 							applianceEventsData << it
 						}                            
-						if (settings.trace) {
-							log.debug "generateApplianceEvents>applianceEvents to be sent= ${applianceEvents}"
-						}
     
 						if (settings.trace) {
 							sendEvent name: "verboseTrace", value:"generateApplianceEvents>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
