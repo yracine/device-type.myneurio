@@ -695,7 +695,7 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 						def applianceTags= it.appliance?.tags
 						def applianceCreated= it.appliance?.createdAt
 						def applianceUpdated= it.appliance?.updatedAt
-						def applianceEventGuesses= it?.guesses
+						def eventGuesses= it?.guesses
 						def eventEnergy= it?.energy
 						def eventAvgPower= it?.averagePower 
 						def eventStart= it?.start
@@ -713,6 +713,16 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 							eventEnergy: eventEnergy
 						]
 						if (settings.trace) {
+							log.debug "generateApplianceEvents>applianceId= ${applianceId},applianceName=${applianceName}" +
+								",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated},updated=${applianceUpdated}," +
+								"eventAvgPower=${eventAvgPower},eventGuesses=${eventGuesses}," +
+								"eventEnergy=${eventEnergy},eventStart=${eventStart},eventEnd=${eventEnd}" +
+								"eventStatus=${eventStatus},eventIsConfirmed=${eventIsConfirmed}" 
+							sendEvent name: "verboseTrace", value:"generateApplianceEvents>applianceId= ${applianceId},applianceName=${applianceName}" +
+								",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated},updated=${applianceUpdated}," +
+								"eventAvgPower=${eventAvgPower},eventGuesses=${eventGuesses}," +
+								"eventEnergy=${eventEnergy},eventStart=${eventStart},eventEnd=${eventEnd}" +
+								"eventStatus=${eventStatus},eventIsConfirmed=${eventIsConfirmed}" 
 							log.debug "generateApplianceEvents>applianceEvents to be sent= ${applianceEvents}"
 						}
 						generateEvent(applianceEvents)
@@ -720,13 +730,6 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 							applianceEventsData << it
 						}                            
     
-						if (settings.trace) {
-							sendEvent name: "verboseTrace", value:"generateApplianceEvents>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
-								",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated},updated=${applianceUpdated}," +
-								"applianceAvgPower=${applianceAvgPower},applianceEventGuesses=${applianceEventGuesses}," +
-								"applianceEnergy=${applianceEnergy},eventStart=${eventStart},eventEnd=${eventEnd}" +
-								"eventStatus=${eventStatus},eventIsConfirmed=${eventIsConfirmed}" 
-						}                                
 					} /* end each event */
 				} 
 			} else {
