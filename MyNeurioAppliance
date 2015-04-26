@@ -230,6 +230,15 @@ void poll() {
 	}
 	generateEvent(dataEvents)
     
+
+	if (settings.trace) {
+		sendEvent name: "verboseTrace", value:
+			"poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
+		log.debug "poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
+	}
+	generateApplianceEvents("",startDate,endDate,"",'true')
+		    
+
 	String nowInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
         
 	// generate the stats only once every day
@@ -237,16 +246,9 @@ void poll() {
 	if (state.lastGeneratedStatsDate != nowInLocalTime) {
 		if (settings.trace) {
 			sendEvent name: "verboseTrace", value:
-				"poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
-			log.debug "poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
-		}
-		generateApplianceEvents("",startDate,endDate,"",'true')
-		if (settings.trace) {
-			sendEvent name: "verboseTrace", value:
 				"poll> about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
 			log.debug "poll> about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
 		}
-		    
 		generateApplianceAllStats("")
 		state.lastGeneratedStatsDate= nowInLocalTime       
 	}
@@ -708,7 +710,7 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 							eventIsConfirmed:eventIsConfirmed,
 							eventCycleCount:eventCycleCount,							                            
 							eventAvgPower: eventAvgPower,
-\							eventEnergy: eventEnergy
+							eventEnergy: eventEnergy
 						]
 						if (settings.trace) {
 							log.debug "generateApplianceEvents>applianceEvents to be sent= ${applianceEvents}"
