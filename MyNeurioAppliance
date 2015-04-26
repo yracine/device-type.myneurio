@@ -218,10 +218,9 @@ void poll() {
 		}		
 		if (data?.stats[0]?.appliance?.timeOn) {
 			dataEvents = dataEvents + [applianceTimeOn: data.stats[0].appliance.timeOn]
-		}
-	} catch (any) {
+		}		
+	} catch(any) {
 		log.debug ("poll>applianceId = ${applianceId}, missing some stats values")    
-		exit
 	}    
 	if (settings.trace) {
 		sendEvent name: "verboseTrace", value:
