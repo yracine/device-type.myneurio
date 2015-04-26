@@ -32,7 +32,8 @@ definition(
 preferences {
 	page(name: "about", title: "About", nextPage: "auth")
 	page(name: "auth", title: "Neurio", content:"authPage", nextPage:"deviceList")
-	page(name: "deviceList", title: "Neurio", content:"NeurioDeviceList", install:true)
+	page(name: "deviceList", title: "Neurio", content:"NeurioDeviceList")
+	page(name: "applianceList", title: "Neurio Appliances", content:"NeurioApplianceList", install:true)
 }
 
 mappings {
@@ -138,7 +139,7 @@ def NeurioDeviceList() {
 
 	log.debug "device list: $neurioSensors"
 
-	def p = dynamicPage(name: "deviceList", title: "Select Your Sensor(s)", uninstall: true) {
+	def p = dynamicPage(name: "deviceList", title: "Select Your Sensor(s)",nextPage:"applianceList") {
 		section(""){
 			paragraph "Tap below to see the list of Neurio Sensors available in your Neurio account and select the ones you want to connect to SmartThings."
 			input(name: "NeurioSensors", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioSensors])
@@ -149,6 +150,27 @@ def NeurioDeviceList() {
 	return p
 }
 
+
+def NeurioApplianceList() {
+	log.debug "NeurioApplianceList()"
+
+    
+	def neurioAppliances = getNeurioAppliances(state.locationId)
+
+	log.debug "device list: $neurioAppliances"
+
+	def p = dynamicPage(name: "applianceList", title: "Select Your Appliance(s)", uninstall: true) {
+		section(""){
+			paragraph "Tap below to see the list of Neurio Appliances available in your Neurio account and select the ones you want to connect to SmartThings."
+			input(name: "NeurioAppliances", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioAppliances])
+		}
+	}
+
+	log.debug "list p: $p"
+	return p
+}
+
+
 def getNeurioSensors() {
 	def NEURIO_SUCCESS=200
 
@@ -157,7 +179,7 @@ def getNeurioSensors() {
 		uri: "${get_URI_ROOT()}/users/current",
 		headers: ["Authorization": "Bearer ${atomicState.authToken}"],
 		Accept: "application/json",
-		charset: "UTF-8"
+		charset: "UTF-8",
 	]
 
 	log.debug "_______AUTH______ ${atomicState.authToken}"
@@ -188,10 +210,15 @@ def getNeurioSensors() {
 					def locationName = it.name
 					def timezone = it.timezone
 					log.debug "getNeurioSensors>found locationId=${locationId},name=${locationName},timezone=${timezone}"
+
+					// save the locationId and locationName for dni reference
+					state.locationId= locationId
+					state.locationName=locationName                    
+
 					it.sensors.each {
 						def sensorId = it.id
 						def sensorType = it.sensorType
-						def dni = [ app.id, locationName, sensorType, sensorId, ].join('.')
+						def dni = [ app.id, locationName, sensorId, ].join('.')
 						sensors[dni] = sensorId
 						log.debug "getNeurioSensors>sensorId=${sensorId},type=${sensorType}"
 					} /* end each sensor */                        
@@ -207,15 +234,69 @@ def getNeurioSensors() {
 		log.error "getNeurioSensors> Unknown host - check the URL " + deviceListParams.uri
 	} catch (java.net.NoRouteToHostException t) {
 		log.error "getNeurioSensors> No route to host - check the URL " + deviceListParams.uri
-	} catch (java.io.IOException e) {
-		log.error "getNeurioSensors> malformed request " +
-			deviceListParams
     }
 
 	log.debug "sensors: $sensors"
 
 	return sensors
 }
+
+
+private def getNeurioAppliances(locationId) {
+
+	def args = "locationId=" + locationId 
+	def NEURIO_SUCCESS=200
+
+	log.debug "getting Neurio Appliances list"
+	def deviceListParams = [
+		uri: "${get_URI_ROOT()}/appliances?${args}",
+		headers: ["Authorization": "Bearer ${atomicState.authToken}"],
+		Accept: "application/json",
+		charset: "UTF-8",
+	]
+
+	log.debug "_______AUTH______ ${atomicState.authToken}"
+	log.debug "device list params: $deviceListParams"
+
+	def appliances = [:]
+	try {
+		httpGet(deviceListParams) { resp ->
+
+			if (resp.status == NEURIO_SUCCESS) {
+/*        
+				int i=0    // Used to simulate many sensors
+*/
+				log.debug "getNeurioAppliances>resp data = ${resp.data}" 
+				def jsonMap =resp.data
+				jsonMap.each {
+                
+					def applianceId= it.id
+					def applianceName= it?.name
+					def applianceLabel= it?.label
+					def applianceCreated= it?.createdAt
+					def applianceUpdated= it?.updatedAt
+
+					def dni = [app.id, state.locationName ,applianceLabel, applianceId].join('.')
+					appliances[dni] = applianceLabel
+				}				                
+			} else {
+				log.debug "http status: ${resp.status}"
+
+				log.error "Authentication error, invalid authentication method, lack of credentials, etc."
+			}
+            
+    		}        
+	} catch (java.net.UnknownHostException e) {
+		log.error "getNeurioSensors> Unknown host - check the URL " + deviceListParams.uri
+	} catch (java.net.NoRouteToHostException t) {
+		log.error "getNeurioSensors> No route to host - check the URL " + deviceListParams.uri
+    }
+
+	log.debug "sensors: $appliances"
+
+	return appliances
+}
+
 
 def setParentAuthTokens(auth_data) {
 /*
@@ -287,6 +368,8 @@ def updated() {
 
 private def delete_child_devices() {
 	def delete
+	def deleteAppliances
+    
 	// Delete any that are no longer in settings
 	if(!NeurioSensors)
 	{
@@ -296,12 +379,18 @@ private def delete_child_devices() {
 	else
 	{
 		delete = getChildDevices().findAll { !NeurioSensors.contains(it.deviceNetworkId) }
+		log.debug "deleting ${delete.size()} Neurio Sensors"
+		deleteAppliances = getChildDevices().findAll { !NeurioAppliances.contains(it.deviceNetworkId) }
+		log.debug "deleting ${deleteAppliances.size()} Neurio Appliances"
 	}
 
-	log.debug "deleting ${delete.size()} Neurio Sensors"
 	delete.each { deleteChildDevice(it.deviceNetworkId) }
+	deleteAppliances.each { deleteChildDevice(it.deviceNetworkId) }
 
 }
+
+
+
 
 private def create_child_devices() {
 
@@ -316,27 +405,64 @@ private def create_child_devices() {
 			log.debug "atomicState (i=$i) $atomicState "
 			def neurio_info  = dni.tokenize('.')
 			def sensorId = neurio_info.last()
- 			def name = neurio_info[1]
- 			def type = neurio_info[2]
+ 			def locationName = neurio_info[1]
 /*            
 			i++		// Used to simulate many Neurio Devices
 			def labelName = 'My Neurio ' + "${name}:${sensorId}_${i}"
 */                    
-			def labelName = 'My Neurio ' + "${name}:${sensorId}"
-			log.debug "About to create child device with id $dni, sensorId = $sensorId, name=  ${name}"
+			def labelName = 'My Neurio ' + "${locationName}:${sensorId}"
+			log.debug "About to create child device with id $dni, sensorId = $sensorId, locationName=  ${locationName}"
 			d = addChildDevice(getChildNamespace(), getChildName(), dni, null,
 				[label: "${labelName}"]) 
 			d.initialSetup( getSmartThingsClientId(), atomicState, sensorId ) 	// initial setup of the Child Device
 			log.debug "created ${d.displayName} with id $dni"
-		}
-		else
-		{
+            
+		} else {
 			log.debug "found ${d.displayName} with id $dni already exists"
 		}
 
 	}
 
 	log.debug "created ${devices.size()} Neurio sensors"
+
+	create_child_appliances()        
+
+
+}
+
+
+
+private def create_child_appliances() {
+
+   	int i =0
+	    
+	def devices = NeurioAppliances.collect { dni ->
+
+		log.debug "Looping thru Neurio Sensors, found id $dni"
+
+		def neurio_info  = dni.tokenize('.')
+		def applianceId = neurio_info.last()
+ 		def locationName = neurio_info[1]
+ 		def applianceLabel = neurio_info[2]
+		def d = getChildDevice(dni)
+		if(!d)
+		{
+			log.debug "atomicState (i=$i) $atomicState "
+            
+			def labelName = 'My Appliance ' + "${locationName}:${applianceLabel}"
+			log.debug "About to create child device with id $dni, locationName = $locationName, applianceLabel=  ${applianceLabel}"
+			d = addChildDevice(getChildNamespace(), getNeurioApplianceChildName(), dni, null,
+				[label: "${labelName}"]) 
+			d.initialSetup(atomicState, applianceId ) 	// initial setup of the Child Device
+			log.debug "created ${d.displayName} with id $dni"
+		} else {
+        
+			log.debug "found ${d.displayName} with id $dni already exists"
+		}
+	}
+
+
+	log.debug "created ${devices.size()} Neurio appliances"
 
 
 
@@ -348,6 +474,7 @@ def initialize() {
 
 	delete_child_devices()	
 	create_child_devices()
+    
     
 	takeAction()
 	// set up internal poll timer
@@ -363,10 +490,10 @@ def takeAction() {
 		def d = getChildDevice(dni)
 		log.debug "takeAction>looping thru Neurio Sensors, found id $dni, about to poll"
 		d.poll()
-/*        
-		log.debug "takeAction>about to get Neurio Appliance data and instantiate Appliance objects"
+        
+		log.debug "takeAction>about to get Neurio Appliance data and update Appliance objects"
 		get_neurio_appliances_data(d)
-*/    
+    
 	}
     
 
@@ -558,14 +685,6 @@ private void get_neurio_appliances_data(neurio) {
 	}    
 	if (foundAppliance) {
 
-		Date endDate = new Date().clearTime()
-		Date startDate = (endDate -1).clearTime()
-
-		String nowInLocalTime = new Date().format("yyyy-MM-dd HH:mm", location.timeZone)
-		if (settings.trace) {
-			log.debug("get_neurio_appliances_data>yesterday: local date/time= ${nowInLocalTime}, startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-				"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
-		}
 		log.debug("list of appliances = $applianceList")    	
     
 		for (applianceId in applianceList) {
@@ -587,24 +706,19 @@ private void get_neurio_appliances_data(neurio) {
 				applianceUpdated=applianceFields?.updatedAt
 				log.debug "get_neurio_appliances_data>applianceId= ${applianceId}, applianceName=${applianceName}" +
 					",applianceLabel=${applianceLabel},created=${applianceCreated}, updated=${applianceUpdated}"
-				            
+				
+				def locationName = neurio.currentLocationName                
+				def dni = [app.id, locationName,applianceLabel, applianceId].join('.')
+				def d = getChildDevice(dni)
+				if (d) {
+					log.debug "get_neurio_appliances_data>found ${d.displayName} with id $dni already exists, polling the object"
+					d.poll()					
+				} else {
+					log.debug "get_neurio_appliances_data>didn't find dni ${dni}, probably not instantiated originally"
+            
+				}            
 			}
-			def dni = [app.id, getNeurioApplianceChildName(),applianceLabel, applianceId].join('.')
-			def d = getChildDevice(dni)
 
-			if (!d) {
-				def labelName = "${getNeurioApplianceChildName()} ${applianceLabel}"
-
-				log.debug "About to create child device with id $dni, labelName=  ${labelName}"
-				d = addChildDevice(getChildNamespace(), getNeurioApplianceChildName(), dni, null, [label: "${labelName}"])
-				d.initialSetup(atomicState, applianceId)
-				log.debug "created ${d.displayName} with id $dni"
-			} else {
-				log.debug "initialize>found ${d.displayName} with id $dni already exists"
-			}            
-
-			// generate Appliance stats & events since yesterday
-			d.poll()					
 		} /* end for */            
         
 	}    
@@ -625,4 +739,4 @@ def getServerUrl() { return "https://graph.api.smartthings.com" }
 
 def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" }
 
-def getSmartThingsPrivateKey() {  }
+def getSmartThingsPrivateKey() { "Insert private key here!" }
