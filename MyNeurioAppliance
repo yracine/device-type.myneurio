@@ -197,15 +197,16 @@ void poll() {
     
 	def dataEvents = [
 		applianceId:data?.stats[0].appliance.id,
+		applianceName:data?.stats[0].appliance?.name,
 		applianceLabel:data?.stats[0].appliance?.label,
-		applianceCreatedAt:data?.stats[0].appliance.createdAt,
+		applianceCreatedAt:data?.stats[0].appliance?.createdAt,
 		applianceUpdatedAt:data?.stats[0].appliance?.UpdatedAt,
 		applianceTimeOn:data?.stats[0].appliance?.timeOn,
 		power:avgPowerInPeriod,
 		energy:consTotalInPeriod
 	]
 	generateEvent(dataEvents)
-	generateApplianceEvents("",startDate,endDate,"",'false')
+	generateApplianceEvents("",startDate,endDate,"",'true')
 	String nowInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
         
 	// generate the stats only once every day
