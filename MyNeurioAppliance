@@ -180,6 +180,7 @@ void poll() {
     
 	
 	def applianceId= determine_appliance_id("") 	    
+	getApplianceData(applianceId)
     
 	if (settings.trace) {
 		sendEvent name: "verboseTrace", value:
@@ -196,11 +197,12 @@ void poll() {
 	Long avgPowerInPeriod =  device.currentValue("consAvgInPeriod").toLong()
     
 	def dataEvents = [
-		applianceId:data?.stats[0].appliance.id,
-		applianceName:data?.stats[0].appliance?.name,
-		applianceLabel:data?.stats[0].appliance?.label,
-		applianceCreatedAt:data?.stats[0].appliance?.createdAt,
-		applianceUpdatedAt:data?.stats[0].appliance?.UpdatedAt,
+		applianceId:data?.appliance?.id,
+		applianceName:data?.appliance?.name,
+		applianceLabel:data?.appliance?.label,
+		applianceCreatedAt:data?.appliance?.createdAt,
+		applianceUpdatedAt:data?.appliance?.updatedAt,
+		applianceEventCount:data?.stats[0].appliance?.eventCount,
 		applianceTimeOn:data?.stats[0].appliance?.timeOn,
 		power:avgPowerInPeriod,
 		energy:consTotalInPeriod
@@ -310,6 +312,9 @@ private def api(method, args, success={}) {
 		login()
 	}
 	def methods = [
+		'applianceData': 
+			[uri:"${URI_ROOT}/appliances/${args}", 
+          		type: 'get'],
 		'appliancesStats': 
 			[uri:"${URI_ROOT}/appliances/stats?${args}", 
           		type: 'get'],
@@ -442,6 +447,44 @@ private def ISOdateFormat(date) {
 	def ISOdate = ISO8601format.format(date)
     
 	return ISOdate
+}
+
+
+//	applianceId - Id of the appliance 
+
+void getApplianceData(applianceId) {
+	def NEURIO_SUCCESS=200
+    
+	def statusCode=true
+	int j=0        
+	def bodyReq=applianceId 
+    
+	while ((statusCode!= NEURIO_SUCCESS) && (j++ <2)) { // retries once if api call fails
+
+		api('applianceData', bodyReq) {resp->
+		
+			statusCode= resp.status
+			if (statusCode == NEURIO_SUCCESS) {
+				data?.appliance=resp.data
+				if (settings.trace) {
+					def applianceName=data.appliance?.name
+					def applianceLabel=data.appliance?.label
+					def applianceTags=data.appliance?.tags
+					def applianceCreated=data.appliance?.createdAt
+					def applianceUpdated=data.appliance?.updatedAt
+					                    
+					sendEvent name: "verboseTrace", value:"getApplianceData>applianceId= ${applianceId}, applianceName=${applianceName}" +
+						",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
+				}
+			} else {
+				def message = resp.message
+				def errors = resp.errors
+				log.error "getApplianceData>status=${statusCode.toString()},message=${message},errors=${errors}"
+				sendEvent name: "verboseTrace", value:"getApplianceData>status=${statusCode.toString()},message=${message},errors=${errors}"
+			}                
+		}  /* end api call */              
+	} /* end while */
+
 }
 
 
