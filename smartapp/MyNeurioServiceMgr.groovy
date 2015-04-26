@@ -179,7 +179,7 @@ def getNeurioSensors() {
 		uri: "${get_URI_ROOT()}/users/current",
 		headers: ["Authorization": "Bearer ${atomicState.authToken}"],
 		Accept: "application/json",
-		charset: "UTF-8",
+		charset: "UTF-8"
 	]
 
 	log.debug "_______AUTH______ ${atomicState.authToken}"
@@ -252,7 +252,7 @@ private def getNeurioAppliances(locationId) {
 		uri: "${get_URI_ROOT()}/appliances?${args}",
 		headers: ["Authorization": "Bearer ${atomicState.authToken}"],
 		Accept: "application/json",
-		charset: "UTF-8",
+		charset: "UTF-8"
 	]
 
 	log.debug "_______AUTH______ ${atomicState.authToken}"
