@@ -5,7 +5,7 @@
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
  *
- *  Code: http://github.com/yracine/device-type.myneurio
+ *  Code: https://github.com/yracine/device-type.myneurio.groovy
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -59,7 +59,7 @@ metadata {
 		// Consumed Energy attributes
 
 		attribute "consTotalInPeriod","string"
-		attribute "consAvgPowerInPeriod","string"
+		attribute "consAvgInPeriod","string"
 		attribute "consEnergyDay","string"
 		attribute "consEnergyWeek","string"
 		attribute "consEnergyMonth","string"
@@ -96,7 +96,7 @@ metadata {
 				) 
         	{
 			state("energy",
-					label:'AvgEnergy\n ${currentValue}kWh',
+					label:'AvgEnergy\n${currentValue}kWh',
 					backgroundColor: "#ffffff",
                  		)
 		}
@@ -278,7 +278,7 @@ void poll() {
 		applianceCreatedAt:formatDateInLocalTime(data?.appliance?.createdAt),
 		applianceUpdatedAt:formatDateInLocalTime(data?.appliance?.updatedAt),
 		power:consAvgPowerInPeriod,
-		energy:consTotalInPeriod
+		energy:totalConsInPeriod
 
 		]
 
@@ -335,7 +335,7 @@ private void generateEvent(Map results)
 
 			if ((name.toUpperCase().contains("ENERGY"))) {  
 				Double energyValue = getEnergy(value)?.toDouble().round()
-				String energyValueString = String.format("%5d", energyValue.intValue())                
+				String energyValueString = String.format("%5d", energyValue?.intValue())                
 				def isChange = isStateChange(device, name, energyValueString)
 				isDisplayed = isChange
                 
@@ -345,7 +345,7 @@ private void generateEvent(Map results)
 // 			Power variable names contain "power"
 
  				Long powerValue = value?.toLong()
-				def isChange = isStateChange(device, name, powerValue.toString())
+				def isChange = isStateChange(device, name, powerValue?.toString())
 				isDisplayed = isChange
 				sendEvent(name: name, value: powerValue?.toString(), unit: "Watts")                                     									 
 
@@ -475,7 +475,7 @@ void generateApplianceAllStats(applianceId) {
 	}
 	generateApplianceStats("",startDate,endDate,"days",null)
 	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
-	Long consAvgPowerInPeriod =  device.currentValue("consAvgPowerInPeriod")?.toLong()
+	Long consAvgPowerInPeriod =  device.currentValue("consAvgInPeriod")?.toLong()
 	def dataStats = ['consEnergyDay':totalConsInPeriod, 'consAvgPowerDay': consAvgPowerInPeriod]    
 
 // generate stats for 2 days ago
@@ -489,7 +489,7 @@ void generateApplianceAllStats(applianceId) {
 	}
 	generateApplianceStats("",startDate,endDate,"days",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
-	consAvgPowerInPeriod =  device.currentValue("consAvgPowerInPeriod")?.toLong()
+	consAvgPowerInPeriod =  device.currentValue("consAvgInPeriod")?.toLong()
 	dataStats = dataStats + ['consEnergy2DaysAgo':totalConsInPeriod,'consAvgPower2DaysAgo':consAvgPowerInPeriod]    
 
 // generate stats for the past week
@@ -503,7 +503,7 @@ void generateApplianceAllStats(applianceId) {
 	}
 	generateApplianceStats("",startDate,endDate,"weeks",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
-	consAvgPowerInPeriod =  device.currentValue("consAvgPowerInPeriod")?.toLong()
+	consAvgPowerInPeriod =  device.currentValue("consAvgInPeriod")?.toLong()
 	dataStats = dataStats + ['consEnergyWeek':totalConsInPeriod,'consAvgPowerWeek':consAvgPowerInPeriod]    
 
 
@@ -518,7 +518,7 @@ void generateApplianceAllStats(applianceId) {
 	}
 	generateApplianceStats("",startDate,endDate,"weeks",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
-	consAvgPowerInPeriod =  device.currentValue("consAvgPowerInPeriod")?.toLong()
+	consAvgPowerInPeriod =  device.currentValue("consAvgInPeriod")?.toLong()
 	dataStats = dataStats + ['consEnergy2WeeksAgo':totalConsInPeriod,'consAvgPower2WeeksAgo':consAvgPowerInPeriod]    
 
 // generate stats for the past month
@@ -534,7 +534,7 @@ void generateApplianceAllStats(applianceId) {
 	}
 	generateApplianceStats("",startDate,endDate,"months",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
-	consAvgPowerInPeriod =  device.currentValue("consAvgPowerInPeriod")?.toLong()
+	consAvgPowerInPeriod =  device.currentValue("consAvgInPeriod")?.toLong()
 	dataStats = dataStats + ['consEnergyMonth':totalConsInPeriod,'consAvgPowerMonth':consAvgPowerInPeriod]    
 
 	generateEvent(dataStats)
@@ -706,7 +706,7 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 	}
 	def applianceStatsEvents = [
 		applianceStatsData: "${applianceStatsJson.toString()}",
-		consAvgPowerInPeriod:avgPower.toString(),       
+		consAvgInPeriod:avgPower.toString(),       
 		consTotalInPeriod:totalConsumedEnergy.toString()
 	]
 	if (settings.trace) {
