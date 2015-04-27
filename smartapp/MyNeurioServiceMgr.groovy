@@ -16,6 +16,7 @@
  */
  
 import groovy.json.JsonSlurper
+import java.text.SimpleDateFormat
  
 definition(
 	name: "MyNeurioServiceMgr",
@@ -696,8 +697,8 @@ private void get_neurio_appliances_data(neurio) {
 			if (applianceFields?.size() > 0) {
 				applianceName=applianceFields?.name.toString()
 				applianceLabel=applianceFields?.label
-				applianceCreated=applianceFields?.createdAt
-				applianceUpdated=applianceFields?.updatedAt
+				applianceCreated=formatDateInLocalTime(applianceFields?.createdAt)
+				applianceUpdated=formatDateInLocalTime(applianceFields?.updatedAt)
 				log.debug "get_neurio_appliances_data>applianceId= ${applianceId}, applianceName=${applianceName}" +
 					",applianceLabel=${applianceLabel},created=${applianceCreated}, updated=${applianceUpdated}"
 				
@@ -716,6 +717,16 @@ private void get_neurio_appliances_data(neurio) {
 		} /* end for */            
         
 	}    
+}
+
+private String formatDateInLocalTime(dateInString) {
+	if ((dateInString==null) || (dateInString.trim()=="")) {
+		return ""    
+	}    
+	SimpleDateFormat ISODateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+	Date ISODate = ISODateFormat.parse(dateInString)
+	String dateInLocalTime = ISODate.format("yyyy-MM-dd HH:mm", location.timeZone)
+	return dateInLocalTime
 }
 
 
