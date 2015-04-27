@@ -5,7 +5,7 @@
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
  *
- *  Code: https://github.com/yracine/device-type.myneurio.groovy
+ *  Code: http://github.com/yracine/device-type.myneurio
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
