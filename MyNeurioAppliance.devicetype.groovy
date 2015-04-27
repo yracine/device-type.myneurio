@@ -243,8 +243,6 @@ void poll() {
 	def applianceId= determine_appliance_id("") 	    
     
 	if (settings.trace) {
-		sendEvent name: "verboseTrace", value:
-			"poll>applianceId = ${applianceId},about to call getApplianceData()"
 		log.debug "poll>applianceId = ${applianceId}, about to call getApplianceData()"
 	}
 	// Get Basic appliance Data
@@ -256,8 +254,6 @@ void poll() {
     
 	if (state.lastGeneratedStatsDate != nowInLocalTime) {
 		if (settings.trace) {
-			sendEvent name: "verboseTrace", value:
-				"poll> about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
 			log.debug "poll> about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
 		}
         
@@ -281,7 +277,7 @@ void poll() {
 		applianceTags:data?.appliance?.tags.toString().minus('[').minus(']'),
 		applianceCreatedAt:formatDateInLocalTime(data?.appliance?.createdAt),
 		applianceUpdatedAt:formatDateInLocalTime(data?.appliance?.updatedAt),
-		power:consAvgPowerInPeriod ,
+		power:consAvgPowerInPeriod,
 		energy:(totalConsInPeriod  * (60*60*1000)) // for formatting
 
 		]
@@ -300,8 +296,6 @@ void poll() {
     
 
 	if (settings.trace) {
-		sendEvent name: "verboseTrace", value:
-			"poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
 		log.debug "poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
 	}
 	Date endDate = new Date()
@@ -311,8 +305,6 @@ void poll() {
 	}    
 	state.lastEndDate=endDate.getTime()   
 	if (settings.trace) {
-		sendEvent name: "verboseTrace", value:
-			"poll>applianceId = ${applianceId} about to call generateApplianceEvents"
 		log.debug "poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
 	}
 	// Get Appliance Events since last execution (max 1 day back)
