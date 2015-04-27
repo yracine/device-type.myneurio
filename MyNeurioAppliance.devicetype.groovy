@@ -59,12 +59,17 @@ metadata {
 		// Consumed Energy attributes
 
 		attribute "consTotalInPeriod","string"
-		attribute "consAvgInPeriod","string"
+		attribute "consAvgPowerInPeriod","string"
 		attribute "consEnergyDay","string"
 		attribute "consEnergyWeek","string"
 		attribute "consEnergyMonth","string"
 		attribute "consEnergy2DaysAgo","string"
 		attribute "consEnergy2WeeksAgo","string"
+		attribute "consAvgPowerDay","string"
+		attribute "consAvgPowerWeek","string"
+		attribute "consAvgPowerMonth","string"
+		attribute "consAvgPower2DaysAgo","string"
+		attribute "consAvgPower2WeeksAgo","string"
 
 		attribute "applianceEventsData","string"
 		attribute "applianceStatsData","string"
@@ -128,25 +133,7 @@ metadata {
 				) 
         	{
 			state("default",
-					label:'Yesterday\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-		valueTile(	"consEnergyLastWeek", "device.consEnergyWeek", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
-  					decoration: "flat"
-				)
-        	{
-			state("default",
-					label:'Week\n${currentValue}kWh',
-					backgroundColor: "#ffffff"
-				)
-		}
-		valueTile(	"consEnergyLastMonth", "device.consEnergyMonth", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
-  					decoration: "flat"
-				)
-        	{
-			state("default",
-					label:'Month\n${currentValue}kWh',
+					label:'Yesterday\nEnergy\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -155,7 +142,16 @@ metadata {
 				) 
         	{
 			state("default",
-					label:'2DaysAgo\n${currentValue}kWh',
+					label:'2DaysAgo\nEnergy\n${currentValue}kWh',
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"consEnergyLastWeek", "device.consEnergyWeek", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
+  					decoration: "flat"
+				)
+        	{
+			state("default",
+					label:'Week\nEnergy\n${currentValue}kWh',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -164,7 +160,63 @@ metadata {
 				)
         	{
 			state("default",
-					label:'2WksAgo\n${currentValue}kWh',
+					label:'2WksAgo\nEnergy\n${currentValue}kWh',
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"consEnergyLastMonth", "device.consEnergyMonth", unit:'kWh',width: 1, height: 1,canChangeIcon: false,
+  					decoration: "flat"
+				)
+        	{
+			state("default",
+					label:'Month\nEnergy\n${currentValue}kWh',
+					backgroundColor: "#ffffff"
+				)
+		}
+		 
+		valueTile(	"consAvgPowerYesterday", "device.consAvgPowerDay", unit:'Watts',width: 1, height: 1,canChangeIcon: false,
+ 					decoration: "flat"
+				) 
+        	{
+			state("default",
+					label:'Yesterday\nAvgPower\n${currentValue}W',
+					backgroundColor: "#ffffff"
+				)
+		}
+
+		valueTile(	"consAvgPower2DaysAgo", "device.consAvgPower2DaysAgo", unit: 'Watts',width: 1, height: 1,canChangeIcon: false,
+ 					decoration: "flat"
+				) 
+        	{
+			state("default",
+					label:'2DaysAgo\nAvgPower\n${currentValue}W',
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"consAvgPowerLastWeek", "device.consAvgPowerWeek", unit:'Watts',width: 1, height: 1,canChangeIcon: false,
+  					decoration: "flat"
+				)
+        	{
+			state("default",
+					label:'Week\nAvgPower\n${currentValue}W',
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"consAvgPower2WeeksAgo", "device.consAvgPower2WeeksAgo", unit: 'Watts',width: 1, height: 1,canChangeIcon: false,
+  					decoration: "flat",
+				)
+        	{
+			state("default",
+					label:'2WksAgo\nAvgPower\n${currentValue}W',
+					backgroundColor: "#ffffff"
+				)
+		}
+		valueTile(	"consAvgPowerLastMonth", "device.consAvgPowerMonth", unit: 'Watts',width: 1, height: 1,canChangeIcon: false,
+  					decoration: "flat"
+				)
+        	{
+			state("default",
+					label:'Month\nAvgPower\n${currentValue}W',
 					backgroundColor: "#ffffff"
 				)
 		}
@@ -174,8 +226,8 @@ metadata {
 		}
 
 		main(["power", "energy"])
-		details(["power", "energy",  "name", "timeOn", "eventCount","refresh", "consEnergyYesterday", "consEnergy2DaysAgo", "consEnergyLastWeek",  "consEnergy2WeeksAgo",
-        		"consEnergyLastMonth"])
+		details(["power", "energy",  "name", "timeOn", "eventCount","refresh", "consEnergyYesterday",  "consAvgPowerYesterday", "consEnergy2DaysAgo", "consAvgPower2DaysAgo",
+        		"consEnergyLastWeek", "consAvgPowerLastWeek", "consEnergy2WeeksAgo","consAvgPower2WeeksAgo","consEnergyLastMonth","consAvgPowerLastMonth" ])
 
 
 	}
@@ -212,9 +264,9 @@ void poll() {
 	// Get Appliance Stats since last execution (max 1 day back)
     
 	generateApplianceStats("",startDate,endDate,"days",null,'false')
-	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	Long avgPowerInPeriod =  device.currentValue("consAvgInPeriod").toLong()
-    
+	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
+	Long consAvgPowerInPeriod =  device.currentValue("consAvgPowerInPeriod")?.toLong()
+
 	def dataEvents = [
 		applianceId:data?.appliance?.id,
 		applianceName:data?.appliance?.name,
@@ -222,9 +274,10 @@ void poll() {
 		applianceTags:data?.appliance?.tags.toString().minus('[').minus(']'),
 		applianceCreatedAt:formatDateInLocalTime(data?.appliance?.createdAt),
 		applianceUpdatedAt:formatDateInLocalTime(data?.appliance?.updatedAt),
-		power:avgPowerInPeriod,
+		power:consAvgPowerInPeriod,
 		energy:consTotalInPeriod
-	]
+
+		]
 
 	try {
 		if (data?.stats[0]?.appliance?.eventCount) {
@@ -264,6 +317,13 @@ void poll() {
         
 		generateApplianceAllStats("")
 		state.lastGeneratedStatsDate= nowInLocalTime       
+        
+        // update power and Energy UI fields accordingly
+		dataEvents = [
+			power:consAvgPowerInPeriod,
+			energy:consTotalInPeriod
+		]
+		generateEvent(dataEvents)
 	}
 
 }
@@ -283,7 +343,7 @@ private void generateEvent(Map results)
 // 			Energy variable names contain "energy"           
 
 			if ((name.toUpperCase().contains("ENERGY"))) {  
-				Double energyValue = getEnergy(value).toDouble().round()
+				Double energyValue = getEnergy(value)?.toDouble().round()
 				String energyValueString = String.format("%5d", energyValue.intValue())                
 				def isChange = isStateChange(device, name, energyValueString)
 				isDisplayed = isChange
@@ -293,17 +353,17 @@ private void generateEvent(Map results)
 
 // 			Power variable names contain "power"
 
- 				Long powerValue = value.toLong()
+ 				Long powerValue = value?.toLong()
 				def isChange = isStateChange(device, name, powerValue.toString())
 				isDisplayed = isChange
-				sendEvent(name: name, value: powerValue.toString(), unit: "Watts")                                     									 
+				sendEvent(name: name, value: powerValue?.toString(), unit: "Watts")                                     									 
 
 			} else if (name.toUpperCase().contains("TIME")) { // power variable names contain 'power'
 
 // 			Time variable names contain "time"
 
- 				Double timeValue = getTimeInMinutes(value).toDouble().round()
-				String timeValueString = String.format("%5d", timeValue.intValue())                
+ 				Double timeValue = getTimeInMinutes(value)?.toDouble().round()
+				String timeValueString = String.format("%5d", timeValue?.intValue())                
 				def isChange = isStateChange(device, name, timeValueString)
 				isDisplayed = isChange
 				sendEvent(name: name, value: timeValueString, unit: "minutes")                                     									 
@@ -423,8 +483,9 @@ void generateApplianceAllStats(applianceId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	generateApplianceStats("",startDate,endDate,"days",null)
-	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	def dataStats = ['consEnergyDay':totalConsInPeriod]    
+	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
+	Long consAvgPowerInPeriod =  device.currentValue("consAvgPowerInPeriod")?.toLong()
+	def dataStats = ['consEnergyDay':totalConsInPeriod, 'consAvgPowerDay': consAvgPowerInPeriod]    
 
 // generate stats for 2 days ago
 
@@ -436,8 +497,9 @@ void generateApplianceAllStats(applianceId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	generateApplianceStats("",startDate,endDate,"days",null)
-	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	dataStats = dataStats + ['consEnergy2DaysAgo':totalConsInPeriod]    
+	totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
+	consAvgPowerInPeriod =  device.currentValue("consAvgPowerInPeriod")?.toLong()
+	dataStats = dataStats + ['consEnergy2DaysAgo':totalConsInPeriod,'consAvgPower2DaysAgo':consAvgPowerInPeriod]    
 
 // generate stats for the past week
 
@@ -449,8 +511,9 @@ void generateApplianceAllStats(applianceId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	generateApplianceStats("",startDate,endDate,"weeks",null)
-	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	dataStats = dataStats + ['consEnergyWeek':totalConsInPeriod]    
+	totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
+	consAvgPowerInPeriod =  device.currentValue("consAvgPowerInPeriod")?.toLong()
+	dataStats = dataStats + ['consEnergyWeek':totalConsInPeriod,'consAvgPowerWeek':consAvgPowerInPeriod]    
 
 
 // generate stats for 2 weeks ago
@@ -463,8 +526,9 @@ void generateApplianceAllStats(applianceId) {
 			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	generateApplianceStats("",startDate,endDate,"weeks",null)
-	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	dataStats = dataStats + ['consEnergy2WeeksAgo':totalConsInPeriod]    
+	totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
+	consAvgPowerInPeriod =  device.currentValue("consAvgPowerInPeriod")?.toLong()
+	dataStats = dataStats + ['consEnergy2WeeksAgo':totalConsInPeriod,'consAvgPower2WeeksAgo':consAvgPowerInPeriod]    
 
 // generate stats for the past month
 
@@ -478,8 +542,9 @@ void generateApplianceAllStats(applianceId) {
 			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
 	}
 	generateApplianceStats("",startDate,endDate,"months",null)
-	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
-	dataStats = dataStats + ['consEnergyMonth':totalConsInPeriod]    
+	totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
+	consAvgPowerInPeriod =  device.currentValue("consAvgPowerInPeriod")?.toLong()
+	dataStats = dataStats + ['consEnergyMonth':totalConsInPeriod,'consAvgPowerMonth':consAvgPowerInPeriod]    
 
 	generateEvent(dataStats)
 
@@ -650,7 +715,7 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 	}
 	def applianceStatsEvents = [
 		applianceStatsData: "${applianceStatsJson.toString()}",
-		consAvgInPeriod:avgPower.toString(),       
+		consAvgPowerInPeriod:avgPower.toString(),       
 		consTotalInPeriod:totalConsumedEnergy.toString()
 	]
 	if (settings.trace) {
