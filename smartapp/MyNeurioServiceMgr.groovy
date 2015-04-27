@@ -33,7 +33,7 @@ definition(
 preferences {
 	page(name: "about", title: "About", nextPage: "auth")
 	page(name: "auth", title: "Neurio", content:"authPage", nextPage:"deviceList")
-	page(name: "deviceList", title: "Neurio", content:"NeurioDeviceList")
+	page(name: "deviceList", title: "Neurio Sensors", content:"NeurioDeviceList")
 	page(name: "applianceList", title: "Neurio Appliances", content:"NeurioApplianceList", install:true)
 }
 
