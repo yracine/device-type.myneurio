@@ -47,6 +47,7 @@ metadata {
 		attribute "applianceUpdatedAt","string"
 		attribute "applianceEventCount","string"
 		attribute "applianceTimeOn","string"
+		attribute "applianceUsagePct","string"
 
 		attribute "eventStart","string"                            
 		attribute "eventEnd","string"
@@ -109,12 +110,12 @@ metadata {
                  		)
 		}
 
-		valueTile(	"timeOn", "device.applianceTimeOn", unit:'minutes',width: 1, height: 1,canChangeIcon: false,
+		valueTile(	"usagePct", "device.applianceUsagePct", unit:'%',width: 1, height: 1,canChangeIcon: false,
   					decoration: "flat"
 				) 
         	{
-			state("timeOn",
-					label:'TimeOn\n${currentValue} min.',
+			state("usagePct",
+					label:'UsagePct\n${currentValue}%',
 					backgroundColor: "#ffffff",
                  		)
 		}
@@ -123,7 +124,7 @@ metadata {
 				) 
         	{
 			state("eventCount",
-					label:'eventCount\n${currentValue}',
+					label:'EventCount\n${currentValue}',
 					backgroundColor: "#ffffff",
                  		)
 		}
@@ -227,7 +228,7 @@ metadata {
 		}
 
 		main(["power", "energy"])
-		details(["power", "energy",  "name", "timeOn", "eventCount","refresh", "consEnergyYesterday",  "consAvgPowerYesterday", "consEnergy2DaysAgo", "consAvgPower2DaysAgo",
+		details(["power", "energy",  "name", "usagePct", "eventCount","refresh", "consEnergyYesterday",  "consAvgPowerYesterday", "consEnergy2DaysAgo", "consAvgPower2DaysAgo",
         		"consEnergyLastWeek", "consAvgPowerLastWeek", "consEnergy2WeeksAgo","consAvgPower2WeeksAgo","consEnergyLastMonth","consAvgPowerLastMonth" ])
 
 	}
@@ -277,21 +278,12 @@ void poll() {
 		applianceTags:data?.appliance?.tags.toString().minus('[').minus(']'),
 		applianceCreatedAt:formatDateInLocalTime(data?.appliance?.createdAt),
 		applianceUpdatedAt:formatDateInLocalTime(data?.appliance?.updatedAt),
+		applianceEventCount: data.stats[0].eventCount?.toString(),
+		applianceTimeOn: data.stats[0].timeOn,
+		applianceUsagePct: data.stats[0].usagePourcentage?.toString(),        
 		power:consAvgPowerInPeriod,
 		energy:(totalConsInPeriod  * (60*60*1000)) // for formatting
-
 		]
-
-	try {
-		if (data?.stats[0]?.appliance?.eventCount) {
-			dataEvents = dataEvents + [applianceEventCount: data.stats[0].appliance.eventCount]
-		}		
-		if (data?.stats[0]?.appliance?.timeOn) {
-			dataEvents = dataEvents + [applianceTimeOn: data.stats[0].appliance.timeOn]
-		}		
-	} catch(any) {
-		log.debug ("poll>applianceId = ${applianceId}, missing some stats values")    
-	}    
 	generateEvent(dataEvents)
     
 
@@ -642,35 +634,39 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 				if (resp.data !=[]) {            	
 	 				data.stats=resp.data
 					data.stats.each {
-						def applianceName= it?.name
-						def applianceLabel= it?.label
-						def applianceTags= it?.tags
-						def applianceCreated= it?.createdAt
-						def applianceUpdated= it?.updatedAt
-						def applianceAvgPower= it?.averagePower 
-						def applianceEventCount= it?.eventCount
-						def applianceEnergy= it?.energy
+						def applianceName= it?.appliance.name
+						def applianceLabel= it?.appliance.label
+						def applianceTags= it?.appliance.tags
+						def applianceCreated= it?.appliance.createdAt
+						def applianceUpdated= it?.appliance.updatedAt
+						def statsAvgPower= it?.averagePower 
+						def statsEventCount= it?.eventCount
+						def statsUsagePct= it?.usagePourcentage
+						def statsTimeOn= it?.timeOn
+						def statsEnergy= it?.energy
 						def statsStart= it?.start
 						def statsEnd= it?.end
 						if (postData=='true') {                    
 							applianceStatsData << it
 						}                            
 						if (applianceEnergy) {
-							totalConsumedEnergy =totalConsumedEnergy + applianceEnergy.toLong()
+							totalConsumedEnergy =totalConsumedEnergy + statsEnergy.toLong()
 						}                        
 						if (applianceAvgPower) {
-							totalAvgConsumedPower =totalAvgConsumedPower + applianceAvgPower.toLong()
+							totalAvgConsumedPower =totalAvgConsumedPower + statsAvgPower.toLong()
 							nbAvgPowerRecords++                            
 						}                        
 						if (settings.trace) {
 							log.debug "generateApplianceStats>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
 								",applianceLabel=${applianceLabel},applianceTags=${applianceTags}.created=${applianceCreated},updated=${applianceUpdated}," +
-								"applianceAvgPower=${applianceAvgPower},applianceEventCount=${applianceEventCount}," +
-								"applianceEnergy=${applianceEnergy},statsStart=${statsStart},statsEnd=${statsEnd}" 
+								"statsAvgPower=${statsAvgPower},statsEventCount=${statsEventCount}," +
+								"statsTimeOn=${statsTimeOn},statsUsagePourcentage=${statsUsagePct}," + 
+								"statsEnergy=${statsEnergy},statsStart=${statsStart},statsEnd=${statsEnd}" 
 							sendEvent name: "verboseTrace", value:"generateApplianceStats>locationId=${locationId},applianceId= ${applianceId}, applianceName=${applianceName}" +
 								",applianceLabel=${applianceLabel},applianceTags=${applianceTags}.created=${applianceCreated},updated=${applianceUpdated}," +
-								"applianceAvgPower=${applianceAvgPower},applianceEventCount=${applianceEventCount}," +
-								"applianceEnergy=${applianceEnergy},statsStart=${statsStart},statsEnd=${statsEnd}" 
+								"statsAvgPower=${statsAvgPower},statsEventCount=${statsEventCount}," +
+								"statsTimeOn=${statsTimeOn},statsUsagePourcentage=${statsUsagePct}," + 
+								"statsEnergy=${statsEnergy},statsStart=${statsStart},statsEnd=${statsEnd}" 
 						}
 					} /* end each stats */
 				} 
