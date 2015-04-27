@@ -649,10 +649,10 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 						if (postData=='true') {                    
 							applianceStatsData << it
 						}                            
-						if (applianceEnergy) {
+						if (statsEnergy) {
 							totalConsumedEnergy =totalConsumedEnergy + statsEnergy.toLong()
 						}                        
-						if (applianceAvgPower) {
+						if (statsAvgPower) {
 							totalAvgConsumedPower =totalAvgConsumedPower + statsAvgPower.toLong()
 							nbAvgPowerRecords++                            
 						}                        
