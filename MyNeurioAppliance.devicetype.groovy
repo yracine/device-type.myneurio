@@ -83,7 +83,7 @@ metadata {
 	tiles {
 		valueTile(	"power","device.power",unit: 'Watts', width: 1, height: 1,canChangeIcon: false)
         	{
-            		state(	"power", label:'Avg Power\n${currentValue}W',
+            		state(	"power", label:'AvgPower\n${currentValue}W',
 					backgroundColor: "#ffffff",
 					backgroundColors: [
 						[value: 500, color: "green"],
@@ -96,7 +96,7 @@ metadata {
 				) 
         	{
 			state("energy",
-					label:'Energy\n ${currentValue}kWh',
+					label:'AvgEnergy\n ${currentValue}kWh',
 					backgroundColor: "#ffffff",
                  		)
 		}
@@ -250,22 +250,25 @@ void poll() {
 	// Get Basic appliance Data
     
 	getApplianceData(applianceId)
-	Date endDate = new Date()
-	Date startDate = new Date(state.lastEndDate)    
-	if ((!startDate) || (endDate - startDate>1)) {
-		startDate= endDate -1        
-	}    
-	state.lastEndDate=endDate.getTime()   
-	if (settings.trace) {
-		sendEvent name: "verboseTrace", value:
-			"poll>applianceId = ${applianceId} about to call generateApplianceStats"
-		log.debug "poll>applianceId = ${applianceId}, about to call generateApplianceStats()"
-	}
-	// Get Appliance Stats since last execution (max 1 day back)
+	String nowInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
+        
+	// generate all stats only once every day
     
-	generateApplianceStats("",startDate,endDate,"days",null,'false')
-	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
-	Long consAvgPowerInPeriod =  device.currentValue("consAvgPowerInPeriod")?.toLong()
+	if (state.lastGeneratedStatsDate != nowInLocalTime) {
+		if (settings.trace) {
+			sendEvent name: "verboseTrace", value:
+				"poll> about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
+			log.debug "poll> about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
+		}
+        
+		// Once a day, generate all appliance stats (yesterday, 2 days ago, 1 week ago, 2 weeks ago, 1 month ago)
+        
+		generateApplianceAllStats("")
+		state.lastGeneratedStatsDate= nowInLocalTime       
+        
+	}
+	Long totalConsInPeriod =  device.currentValue("consEnergyMonth")?.toLong()
+	Long consAvgPowerInPeriod =  device.currentValue("consAvgPowerMonth")?.toLong()
 
 	def dataEvents = [
 		applianceId:data?.appliance?.id,
@@ -297,34 +300,22 @@ void poll() {
 			"poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
 		log.debug "poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
 	}
+	Date endDate = new Date()
+	Date startDate = new Date(state.lastEndDate)    
+	if ((!startDate) || (endDate - startDate>1)) {
+		startDate= endDate -1        
+	}    
+	state.lastEndDate=endDate.getTime()   
+	if (settings.trace) {
+		sendEvent name: "verboseTrace", value:
+			"poll>applianceId = ${applianceId} about to call generateApplianceEvents"
+		log.debug "poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
+	}
 	// Get Appliance Events since last execution (max 1 day back)
 
 	generateApplianceEvents("",startDate,endDate,"",'true')
 		    
 
-	String nowInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
-        
-	// generate all stats only once every day
-    
-	if (state.lastGeneratedStatsDate != nowInLocalTime) {
-		if (settings.trace) {
-			sendEvent name: "verboseTrace", value:
-				"poll> about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
-			log.debug "poll> about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
-		}
-        
-		// Once a day, get all appliance stats (yesterday, 2 days ago, 1 week ago, 2 weeks ago, 1 month ago)
-        
-		generateApplianceAllStats("")
-		state.lastGeneratedStatsDate= nowInLocalTime       
-        
-        // update power and Energy UI fields accordingly
-		dataEvents = [
-			power:consAvgPowerInPeriod,
-			energy:consTotalInPeriod
-		]
-		generateEvent(dataEvents)
-	}
 
 }
 
