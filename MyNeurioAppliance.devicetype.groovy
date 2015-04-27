@@ -123,7 +123,7 @@ metadata {
 				) 
         	{
 			state("eventCount",
-					label:'eventCount\n${currentValue} min.',
+					label:'eventCount\n${currentValue}',
 					backgroundColor: "#ffffff",
                  		)
 		}
@@ -173,7 +173,8 @@ metadata {
 					backgroundColor: "#ffffff"
 				)
 		}
-		 
+        
+         
 		valueTile(	"consAvgPowerYesterday", "device.consAvgPowerDay", unit:'Watts',width: 1, height: 1,canChangeIcon: false,
  					decoration: "flat"
 				) 
@@ -229,7 +230,6 @@ metadata {
 		details(["power", "energy",  "name", "timeOn", "eventCount","refresh", "consEnergyYesterday",  "consAvgPowerYesterday", "consEnergy2DaysAgo", "consAvgPower2DaysAgo",
         		"consEnergyLastWeek", "consAvgPowerLastWeek", "consEnergy2WeeksAgo","consAvgPower2WeeksAgo","consEnergyLastMonth","consAvgPowerLastMonth" ])
 
-
 	}
 }
 
@@ -267,8 +267,12 @@ void poll() {
 		state.lastGeneratedStatsDate= nowInLocalTime       
         
 	}
+    
 	Long totalConsInPeriod =  device.currentValue("consEnergyMonth")?.toLong()
-	Long consAvgPowerInPeriod =  device.currentValue("consAvgPowerMonth")?.toLong()
+	Long consAvgPowerInPeriod =  device.currentValue("consAvgPowerMonth")?.toLong() 
+	if (settings.trace) {
+		log.debug "poll>applianceId = ${applianceId},totalConsInPeriod= $totalConsInPeriod,consAvgPowerInPeriod=$consAvgPowerInPeriod"
+	}
 
 	def dataEvents = [
 		applianceId:data?.appliance?.id,
@@ -277,8 +281,8 @@ void poll() {
 		applianceTags:data?.appliance?.tags.toString().minus('[').minus(']'),
 		applianceCreatedAt:formatDateInLocalTime(data?.appliance?.createdAt),
 		applianceUpdatedAt:formatDateInLocalTime(data?.appliance?.updatedAt),
-		power:consAvgPowerInPeriod,
-		energy:totalConsInPeriod
+		power:consAvgPowerInPeriod ,
+		energy:(totalConsInPeriod  * (60*60*1000)) // for formatting
 
 		]
 
@@ -334,8 +338,8 @@ private void generateEvent(Map results)
 // 			Energy variable names contain "energy"           
 
 			if ((name.toUpperCase().contains("ENERGY"))) {  
-				Double energyValue = getEnergy(value)?.toDouble().round()
-				String energyValueString = String.format("%5d", energyValue?.intValue())                
+				Double energyValue = getEnergy(value).toDouble().round()
+				String energyValueString = String.format("%5d", energyValue.intValue())                
 				def isChange = isStateChange(device, name, energyValueString)
 				isDisplayed = isChange
                 
@@ -345,7 +349,7 @@ private void generateEvent(Map results)
 // 			Power variable names contain "power"
 
  				Long powerValue = value?.toLong()
-				def isChange = isStateChange(device, name, powerValue?.toString())
+				def isChange = isStateChange(device, name, powerValue.toString())
 				isDisplayed = isChange
 				sendEvent(name: name, value: powerValue?.toString(), unit: "Watts")                                     									 
 
@@ -353,8 +357,8 @@ private void generateEvent(Map results)
 
 // 			Time variable names contain "time"
 
- 				Double timeValue = getTimeInMinutes(value)?.toDouble().round()
-				String timeValueString = String.format("%5d", timeValue?.intValue())                
+ 				Double timeValue = getTimeInMinutes(value).toDouble().round()
+				String timeValueString = String.format("%5d", timeValue.intValue())                
 				def isChange = isStateChange(device, name, timeValueString)
 				isDisplayed = isChange
 				sendEvent(name: name, value: timeValueString, unit: "minutes")                                     									 
@@ -690,7 +694,7 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 	if (nbAvgPowerRecords >0) {
 		avgPower = totalAvgConsumedPower / nbAvgPowerRecords
 		if (settings.trace) {
-			log.debug "generateRemoteSensorEvents>avgPower= ${avgPower},totalAvgConsumedPower${totalAvgConsumedPower},nbAvgPowerRecords=${nbAvgPowerRecords}"
+			log.debug "generateApplianceStats>avgPower= ${avgPower},totalAvgConsumedPower=${totalAvgConsumedPower},nbAvgPowerRecords=${nbAvgPowerRecords}"
 		}
 	}                        
 
