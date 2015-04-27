@@ -749,8 +749,7 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 	def applianceEvents = []
     
 	applianceId=determine_appliance_id(applianceId)
-	minPower = minPower?.trim()
-    
+
 	// make sure start and end are defined
 	if ((!start) || (!end)) {
 		log.error "generateApplianceEvents>start and end are required parameters"
