@@ -1310,7 +1310,7 @@ private def determine_sensor_id(sensor_id) {
 		settings.sensorId = data.user.locations[0].sensors[0].id
 		sensorId=settings.sensorId
 		if (settings.trace) {
-			log.debug "determine_sensor_id> sensorId from data.user.locations[0].sensors[0]"
+			log.debug "determine_sensor_id> sensorId from data.user.locations[0].sensors[0]= ${sensorId}"
 		}
 	}
 	return sensorId
