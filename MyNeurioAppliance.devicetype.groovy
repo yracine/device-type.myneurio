@@ -292,7 +292,7 @@ void poll() {
 
 	try {
 		if (data?.stats[0]?.timeOn) {
-			dataEvents = dataEvents + [applianceTimeOn: data.stats[0].appliance.timeOn]
+			dataEvents = dataEvents + [applianceTimeOn: data.stats[0].timeOn]
 		}		
 	} catch(any) {
 		log.debug ("poll>applianceId = ${applianceId}, missing timeOn stats value")    
