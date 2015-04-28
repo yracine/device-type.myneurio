@@ -278,12 +278,33 @@ void poll() {
 		applianceTags:data?.appliance?.tags.toString().minus('[').minus(']'),
 		applianceCreatedAt:formatDateInLocalTime(data?.appliance?.createdAt),
 		applianceUpdatedAt:formatDateInLocalTime(data?.appliance?.updatedAt),
-		applianceEventCount: data.stats[0].eventCount?.toString(),
-		applianceTimeOn: data.stats[0].timeOn,
-		applianceUsagePct: data.stats[0].usagePourcentage?.toString(),        
 		power:consAvgPowerInPeriod,
 		energy:(totalConsInPeriod  * (60*60*1000)) // for formatting
 		]
+
+	try {
+		if (data?.stats[0]?.eventCount) {
+			dataEvents = dataEvents + [applianceEventCount: data.stats[0].eventCount.toString()]
+		}		
+	} catch(any) {
+		log.debug ("poll>applianceId = ${applianceId}, missing eventCount stats values")    
+	}    
+
+	try {
+		if (data?.stats[0]?.timeOn) {
+			dataEvents = dataEvents + [applianceTimeOn: data.stats[0].appliance.timeOn]
+		}		
+	} catch(any) {
+		log.debug ("poll>applianceId = ${applianceId}, missing timeOn stats values")    
+	}    
+	try {
+		if (data?.stats[0]?.usagePourcentage) {
+			dataEvents = dataEvents + [applianceUsagePct: data.stats[0].usagePercentage.toString()]
+		}		
+	} catch(any) {
+		log.debug ("poll>applianceId = ${applianceId}, missing usagePourcentage stats values")    
+	}    
+    
 	generateEvent(dataEvents)
     
 
