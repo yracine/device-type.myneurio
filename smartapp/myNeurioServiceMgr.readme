@@ -71,15 +71,18 @@ c) Hit the "From Code" tab on the left corner
 d) Copy and paste the code from MyNeurioServiceMgr
 under https://github.com/yracine/device-type.myneurio/blob/beta/smartapp/
 
-e) Hit the create button at the bottom
+e) Insert the private API key for the authorization code workflow at the end of the file 
+at the placeholder (Insert Private API key here!)
 
-f) Make sure that enable OAuth in Smartapp is active 
+f) Hit the create button at the bottom
+
+g) Make sure that enable OAuth in Smartapp is active 
 
 * Goto app settings (top right corner), 
 * Click on Oauth (middle of the page), and enable OAuth in Smart app
 * Hit "Update" at the bottom
 
-g) Go back to the code window, and hit the "publish/for me" button at the top right corner 
+h) Go back to the code window, and hit the "publish/for me" button at the top right corner 
 
 ******************************************************************************************
 4) Optionally, you can activate live logging for more tracing
