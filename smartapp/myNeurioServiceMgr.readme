@@ -71,8 +71,8 @@ c) Hit the "From Code" tab on the left corner
 d) Copy and paste the code from MyNeurioServiceMgr
 under https://github.com/yracine/device-type.myneurio/blob/beta/smartapp/
 
-e) Insert the private API key for the authorization code workflow at the end of the file 
-at the placeholder (Insert Private API key here!)
+e) Insert the private API key for the authorization code workflow  
+at the placeholder (i.e., Insert Private key here!) located at the end of the file.
 
 f) Hit the create button at the bottom
 
