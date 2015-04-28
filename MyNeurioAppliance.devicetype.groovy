@@ -287,7 +287,7 @@ void poll() {
 			dataEvents = dataEvents + [applianceEventCount: data.stats[0].eventCount.toString()]
 		}		
 	} catch(any) {
-		log.debug ("poll>applianceId = ${applianceId}, missing eventCount stats values")    
+		log.debug ("poll>applianceId = ${applianceId}, missing eventCount stats value")    
 	}    
 
 	try {
@@ -295,14 +295,14 @@ void poll() {
 			dataEvents = dataEvents + [applianceTimeOn: data.stats[0].appliance.timeOn]
 		}		
 	} catch(any) {
-		log.debug ("poll>applianceId = ${applianceId}, missing timeOn stats values")    
+		log.debug ("poll>applianceId = ${applianceId}, missing timeOn stats value")    
 	}    
 	try {
 		if (data?.stats[0]?.usagePourcentage) {
 			dataEvents = dataEvents + [applianceUsagePct: data.stats[0].usagePercentage.toString()]
 		}		
 	} catch(any) {
-		log.debug ("poll>applianceId = ${applianceId}, missing usagePourcentage stats values")    
+		log.debug ("poll>applianceId = ${applianceId}, missing usagePourcentage stats value")    
 	}    
     
 	generateEvent(dataEvents)
