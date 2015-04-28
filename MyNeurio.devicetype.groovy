@@ -454,7 +454,7 @@ void getLastLiveSamples(sensorId) {
 				def consumptionEnergy = data.liveSamples?.consumptionEnergy
 				def generationPower = data.liveSamples?.generationPower
 				def generationEnergy = data.liveSamples?.generationEnergy
-				def timestamp = data.liveSamples.timestamp    
+				def timestamp = data.liveSamples?.timestamp    
 				if (settings.trace) {
 					sendEvent name: "verboseTrace", value:"getLastLiveSamples>sensorId=${sensorId},consumptionPower=${consumptionPower},consumptionEnergy=${consumptionEnergy}" +
 						",generationPower=${generationPower},generationEnergy=${generationEnergy}"
@@ -1274,7 +1274,7 @@ private def determine_location_id(location_id) {
 	if ((location_id != null) && (location_id != "")) {
 		locationId = location_id.trim()
 	} else {
-		locationId=data.user.locations[0]?.id
+		locationId=data?.user?.locations[0]?.id
 		if (settings.trace) {
 			log.debug "determine_location_id> locationId from data.locationId= ${locationId}"
 		}
@@ -1297,12 +1297,20 @@ private def determine_sensor_id(sensor_id) {
 		if (settings.trace) {
 			log.debug "determine_sensor_id> sensorId = ${settings.sensorId}"
 		}
-	} else if ((settings.sensorId == null) || (settings.sensorId  == "")) {
+	} else if (data?.auth?.sensorId != null) {
+    
 		settings.appKey = get_appKey() 
 		settings.sensorId = data.auth.sensorId
 		sensorId=settings.sensorId
 		if (settings.trace) {
 			log.debug "determine_sensor_id> sensorId from data.auth= ${sensorId}"
+		}
+    
+	} else  {
+		settings.sensorId = data.user.locations[0].sensors[0].id
+		sensorId=settings.sensorId
+		if (settings.trace) {
+			log.debug "determine_sensor_id> sensorId from data.user.locations[0].sensors[0]"
 		}
 	}
 	return sensorId
