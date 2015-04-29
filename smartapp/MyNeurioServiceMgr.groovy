@@ -664,7 +664,6 @@ def debugEvent(message, displayEvent) {
 private void get_neurio_appliances_data(neurio) {
 	Boolean foundAppliance=false		
 	def applianceList
-	def applianceFields
 	String applianceName
 	def applianceLabel
 	def applianceTags
@@ -686,6 +685,7 @@ private void get_neurio_appliances_data(neurio) {
 			log.debug("applianceId=${applianceId}")    	
 			neurio.getApplianceData(applianceId)
 			String applianceData=neurio.currentApplianceData.toString()
+			def applianceFields=null            
 			if (applianceData) {    
 				applianceFields = new JsonSlurper().parseText(applianceData)
 			} else {
@@ -694,7 +694,7 @@ private void get_neurio_appliances_data(neurio) {
 			}    
 			log.debug "get_neurio_appliances_data>applianceFields = $applianceFields"
 
-			if (applianceFields?.size() > 0) {
+			if (applianceFields) {
 				applianceName=applianceFields?.name.toString()
 				applianceLabel=applianceFields?.label
 				applianceCreated=formatDateInLocalTime(applianceFields?.createdAt)
