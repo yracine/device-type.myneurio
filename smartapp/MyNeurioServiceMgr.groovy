@@ -675,8 +675,8 @@ private void get_neurio_appliances_data(neurio) {
 		neurio.getApplianceList("")
 		applianceList = neurio.currentAppliancesList.toString().minus('[').minus(']').tokenize(',')
 		foundAppliance=true        
-	} catch (any) {
-		log.debug("Not able to get the list of appliances from Neurio")    	
+	} catch (e) {
+		log.error("Not able to get the list of appliances from Neurio, exception $e")    	
 	}    
 	if (foundAppliance) {
 
@@ -744,4 +744,4 @@ def getServerUrl() { return "https://graph.api.smartthings.com" }
 
 def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" }
 
-def getSmartThingsPrivateKey() { "Insert private key here!" }
+def getSmartThingsPrivateKey() { "Insert your private API Key here!" }
