@@ -307,10 +307,6 @@ void poll() {
     
 	generateEvent(dataEvents)
     
-
-	if (settings.trace) {
-		log.debug "poll>applianceId = ${applianceId}, about to call generateApplianceEvents()"
-	}
 	Date endDate = new Date()
 	Date startDate = new Date(state.lastEndDate)    
 	if ((!startDate) || (endDate - startDate>1)) {
