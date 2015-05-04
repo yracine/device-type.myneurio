@@ -433,7 +433,7 @@ private def create_child_appliances() {
 	    
 	def devices = NeurioAppliances.collect { dni ->
 
-		log.debug "Looping thru Neurio Sensors, found id $dni"
+		log.debug "Looping thru Neurio Appliances, found id $dni"
 
 		def neurio_info  = dni.tokenize('.')
 		def applianceId = neurio_info.last()
