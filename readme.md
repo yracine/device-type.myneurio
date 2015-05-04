@@ -156,7 +156,7 @@ see the new Object under the 'Things' shortcut on the dashboard
 ******************************************************************************************
 
 ******************************************************************************************
-8) After instantiation of MyNeurio and My Appliance Objects, you can enable more tracing 
+8) (optional) After instantiation of MyNeurio and My Appliance Objects, you can enable more tracing 
 at the device level (if needed)
 ******************************************************************************************
 
