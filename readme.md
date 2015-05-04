@@ -105,8 +105,11 @@ c) Hit the "From Code" tab on the left corner
 d) Copy and paste the code from MyNeurioServiceMgr
 under https://github.com/yracine/device-type.myneurio/blob/beta/smartapp/
 
-e) Insert the private API key for the authorization code workflow  
-at the placeholder (i.e., Insert Private key here!) located at the end of the file.
+e) Update the client id and client secret at the end of the file.
+
+- def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" } - substitute your client id here!
+
+- def getSmartThingsPrivateKey() { "Insert your private API Key here!" } - substitute your client secret here!
 
 f) Hit the create button at the bottom
 
@@ -116,14 +119,7 @@ g) Make sure that enable OAuth in Smartapp is active
 * Click on Oauth (middle of the page), and enable OAuth in Smart app
 * Hit "Update" at the bottom
 
-h) Update the client id and client secret at the end of the file.
-
-- def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" } - substitute your client id here!
-
-- def getSmartThingsPrivateKey() { "Insert your private API Key here!" } - substitute your client secret here!
-
-
-i) Go back to the code window, and hit the "publish/for me" button at the top right corner 
+h) Go back to the code window, and hit the "publish/for me" button at the top right corner 
 
 ******************************************************************************************
 5) Optionally, you can activate live logging for more tracing
