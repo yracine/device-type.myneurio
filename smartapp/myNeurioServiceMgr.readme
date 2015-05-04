@@ -27,12 +27,12 @@ c) Go to Settings (click on the menu at the upper right corner)
 d) Click on Apps (left menu, second option)
 e) a screen will appear with the following fields:
 
-* Enter an application name 
+- Enter an application name 
 ex. SmartThings
-* Enter a description (your choice)
-* Enter a homepage URL (your choice,
+- Enter a description (your choice)
+- Enter a homepage URL (your choice,
 ex. http://testapp.com
-*  Enter a callback URL: need to be the following (no spaces):
+-  Enter a callback URL: need to be the following (no spaces):
 https://graph.api.smartthings.com/api/token/
 
 f) click on Create App/Update App at the bottom
