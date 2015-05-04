@@ -28,10 +28,15 @@ INSTALLATION STEPS
 ******************************************************************************************
 
 a) Go to https://my.neur.io/
+
 b) Log in using your Neur.io credentials (username/password)
+
 c) Go to Settings (click on the menu at the upper right corner)
+
 d) Click on Apps (left menu, second option)
+
 e) Click on register new app (on the right inside)
+
 f) a screen will appear with the following fields:
 
 - Enter an application name (your choice)
