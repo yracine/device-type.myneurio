@@ -24,7 +24,7 @@ INSTALLATION STEPS
 
 
 ******************************************************************************************
-1) Create an authorization code API key at Neur.io portal
+1) Create the authorization code API keys at Neur.io portal
 ******************************************************************************************
 
 a) Go to https://my.neur.io/
@@ -43,6 +43,8 @@ ex. http://testapp.com
 https://graph.api.smartthings.com/api/token/
 
 f) click on Create App/Update App at the bottom
+
+g) Take note of the client id and the client secret appearing on screen
 
 ******************************************************************************************
 2) Create a new device type (My Neurio Device) for your sensor(s)
@@ -104,7 +106,14 @@ g) Make sure that enable OAuth in Smartapp is active
 * Click on Oauth (middle of the page), and enable OAuth in Smart app
 * Hit "Update" at the bottom
 
-h) Go back to the code window, and hit the "publish/for me" button at the top right corner 
+h) Update the client id and client secret at the end of the file.
+
+- def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" } - substitute your client id here!
+
+- def getSmartThingsPrivateKey() { "Insert your private API Key here!" } - substitute your client secret here!
+
+
+i) Go back to the code window, and hit the "publish/for me" button at the top right corner 
 
 ******************************************************************************************
 5) Optionally, you can activate live logging for more tracing
