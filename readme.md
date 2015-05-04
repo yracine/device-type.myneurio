@@ -52,7 +52,7 @@ f) a screen will appear with the following fields:
 
     https://graph.api.smartthings.com/api/token/
 
-g) click on Create App/Update App at the bottom
+g) click on the 'Register new App' button at the bottom of the screen
 
 h) Take note of the client id and the secret exactly as they appear on screen
 
