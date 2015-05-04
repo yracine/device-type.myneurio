@@ -31,20 +31,25 @@ a) Go to https://my.neur.io/
 b) Log in using your Neur.io credentials (username/password)
 c) Go to Settings (click on the menu at the upper right corner)
 d) Click on Apps (left menu, second option)
-e) a screen will appear with the following fields:
+e) Click on register new app (on the right inside)
+f) a screen will appear with the following fields:
 
 - Enter an application name (your choice)
+
 ex. SmartThings
 - Enter a description (your choice)
 
 - Enter a homepage URL (your choice)
+ 
+
 ex. http://testapp.com
 -  Enter a callback URL: need to be the following (no spaces):
+
 https://graph.api.smartthings.com/api/token/
 
-f) click on Create App/Update App at the bottom
+g) click on Create App/Update App at the bottom
 
-g) Take note of the client id and the client secret appearing on screen
+h) Take note of the client id and the secret exactly as they appear on screen
 
 ******************************************************************************************
 2) Create a new device type (My Neurio Device) for your sensor(s)
