@@ -41,16 +41,16 @@ f) a screen will appear with the following fields:
 
 - Enter an application name (your choice)
 
-ex. SmartThings
+    ex. SmartThings
 - Enter a description (your choice)
 
 - Enter a homepage URL (your choice)
  
 
-ex. http://testapp.com
+    ex. http://testapp.com
 -  Enter a callback URL: need to be the following (no spaces):
 
-https://graph.api.smartthings.com/api/token/
+    https://graph.api.smartthings.com/api/token/
 
 g) click on Create App/Update App at the bottom
 
