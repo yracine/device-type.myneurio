@@ -364,6 +364,8 @@ def updated() {
 
 	unsubscribe()
 	initialize()
+	create_child_appliances()        
+
 }
 
 
@@ -421,7 +423,6 @@ private def create_child_devices() {
 
 	log.debug "created ${devices.size()} Neurio sensors"
 
-	create_child_appliances()        
 
 
 }
@@ -442,7 +443,7 @@ private def create_child_appliances() {
 		def d = getChildDevice(dni)
 		if(!d)
 		{
-			log.debug "atomicState (i=$i) $atomicState "
+			log.debug "atomicState $atomicState"
             
 			def labelName = 'My Appliance ' + "${locationName}:${applianceLabel}"
 			log.debug "About to create child device with id $dni, locationName = $locationName, applianceLabel=  ${applianceLabel}"
