@@ -149,14 +149,20 @@ https://graph.api.smartthings.com/device/list
 
 You can click on any new My Neurio and My Appliance objects created and see their populated attributes.
 
+******************************************************************************************
+7) Use SmartSetup and execute My NeurioServiceMgr again (to create only the Neurio Appliances)
+******************************************************************************************
+
+You then just need to press Next till the last page where your appliances are selected.  Then,
+you press 'Done' to confirm the creation.
 
 ******************************************************************************************
-7) Under the SmartThings app (on your tablet or smartphone), you should then
+8) Under the SmartThings app (on your tablet or smartphone), you should then
 see the new Object under the 'Things' shortcut on the dashboard
 ******************************************************************************************
 
 ******************************************************************************************
-8) (optional) After instantiation of MyNeurio and My Appliance Objects, you can enable more tracing 
+9) (optional) After instantiation of MyNeurio and My Appliance Objects, you can enable more tracing 
 at the device level (if needed)
 ******************************************************************************************
 
