@@ -86,7 +86,7 @@ b) Hit the "+New SmartDevice" at the top right corner
 c) Hit the "From Code" tab on the left corner
 
 d) Copy and paste the code from neurio.devicetype
-under http://github.com/yracine/MyNeurioAppliance.devicetype.groovy
+under https://github.com/yracine/device-type.myneurio/blob/master/MyNeurioAppliance.devicetype.groovy
 
 e) Hit the create button at the bottom
 
