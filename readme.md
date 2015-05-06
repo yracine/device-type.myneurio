@@ -131,9 +131,10 @@ h) Go back to the code window, and hit the "publish/for me" button at the top ri
 
 /******************************************************************************************/
 
-5) Optionally, you can activate live logging for more tracing
+5) Optionally, you can activate live logging for more tracing 
 /******************************************************************************************/
 
+This is useful for debugging in case of any error/exception.
 
 Go to https://graph.api.smartthings.com/ide/logs
 
@@ -151,7 +152,7 @@ after the authentication, will show you the list of sensor(s) under your Neurio 
 
 On the next page, you can then select the sensor(s) to be exposed to SmartThings.
 
-After pressing 'Next', on the following 2 pages, you can also select the appliance(s) to be exposed to SmartThings.
+After pressing 'Next', on the following 2 pages, you may also select the appliance(s) to be exposed to SmartThings.
 Please select 2-3 appliances per page, to avoid any ST issues (i.e. execution time constraints).
 
 After pressing 'Done' on the last page, il will instantiate the MyNeurio object under 
@@ -162,9 +163,10 @@ You can click on any new My Neurio object created and see its populated attribut
 
 /******************************************************************************************/
 
-7) Use SmartSetup and execute My NeurioServiceMgr again (to create the Neurio Appliances only)
+7) Use SmartSetup and execute MyNeurioServiceMgr again to create the Neurio Appliances this time
 /******************************************************************************************/
 
+If you want to create also some Neurio Appliances under ST, execute MyNeurioServiceMgr again.
 
 You then just need to press Next till the last page where your appliances are selected.  Then,
 you press 'Done' to confirm the creation.
