@@ -163,10 +163,11 @@ You can click on any new My Neurio object created and see its populated attribut
 
 /******************************************************************************************/
 
-7) Use SmartSetup and execute MyNeurioServiceMgr again to create the Neurio Appliances this time
+7) Go under My Apps and execute MyNeurioServiceMgr again to create the Neurio Appliances this time
 /******************************************************************************************/
 
-If you want to create also some Neurio Appliances under ST, execute MyNeurioServiceMgr again.
+If you want to create also some Neurio Appliances under ST, execute MyNeurioServiceMgr again
+under My Apps.
 
 You then just need to press Next till the last page where your appliances are selected.  Then,
 you press 'Done' to confirm the creation.
