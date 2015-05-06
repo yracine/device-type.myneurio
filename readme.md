@@ -152,6 +152,7 @@ after the authentication, will show you the list of sensor(s) under your Neurio 
 On the next page, you can then select the sensor(s) to be exposed to SmartThings.
 
 After pressing 'Next', on the following 2 pages, you can also select the appliance(s) to be exposed to SmartThings.
+Please select 2-3 appliances per page, to avoid any ST issues (i.e. execution time constraints).
 
 After pressing 'Done' on the last page, il will instantiate the MyNeurio object under 
 
@@ -174,6 +175,7 @@ You can click on any new My Appliance objects created and see their populated at
 
 8) Under the SmartThings app (on your tablet or smartphone), you should then
 see the new Object under the 'Things' shortcut on the dashboard
+
 /******************************************************************************************/
 
 
@@ -181,6 +183,7 @@ see the new Object under the 'Things' shortcut on the dashboard
 
 9) (optional) After instantiation of MyNeurio and My Appliance Objects, you can enable more tracing 
 at the device level (if needed)
+
 /******************************************************************************************/
 
 
