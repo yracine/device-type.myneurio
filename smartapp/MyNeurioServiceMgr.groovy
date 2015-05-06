@@ -163,7 +163,7 @@ def NeurioApplianceList() {
 
 	def p = dynamicPage(name: "applianceList", title: "Select Your Appliance(s)", nextPage:"applianceList2") {
 		section(""){
-			paragraph "Tap below to see the list of Neurio Appliances available in your Neurio account and select the ones you want to connect to SmartThings."
+			paragraph "Tap below to see the list of Neurio Appliances available in your Neurio account and select the ones you want to connect to SmartThings (max=3 per page)."
 			input(name: "NeurioAppliances", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioAppliances])
 		}
 	}
@@ -182,7 +182,7 @@ def NeurioApplianceList2() {
 
 	def p = dynamicPage(name: "applianceList2", title: "Select Your Appliance(s)", uninstall: true) {
 		section(""){
-			paragraph "page 2: select the ones you want to connect to SmartThings."
+			paragraph "page 2: select the ones you want to connect to SmartThings (max=3 per page)."
 			input(name: "NeurioAppliances", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioAppliances])
 		}
 	}
