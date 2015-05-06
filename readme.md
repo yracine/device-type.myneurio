@@ -1,5 +1,4 @@
 # device-type.myneurio
-My Neurio Device:  Custom Neurio device to enable more neurio capabilities within Smartthings 
 
 Author:             Yves Racine
 
@@ -10,7 +9,7 @@ Date:               2015-03-15
 Code: http://github.com/yracine/device-type.myneurio
 
 **************************************************************************************************
-If you like My Neurio Device and related smartapps, please support the developer:
+If you like My Neurio Device, My Neurio Appliance and related smartapps, please support the developer:
 
 
 <br/> [![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](
@@ -155,7 +154,7 @@ On the next page, you can then select the sensor(s) to be exposed to SmartThings
 After pressing 'Next', on the following 2 pages, you may also select the appliance(s) to be exposed to SmartThings.
 Please select 2-3 appliances per page, to avoid any ST issues (i.e. execution time constraints).
 
-After pressing 'Done' on the last page, il will instantiate the MyNeurio object under 
+After pressing 'Done' on the last page, the smartapp will instantiate the MyNeurio object under 
 
 https://graph.api.smartthings.com/device/list
 
@@ -171,6 +170,10 @@ under My Apps.
 
 You then just need to press Next till the last page where your appliances are selected.  Then,
 you press 'Done' to confirm the creation.
+
+After pressing 'Done' on the last page, the smartapp will instantiate the MyNeurioAppliance objects under 
+
+https://graph.api.smartthings.com/device/list
 
 You can click on any new My Appliance objects created and see their populated attributes.
 
