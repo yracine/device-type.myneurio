@@ -154,7 +154,7 @@ On the next page, you can then select the sensor(s) to be exposed to SmartThings
 After pressing 'Next', on the following 2 pages, you may also select the appliance(s) to be exposed to SmartThings.
 Please select 2-3 appliances per page, to avoid any ST issues (i.e. execution time constraints).
 
-After pressing 'Done' on the last page, the smartapp will instantiate the MyNeurio object under 
+After pressing 'Done' on the last page, the smartapp will instantiate the MyNeurio device object under 
 
 https://graph.api.smartthings.com/device/list
 
@@ -168,7 +168,7 @@ You can click on any new My Neurio object created and see its populated attribut
 If you want to create also some Neurio Appliances under ST, execute MyNeurioServiceMgr again
 under My Apps.
 
-You then just need to press Next till the last page where your appliances are selected.  Then,
+You then just need to press 'Next' till the last page where your appliances are selected.  Then,
 you press 'Done' to confirm the creation.
 
 After pressing 'Done' on the last page, the smartapp will instantiate the MyNeurioAppliance objects under 
