@@ -34,7 +34,8 @@ preferences {
 	page(name: "about", title: "About", nextPage: "auth")
 	page(name: "auth", title: "Neurio", content:"authPage", nextPage:"deviceList")
 	page(name: "deviceList", title: "Neurio Sensors", content:"NeurioDeviceList")
-	page(name: "applianceList", title: "Neurio Appliances", content:"NeurioApplianceList", install:true)
+	page(name: "applianceList", title: "Neurio Appliances", content:"NeurioApplianceList", nextPage:"applianceList2")
+	page(name: "applianceList2", title: "Neurio Appliances", content:"NeurioApplianceList2", install:true)
 }
 
 mappings {
@@ -160,7 +161,26 @@ def NeurioApplianceList() {
 
 	log.debug "device list: $neurioAppliances"
 
-	def p = dynamicPage(name: "applianceList", title: "Select Your Appliance(s)", uninstall: true) {
+	def p = dynamicPage(name: "applianceList", title: "Select Your Appliance(s)", nextPage:"applianceList2") {
+		section(""){
+			paragraph "Tap below to see the list of Neurio Appliances available in your Neurio account and select the ones you want to connect to SmartThings."
+			input(name: "NeurioAppliances", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioAppliances])
+		}
+	}
+
+	log.debug "list p: $p"
+	return p
+}
+
+def NeurioApplianceList2() {
+	log.debug "NeurioApplianceList2()"
+
+    
+	def neurioAppliances = getNeurioAppliances(state.locationId)
+
+	log.debug "device list: $neurioAppliances"
+
+	def p = dynamicPage(name: "applianceList2", title: "Select Your Appliance(s)", uninstall: true) {
 		section(""){
 			paragraph "Tap below to see the list of Neurio Appliances available in your Neurio account and select the ones you want to connect to SmartThings."
 			input(name: "NeurioAppliances", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioAppliances])
