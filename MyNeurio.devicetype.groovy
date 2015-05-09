@@ -1334,7 +1334,9 @@ private def get_refresh_token() {
 
 // Called by My Neurio Init for initial creation of a child Device
 void initialSetup(device_client_id, auth_data, device_neurio_id) {
+/*
 	settings.trace='true'
+*/	
 	if (settings.trace) {
 		log.debug "initialSetup>begin"
 		log.debug "initialSetup> device_neurio_Id = ${device_neurio_id}"
@@ -1342,9 +1344,6 @@ void initialSetup(device_client_id, auth_data, device_neurio_id) {
 	}	
 	settings.appKey= device_client_id
 	settings.sensorId = device_neurio_id
-/*
-	settings.trace='true'
-*/	
 	data?.auth = settings    
 	data.auth.access_token = auth_data.authToken
 	data.auth.expires_in = auth_data.expiresIn
