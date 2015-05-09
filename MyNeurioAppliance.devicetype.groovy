@@ -956,7 +956,9 @@ private def determine_appliance_id(appliance_id) {
 
 // Called by My Neurio Init for initial creation of a child Device
 void initialSetup(auth_data, device_neurio_id) {
+/*
 	settings.trace='true'
+*/
 	if (settings.trace) {
 		log.debug "initialSetup>begin"
 		log.debug "initialSetup> device_client_id = ${device_neurio_id}"
