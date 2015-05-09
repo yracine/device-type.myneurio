@@ -394,22 +394,29 @@ private def delete_child_devices() {
 	def deleteAppliances
     
 	// Delete any that are no longer in settings
-	if(!NeurioSensors)
-	{
-		log.debug "deleting all Neurio Sensors"
+	if(!NeurioSensors) {
+		log.debug "delete_child_devices>deleting all Neurio Sensors"
 		delete = getAllChildDevices()
 	}
 	else
 	{
 		delete = getChildDevices().findAll { !NeurioSensors.contains(it.deviceNetworkId) }
-		log.debug "deleting ${delete.size()} Neurio Sensors"
+		log.debug "delete_child_devices>deleting ${delete.size()} Neurio Sensors"
 		deleteAppliances = getChildDevices().findAll { !NeurioAppliances.contains(it.deviceNetworkId) }
-		log.debug "deleting ${deleteAppliances.size()} Neurio Appliances"
+		log.debug "delete_child_devices>deleting ${deleteAppliances.size()} Neurio Appliances"
 	}
 
-	delete.each { deleteChildDevice(it.deviceNetworkId) }
-	deleteAppliances.each { deleteChildDevice(it.deviceNetworkId) }
+	try { 
+		delete.each { deleteChildDevice(it.deviceNetworkId) }
+	} catch (e) {
+		log.debug "delete_child_devices>exception $e while deleting ${delete.size()} Neurio Sensors"
+	}
+	try { 
 
+		deleteAppliances.each { deleteChildDevice(it.deviceNetworkId) }
+	} catch (e) {
+		log.debug "delete_child_devices>exception $e while deleting ${deleteAppliances.size()} Neurio Appliances"
+	}
 }
 
 
@@ -420,28 +427,27 @@ private def create_child_devices() {
 	def devices = NeurioSensors.collect { dni ->
 
 		def d = getChildDevice(dni)
-		log.debug "Looping thru Neurio Sensors, found id $dni"
+		log.debug "create_child_devices>looping thru Neurio Sensors, found id $dni"
 
 		if(!d)
 		{
-			log.debug "atomicState $atomicState "
 			def neurio_info  = dni.tokenize('.')
 			def sensorId = neurio_info.last()
  			def locationName = neurio_info[1]
 			def labelName = 'My Neurio ' + "${locationName}:${sensorId}"
-			log.debug "About to create child device with id $dni, sensorId = $sensorId, locationName=  ${locationName}"
+			log.debug "create_child_devices>about to create child device with id $dni, sensorId = $sensorId, locationName=  ${locationName}"
 			d = addChildDevice(getChildNamespace(), getChildName(), dni, null,
 				[label: "${labelName}"]) 
 			d.initialSetup( getSmartThingsClientId(), atomicState, sensorId ) 	// initial setup of the Child Device
-			log.debug "created ${d.displayName} with id $dni"
+			log.debug "create_child_devices>created ${d.displayName} with id $dni"
             
 		} else {
-			log.debug "found ${d.displayName} with id $dni already exists"
+			log.debug "create_child_devices>found ${d.displayName} with id $dni already exists"
 		}
 
 	}
 
-	log.debug "created ${devices.size()} Neurio sensors"
+	log.debug "create_child_devices>created ${devices.size()} Neurio sensors"
 
 
 
@@ -454,7 +460,7 @@ private def create_child_appliances() {
 	    
 	def devices = NeurioAppliances.collect { dni ->
 
-		log.debug "Looping thru Neurio Appliances, found id $dni"
+		log.debug "create_child_appliances>Looping thru Neurio Appliances, found id $dni"
 
 		def neurio_info  = dni.tokenize('.')
 		def applianceId = neurio_info.last()
@@ -463,22 +469,21 @@ private def create_child_appliances() {
 		def d = getChildDevice(dni)
 		if(!d)
 		{
-			log.debug "atomicState $atomicState"
             
 			def labelName = 'My Appliance ' + "${locationName}:${applianceLabel}"
 			log.debug "About to create child device with id $dni, locationName = $locationName, applianceLabel=  ${applianceLabel}"
 			d = addChildDevice(getChildNamespace(), getNeurioApplianceChildName(), dni, null,
 				[label: "${labelName}"]) 
 			d.initialSetup(atomicState, applianceId ) 	// initial setup of the Child Device
-			log.debug "created ${d.displayName} with id $dni"
+			log.debug "create_child_appliances>created ${d.displayName} with id $dni"
 		} else {
         
-			log.debug "found ${d.displayName} with id $dni already exists"
+			log.debug "create_child_appliances>found ${d.displayName} with id $dni already exists"
 		}
 	}
 
 
-	log.debug "created ${devices.size()} Neurio appliances"
+	log.debug "create_child_appliances>created ${devices.size()} Neurio appliances"
 
 
 
