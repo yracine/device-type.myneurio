@@ -274,7 +274,7 @@ void poll() {
 
 	def dataEvents = [
 		userid:data?.user.id,
-		username:data?.user.name,
+		username:(data?.user.name) && (data?.user.name != 'null')?data.user.name:"",
 		email:data?.user.email,
 		locationName:data?.user.locations[0].name,
 		timezone:data?.user.locations[0].timezone,
