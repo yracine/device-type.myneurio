@@ -384,7 +384,10 @@ def updated() {
 
 	unsubscribe()
 	initialize()
-	create_child_appliances()        
+    
+/* 	Create appliance objects
+*/
+	create_child_appliances()  
 
 }
 
@@ -429,8 +432,7 @@ private def create_child_devices() {
 		def d = getChildDevice(dni)
 		log.debug "create_child_devices>looping thru Neurio Sensors, found id $dni"
 
-		if(!d)
-		{
+		if(!d) {
 			def neurio_info  = dni.tokenize('.')
 			def sensorId = neurio_info.last()
  			def locationName = neurio_info[1]
@@ -445,7 +447,10 @@ private def create_child_devices() {
 			log.debug "create_child_devices>found ${d.displayName} with id $dni already exists"
 		}
 
+
 	}
+
+    
 
 	log.debug "create_child_devices>created ${devices.size()} Neurio sensors"
 
@@ -467,8 +472,7 @@ private def create_child_appliances() {
  		def locationName = neurio_info[1]
  		def applianceLabel = neurio_info[2]
 		def d = getChildDevice(dni)
-		if(!d)
-		{
+		if(!d) {
             
 			def labelName = 'My Appliance ' + "${locationName}:${applianceLabel}"
 			log.debug "About to create child device with id $dni, locationName = $locationName, applianceLabel=  ${applianceLabel}"
@@ -483,7 +487,9 @@ private def create_child_appliances() {
 	}
 
 
+
 	log.debug "create_child_appliances>created ${devices.size()} Neurio appliances"
+
 
 
 
@@ -770,4 +776,4 @@ def getServerUrl() { return "https://graph.api.smartthings.com" }
 
 def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" }
 
-def getSmartThingsPrivateKey() { "Insert your private API Key here!" }
+def getSmartThingsPrivateKey() { "6Qg0niXeQDSk-dkfU475og" }
