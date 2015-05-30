@@ -24,7 +24,7 @@ INSTALLATION STEPS
 
 /*******************************************************************************************************************/
 
-1) Create the authorization code API keys at Neur.io portal
+<b>1) Create the authorization code API keys at Neur.io portal</b>
 /*******************************************************************************************************************/
 
 
@@ -59,7 +59,7 @@ h) Take note of the client id and the secret exactly as they appear on screen
 
 /*******************************************************************************************************************/
 
-2) Create a new device type (My Neurio Device) for your sensor(s)
+<b>2) Create a new device type (My Neurio Device) for your sensor(s)</b>
 /*******************************************************************************************************************/
 
 
@@ -79,7 +79,7 @@ f) Hit the "publish/for me" button at the top right corner (in the code window)
 
 /*******************************************************************************************************************/
 
-3) Create a new device type (My Neurio Appliance) for your appliances
+<b>3) Create a new device type (My Neurio Appliance) for your appliances</b>
 /*******************************************************************************************************************/
 
 
@@ -99,7 +99,7 @@ f) Hit the "publish/for me" button at the top right corner (in the code window)
 
 /*******************************************************************************************************************/
 
-4) Create a new smartapp (MyNeurioServiceMgr)
+<b>4) Create a new smartapp (MyNeurioServiceMgr)</b>
 /*******************************************************************************************************************/
 
 
@@ -130,7 +130,7 @@ h) Go back to the code window, and hit the "publish/for me" button at the top ri
 
 /*******************************************************************************************************************/
 
-5) Optionally, you can activate live logging for more tracing 
+<b>5) Optionally, you can activate live logging for more tracing</b> 
 /*******************************************************************************************************************/
 
 This is useful for debugging in case of any error/exception.
@@ -140,7 +140,7 @@ Go to https://graph.api.smartthings.com/ide/logs
 
 /*******************************************************************************************************************/
 
-6) Use SmartSetup and execute My NeurioServiceMgr
+<b>6) Use SmartSetup and execute My NeurioServiceMgr</b>
 /*******************************************************************************************************************/
 
 
