@@ -109,7 +109,7 @@ b) Hit the "+New SmartApp" at the top right corner
 
 c) Hit the "From Code" tab on the left corner
 
-d) Copy and paste the code from MyNeurioServiceMgr.groovy
+d) Copy and paste the code from MyNeurioServiceMgr
 under https://github.com/yracine/device-type.myneurio/tree/master/smartapp
 
 e) Update the client id and client secret at the end of the file.
