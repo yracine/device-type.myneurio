@@ -163,7 +163,7 @@ You can click on any new My Neurio object created and see its populated attribut
 
 /*******************************************************************************************************************/
 
-7) Go under My Apps and execute MyNeurioServiceMgr again to create the Neurio Appliances this time
+<b>7) Go under My Apps and execute MyNeurioServiceMgr again to create the Neurio Appliances this time</b>
 /*******************************************************************************************************************/
 
 If you want to create also some Neurio Appliances under ST, execute MyNeurioServiceMgr again
