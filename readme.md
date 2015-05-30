@@ -109,8 +109,8 @@ b) Hit the "+New SmartApp" at the top right corner
 
 c) Hit the "From Code" tab on the left corner
 
-d) Copy and paste the code from MyNeurioServiceMgr
-under https://github.com/yracine/device-type.myneurio/blob/beta/smartapp/
+d) Copy and paste the code from MyNeurioServiceMgr.groovy
+under https://github.com/yracine/device-type.myneurio/tree/master/smartapp
 
 e) Update the client id and client secret at the end of the file.
 
@@ -120,7 +120,7 @@ e) Update the client id and client secret at the end of the file.
 
 f) Hit the create button at the bottom
 
-g) Make sure that enable OAuth in Smartapp is active 
+g) <b>Make sure that enable OAuth in Smartapp is active</b> 
 
 * Goto app settings (top right corner), 
 * Click on Oauth (middle of the page), and enable OAuth in Smart app
@@ -152,7 +152,8 @@ after the authentication, will show you the list of sensor(s) under your Neurio 
 On the next page, you can then select the sensor(s) to be exposed to SmartThings.
 
 After pressing 'Next', on the following 2 pages, you may also select the appliance(s) to be exposed to SmartThings.
-Please select 2-3 appliances per page, to avoid any ST issues (i.e. execution time constraints).
+Please select not more than 3 appliances per page, to avoid any ST issues (i.e. execution time constraints, a ticket
+has been submitted to ST support about it).
 
 After pressing 'Done' on the last page, the smartapp will instantiate the MyNeurio device object under 
 
