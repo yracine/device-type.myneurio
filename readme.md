@@ -78,21 +78,15 @@ c) Hit the "From Code" tab on the left corner
 d) Copy and paste the code from MyNeurioServiceMgr
 under https://github.com/yracine/device-type.myneurio/tree/master/smartapp
 
-e) Update the client id and client secret at the end of the file.
+e) Hit the create button at the bottom
 
-- def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" } - substitute your client id here!
-
-- def getSmartThingsPrivateKey() { "Insert your private API Key here!" } - substitute your client secret here!
-
-f) Hit the create button at the bottom
-
-g) <b>Make sure that enable OAuth in Smartapp is active</b> 
+f) <b>Make sure that enable OAuth in Smartapp settings is active</b> 
 
 * Goto app settings (top right corner), 
 * Click on Oauth (middle of the page), and enable OAuth in Smart app
 * Hit "Update" at the bottom
 
-h) Go back to the code window, and hit the "publish/for me" button at the top right corner 
+g) Go back to the code window, and hit the "publish/for me" button at the top right corner 
 
 /*******************************************************************************************************************/
 
