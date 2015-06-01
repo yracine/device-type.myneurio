@@ -22,44 +22,10 @@ INSTALLATION STEPS
 
 
 
-/*******************************************************************************************************************/
-
-<b>1) Create the authorization code API keys at Neur.io portal</b>
-/*******************************************************************************************************************/
-
-
-a) Go to https://my.neur.io/
-
-b) Log in using your Neur.io credentials (username/password)
-
-c) Go to Settings (click on the menu at the upper right corner)
-
-d) Click on Apps (left menu, second option)
-
-e) Click on register new app (on the right inside)
-
-f) a screen will appear with the following fields:
-
-- Enter an application name (your choice)
-
-    ex. SmartThings
-- Enter a description (your choice)
-
-- Enter a homepage URL (your choice)
- 
-
-    ex. http://testapp.com
--  Enter a callback URL: need to be the following (no spaces):
-
-    https://graph.api.smartthings.com/api/token/
-
-g) click on the 'Register new App' button at the bottom of the screen
-
-h) Take note of the client id and the secret exactly as they appear on screen
 
 /*******************************************************************************************************************/
 
-<b>2) Create a new device type (My Neurio Device) for your sensor(s)</b>
+<b>1) Create a new device type (My Neurio Device) for your sensor(s)</b>
 /*******************************************************************************************************************/
 
 
@@ -79,7 +45,7 @@ f) Hit the "publish/for me" button at the top right corner (in the code window)
 
 /*******************************************************************************************************************/
 
-<b>3) Create a new device type (My Neurio Appliance) for your appliances</b>
+<b>2) Create a new device type (My Neurio Appliance) for your appliances</b>
 /*******************************************************************************************************************/
 
 
@@ -99,7 +65,7 @@ f) Hit the "publish/for me" button at the top right corner (in the code window)
 
 /*******************************************************************************************************************/
 
-<b>4) Create a new smartapp (MyNeurioServiceMgr)</b>
+<b>3) Create a new smartapp (MyNeurioServiceMgr)</b>
 /*******************************************************************************************************************/
 
 
@@ -130,7 +96,7 @@ h) Go back to the code window, and hit the "publish/for me" button at the top ri
 
 /*******************************************************************************************************************/
 
-<b>5) Optionally, you can activate live logging for more tracing</b> 
+<b>4) Optionally, you can activate live logging for more tracing</b> 
 /*******************************************************************************************************************/
 
 This is useful for debugging in case of any error/exception.
@@ -140,7 +106,7 @@ Go to https://graph.api.smartthings.com/ide/logs
 
 /*******************************************************************************************************************/
 
-<b>6) Use SmartSetup and execute My NeurioServiceMgr</b>
+<b>5) Use SmartSetup and execute My NeurioServiceMgr</b>
 /*******************************************************************************************************************/
 
 
@@ -163,7 +129,7 @@ You can click on any new My Neurio object created and see its populated attribut
 
 /*******************************************************************************************************************/
 
-<b>7) Go under My Apps and execute MyNeurioServiceMgr again to create the Neurio Appliances this time</b>
+<b>6) Go under My Apps and execute MyNeurioServiceMgr again to create the Neurio Appliances this time</b>
 /*******************************************************************************************************************/
 
 If you want to create also some Neurio Appliances under ST, execute MyNeurioServiceMgr again
@@ -181,7 +147,7 @@ You can click on any new My Appliance objects created and see their populated at
 
 /*******************************************************************************************************************/
 
-8) Under the SmartThings app (on your tablet or smartphone), you should then
+7) Under the SmartThings app (on your tablet or smartphone), you should then
 see the new Neurio Objects under the 'Things' shortcut on the dashboard
 
 /*******************************************************************************************************************/
@@ -190,8 +156,8 @@ see the new Neurio Objects under the 'Things' shortcut on the dashboard
 
 /*******************************************************************************************************************/
 
-9) (optional) After instantiation of MyNeurio and My Appliance Objects, you can enable more tracing 
-at the device level (if needed)
+8) (optional) After instantiation of MyNeurio and My Appliance Objects, you can enable more tracing 
+at the device level (for debugging only, can affect performance)
 
 /*******************************************************************************************************************/
 
