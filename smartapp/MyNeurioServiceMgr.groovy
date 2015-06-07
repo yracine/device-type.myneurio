@@ -542,12 +542,12 @@ def oauthInitUrl() {
 }
 
 
-def buildRedirectUrl(action = "swapToken")
-{
+def buildRedirectUrl(action = "swapToken") {
 	log.debug "buildRedirectUrl, atomicState.accessToken=${atomicState.accessToken}," +
 		serverUrl + "/api/token/${atomicState.accessToken}/smartapps/installations/${app.id}/${action}"
 	return serverUrl + "/api/token/${atomicState.accessToken}/smartapps/installations/${app.id}/${action}"
 }
+
 def swapToken() {
 	log.debug "swapping token: $params"
 	debugEvent ("swapping token: $params", true)
