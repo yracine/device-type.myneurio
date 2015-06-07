@@ -325,14 +325,12 @@ void poll() {
 }
 
 
-private void generateEvent(Map results)
-{
+private void generateEvent(Map results) {
 	if (settings.trace) {
 		log.debug "generateEvent>parsing data $results"
 	}
     
-	if(results)
-	{
+	if(results) {
 		results.each { name, value ->
 			def isDisplayed = true
 
