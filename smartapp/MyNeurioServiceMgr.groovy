@@ -75,8 +75,7 @@ def about() {
 def authPage() {
 	log.debug "authPage()"
 
-	if(!atomicState.accessToken)
-	{
+	if(!atomicState.accessToken) {
 		log.debug "about to create access token"
 		createAccessToken()
 		atomicState.accessToken = state.accessToken
@@ -87,19 +86,15 @@ def authPage() {
 	def uninstallAllowed = false
 	def oauthTokenProvided = false
 
-	if(atomicState.authToken)
-	{
+	if(atomicState.authToken) {
 		log.debug "atomicState.authToken in authPage= ${atomicState.authToken}"
 
 		// TODO: Check if it's valid
-		if(true)
-		{
+		if(true) {
 			description = "You are connected."
 			uninstallAllowed = true
 			oauthTokenProvided = true
-		}
-		else
-		{
+		} else {
 			description = "Required" // Worth differentiating here vs. not having atomicState.authToken? 
 			oauthTokenProvided = false
 		}
@@ -306,7 +301,7 @@ private def getNeurioAppliances(locationId) {
 				log.error "Authentication error, invalid authentication method, lack of credentials, etc."
 			}
             
-    		}        
+		}        
 	} catch (java.net.UnknownHostException e) {
 		log.error "getNeurioSensors> Unknown host - check the URL " + deviceListParams.uri
 	} catch (java.net.NoRouteToHostException t) {
@@ -397,7 +392,7 @@ private def delete_child_devices() {
 	def deleteAppliances
     
 	// Delete any that are no longer in settings
-	if(!NeurioSensors) {
+	if (!NeurioSensors) {
 		log.debug "delete_child_devices>deleting all Neurio Sensors"
 		delete = getAllChildDevices()
 	}
