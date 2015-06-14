@@ -63,7 +63,7 @@ def about() {
  		section("About") {	
 			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration" +
 				" and polls your Neurio appliance data on a regular interval"
-			paragraph "Version 0.8\n\n" +
+			paragraph "Version 0.8.1\n\n" +
 			"If you like this app, please support the developer via PayPal:\n\nyracine@yahoo.com\n\n" +
 			"Copyright©2015 Yves Racine"
 			href url:"http://github.com/yracine/device-type.myneurio", style:"embedded", required:false, title:"More information...", 
@@ -378,6 +378,7 @@ def updated() {
 	log.debug "Updated with settings: ${settings}"
 
 	unsubscribe()
+	unschedule()    
 	initialize()
     
 /* 	Create appliance objects
