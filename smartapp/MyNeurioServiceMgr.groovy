@@ -34,8 +34,14 @@ preferences {
 	page(name: "about", title: "About", nextPage: "auth")
 	page(name: "auth", title: "Neurio", content:"authPage", nextPage:"deviceList")
 	page(name: "deviceList", title: "Neurio Sensors", content:"NeurioDeviceList")
+/*  
+	Removed the second page of appliance selection as this is not an efficient method to avoid ST max execution time constraint
+    
 	page(name: "applianceList", title: "Neurio Appliances", content:"NeurioApplianceList", nextPage:"applianceList2")
 	page(name: "applianceList2", title: "Neurio Appliances", content:"NeurioApplianceList2", install:true)
+*/
+	page(name: "applianceList", title: "Neurio Appliances", content:"NeurioApplianceList",nextPage:"otherSettings")
+	page(name: "otherSettings", title: "Other Settings", content:"otherSettings", install:true)
 }
 
 mappings {
@@ -63,7 +69,7 @@ def about() {
  		section("About") {	
 			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration" +
 				" and polls your Neurio appliance data on a regular interval"
-			paragraph "Version 0.8.1\n\n" +
+			paragraph "Version 0.8.2\n\n" +
 			"If you like this app, please support the developer via PayPal:\n\nyracine@yahoo.com\n\n" +
 			"Copyright©2015 Yves Racine"
 			href url:"http://github.com/yracine/device-type.myneurio", style:"embedded", required:false, title:"More information...", 
@@ -71,6 +77,20 @@ def about() {
 		} 
 	}        
 }
+
+def otherSettings() {
+	dynamicPage(name: "otherSettings", title: "Other Settings", install: true, uninstall: false) {
+		section("Notifications") {
+			input "sendPushMessage", "enum", title: "Send a push notification?", metadata: [values: ["Yes", "No"]], required:
+				false
+			input "phoneNumber", "phone", title: "Send a text message?", required: false
+		}
+		section([mobileOnly:true]) {
+			label title: "Assign a name for this SmartApp", required: false
+		}
+	}
+}
+
 
 def authPage() {
 	log.debug "authPage()"
@@ -108,7 +128,7 @@ def authPage() {
 
 	if (!oauthTokenProvided) {
 
-		return dynamicPage(name: "auth", title: "Login", nextPage:null, uninstall:uninstallAllowed) {
+		return dynamicPage(name: "auth", title: "Login", nextPage:null, uninstall:uninstallAllowed,submitOnChange: true) {
 			section(){
 				paragraph "Tap below to log in to the Neurio portal and authorize SmartThings access. Be sure to scroll down on page 2 and press the 'Allow' button."
 				href url:redirectUrl, style:"embedded", required:true, title:"My Neurio", description:description
@@ -117,7 +137,7 @@ def authPage() {
 
 	} else {
 
-		return dynamicPage(name: "auth", title: "Log In", nextPage:"deviceList", uninstall:uninstallAllowed) {
+		return dynamicPage(name: "auth", title: "Log In", nextPage:"deviceList", uninstall:uninstallAllowed,submitOnChange: true) {
 			section(){
 				paragraph "Tap Next to continue to setup your Neurio Sensors."
 				href url:redirectUrl, style:"embedded", state:"complete", title:"My Neurio", description:description
@@ -155,10 +175,14 @@ def NeurioApplianceList() {
 	def neurioAppliances = getNeurioAppliances(state.locationId)
 
 	log.debug "device list: $neurioAppliances"
-
+/*
+	Removed page 2 as this is not an efficient method to avoid ST max execution time constraint
+    
 	def p = dynamicPage(name: "applianceList", title: "Select Your Appliance(s)", nextPage:"applianceList2") {
+*/
+	def p = dynamicPage(name: "applianceList", title: "Select Your Appliance(s)",  nextPage: "otherSettings") {
 		section(""){
-			paragraph "Tap below to see the list of Neurio Appliances available in your Neurio account and select the ones you want to connect to SmartThings (max=3 per page)."
+			paragraph "Tap below to see the list of Neurio Appliances available in your Neurio account and select the ones you want to connect to SmartThings (max=5)."
 			input(name: "NeurioAppliances", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioAppliances])
 		}
 	}
@@ -175,7 +199,7 @@ def NeurioApplianceList2() {
 
 	log.debug "device list: $neurioAppliances"
 
-	def p = dynamicPage(name: "applianceList2", title: "Select Your Appliance(s)", uninstall: true) {
+	def p = dynamicPage(name: "applianceList2", title: "Select Your Appliance(s)", nextPage:"otherSettings" ) {
 		section(""){
 			paragraph "page 2: select the ones you want to connect to SmartThings (max=3 per page)."
 			input(name: "NeurioAppliances", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioAppliances])
@@ -189,7 +213,8 @@ def NeurioApplianceList2() {
 
 def getNeurioSensors() {
 	def NEURIO_SUCCESS=200
-
+	def msg
+    
 	log.debug "getting Neurio devices list"
 	def deviceListParams = [
 		uri: "${get_URI_ROOT()}/users/current",
@@ -240,17 +265,27 @@ def getNeurioSensors() {
 					} /* end each sensor */                        
 				} /* end each location */                        
 			} else {
-				log.debug "http status: ${resp.status}"
-
-				log.error "Authentication error, invalid authentication method, lack of credentials, etc."
+				msg= "trying to get list of Sensors, http error status: ${resp.status}"
+                log.error msg        
+				send "MyNeurioServiceMgr> $msg"
 			}
-            
-    		}        
+        
+		}        
 	} catch (java.net.UnknownHostException e) {
-		log.error "getNeurioSensors> Unknown host - check the URL " + deviceListParams.uri
+		state?.msg= "trying to get list of Sensors, Unknown host - check the URL " + deviceListParams.uri
+		log.error state.msg        
+		runIn(30, "sendMsgWithDelay")
+		        
 	} catch (java.net.NoRouteToHostException t) {
-		log.error "getNeurioSensors> No route to host - check the URL " + deviceListParams.uri
+		state?.msg= "trying to get list of Sensors, No route to host - check the URL " + deviceListParams.uri
+		log.error state.msg        
+		runIn(30, "sendMsgWithDelay")
+	} catch (e) {
+		state?.msg= "exception $e while getting list of Sensors" 
+		log.error state.msg        
+		runIn(30, "sendMsgWithDelay")
     }
+    
 
 	log.debug "sensors: $sensors"
 
@@ -259,9 +294,10 @@ def getNeurioSensors() {
 
 
 private def getNeurioAppliances(locationId) {
-
-	def args = "locationId=" + locationId 
+	def msg
 	def NEURIO_SUCCESS=200
+    
+	def args = "locationId=" + locationId 
 
 	log.debug "getting Neurio Appliances list"
 	def deviceListParams = [
@@ -296,17 +332,27 @@ private def getNeurioAppliances(locationId) {
 					appliances[dni] = applianceLabel
 				}				                
 			} else {
-				log.debug "http status: ${resp.status}"
-
-				log.error "Authentication error, invalid authentication method, lack of credentials, etc."
+				msg= "trying to get list of Appliances, http status: ${resp.status}"
+                log.error msg        
+				send "MyNeurioServiceMgr> $msg"
 			}
             
 		}        
 	} catch (java.net.UnknownHostException e) {
-		log.error "getNeurioSensors> Unknown host - check the URL " + deviceListParams.uri
+		state?.msg= "trying to get list of Appliances, Unknown host - check the URL " + deviceListParams.uri
+		log.error state.msg        
+		runIn(30, "sendMsgWithDelay")
+		        
 	} catch (java.net.NoRouteToHostException t) {
-		log.error "getNeurioSensors> No route to host - check the URL " + deviceListParams.uri
+		state?.msg= "trying to get list of Appliances, No route to host - check the URL " + deviceListParams.uri
+		log.error state.msg        
+		runIn(30, "sendMsgWithDelay")
+	} catch (e) {
+		state?.msg= "exception $e while getting list of Appliances" 
+		log.error state.msg        
+		runIn(30, "sendMsgWithDelay")
     }
+    
 
 	log.debug "appliances: $appliances"
 
@@ -372,6 +418,7 @@ def installed() {
 	log.debug "Installed with settings: ${settings}"
 
 	initialize()
+	takeAction()
 }
 
 def updated() {
@@ -446,12 +493,7 @@ private def create_child_devices() {
 
 	}
 
-    
-
 	log.debug "create_child_devices>created ${devices.size()} Neurio sensors"
-
-
-
 }
 
 
@@ -494,12 +536,12 @@ private def create_child_appliances() {
 def initialize() {
     
 	log.debug "initialize"
-
+	state?.exceptionCount=0
+	state?.msg=null    
 	delete_child_devices()	
 	create_child_devices()
     
     
-	takeAction()
 	// set up internal poll timer
 	def pollTimer = 20
 
@@ -509,14 +551,37 @@ def initialize() {
 
 def takeAction() {
 	log.trace "takeAction>begin"
+	def MAX_EXCEPTION_COUNT=5    
+	def msg
+    
 	def devices = NeurioSensors.collect { dni ->
+    
+		Boolean pollSuccessful=false    
 		def d = getChildDevice(dni)
 		log.debug "takeAction>looping thru Neurio Sensors, found id $dni, about to poll"
-		d.poll()
+		try {
+			d.poll()
+			pollSuccessful=true
+			// reset exception counter            
+			state?.exceptionCount=0       
+		} catch (e) {
+			state?.exceptionCount=state?.exceptionCount+1        
+			log.error "MyNeurioServiceMgr>exception $e while trying to poll the device $d, exceptionCount= ${state?.exceptionCount}" 
+			                  
+    	}
+        if (pollSuccessful) {
+			log.debug "takeAction>about to get Neurio Appliance data and update Appliance objects for device $d"
+			get_neurio_appliances_data(d)
+		}    	
         
-		log.debug "takeAction>about to get Neurio Appliance data and update Appliance objects"
-		get_neurio_appliances_data(d)
-    
+		if (state?.exceptionCount == MAX_EXCEPTION_COUNT) {
+			// need to re-authenticate again    
+			atomicState.authToken= null                    
+			msg = "MyNeurioServiceMgr>too many exceptions ($MAX_EXCEPTION_COUNT), need to re-authenticate at Neurio..." 
+			log.error msg
+			send msg
+			        
+		}        
 	}
     
 
@@ -718,7 +783,7 @@ private void get_neurio_appliances_data(neurio) {
 				applianceFields = new JsonSlurper().parseText(applianceData)
 			} else {
 				log.error("get_neurio_appliances_data>applianceData is empty, exiting")
-				return        
+				continue        
 			}    
 			log.debug "get_neurio_appliances_data>applianceFields = $applianceFields"
 
@@ -761,6 +826,29 @@ private String formatDateInLocalTime(dateInString) {
 private def get_URI_ROOT() {
 	return "https://api.neur.io/v1"
 }
+
+private void sendMsgWithDelay() {
+
+	if (state?.msg) {
+		send "MyNeurioServiceMgr> ${state.msg}"
+	}
+}
+
+private send(msg) {
+	if (sendPushMessage != "No") {
+		log.debug("sending push message")
+		sendPush(msg)
+
+	}
+
+	if (phoneNumber) {
+		log.debug("sending text message")
+		sendSms(phoneNumber, msg)
+	}
+
+	log.debug msg
+}
+
 
 def getNeurioApplianceChildName() {"My Neurio Appliance"}
 
