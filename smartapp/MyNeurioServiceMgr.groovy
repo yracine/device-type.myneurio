@@ -266,7 +266,7 @@ def getNeurioSensors() {
 				} /* end each location */                        
 			} else {
 				msg= "trying to get list of Sensors, http error status: ${resp.status}"
-                log.error msg        
+				log.error msg        
 				send "MyNeurioServiceMgr> $msg"
 			}
         
@@ -333,7 +333,7 @@ private def getNeurioAppliances(locationId) {
 				}				                
 			} else {
 				msg= "trying to get list of Appliances, http status: ${resp.status}"
-                log.error msg        
+				log.error msg        
 				send "MyNeurioServiceMgr> $msg"
 			}
             
@@ -569,7 +569,7 @@ def takeAction() {
 			log.error "MyNeurioServiceMgr>exception $e while trying to poll the device $d, exceptionCount= ${state?.exceptionCount}" 
 			                  
     	}
-        if (pollSuccessful) {
+		if (pollSuccessful) {
 			log.debug "takeAction>about to get Neurio Appliance data and update Appliance objects for device $d"
 			get_neurio_appliances_data(d)
 		}    	
