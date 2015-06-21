@@ -69,7 +69,7 @@ def about() {
  		section("About") {	
 			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration" +
 				" and polls your Neurio appliance data on a regular interval"
-			paragraph "Version 0.8.2\n\n" +
+			paragraph "Version 0.8.3\n\n" +
 			"If you like this app, please support the developer via PayPal:\n\nyracine@yahoo.com\n\n" +
 			"Copyright©2015 Yves Racine"
 			href url:"http://github.com/yracine/device-type.myneurio", style:"embedded", required:false, title:"More information...", 
@@ -182,7 +182,7 @@ def NeurioApplianceList() {
 */
 	def p = dynamicPage(name: "applianceList", title: "Select Your Appliance(s)",  nextPage: "otherSettings") {
 		section(""){
-			paragraph "Tap below to see the list of Neurio Appliances available in your Neurio account and select the ones you want to connect to SmartThings (max=5)."
+			paragraph "Tap below to see the list of Neurio Appliances available in your Neurio account,and select the ones you want to connect to SmartThings (max=6."
 			input(name: "NeurioAppliances", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioAppliances])
 		}
 	}
@@ -201,7 +201,7 @@ def NeurioApplianceList2() {
 
 	def p = dynamicPage(name: "applianceList2", title: "Select Your Appliance(s)", nextPage:"otherSettings" ) {
 		section(""){
-			paragraph "page 2: select the ones you want to connect to SmartThings (max=3 per page)."
+			paragraph "page 2: select the ones you want to connect to SmartThings (max=6 per page)."
 			input(name: "NeurioAppliances", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioAppliances])
 		}
 	}
@@ -213,7 +213,6 @@ def NeurioApplianceList2() {
 
 def getNeurioSensors() {
 	def NEURIO_SUCCESS=200
-	def msg
     
 	log.debug "getting Neurio devices list"
 	def deviceListParams = [
@@ -265,9 +264,9 @@ def getNeurioSensors() {
 					} /* end each sensor */                        
 				} /* end each location */                        
 			} else {
-				msg= "trying to get list of Sensors, http error status: ${resp.status}"
-				log.error msg        
-				send "MyNeurioServiceMgr> $msg"
+				state?.msg= "trying to get list of Sensors, http error status: ${resp.status}"
+				log.error state.msg        
+				runIn(30, "sendMsgWithDelay")
 			}
         
 		}        
@@ -294,7 +293,6 @@ def getNeurioSensors() {
 
 
 private def getNeurioAppliances(locationId) {
-	def msg
 	def NEURIO_SUCCESS=200
     
 	def args = "locationId=" + locationId 
@@ -315,9 +313,6 @@ private def getNeurioAppliances(locationId) {
 		httpGet(deviceListParams) { resp ->
 
 			if (resp.status == NEURIO_SUCCESS) {
-/*        
-				int i=0    // Used to simulate many sensors
-*/
 				log.debug "getNeurioAppliances>resp data = ${resp.data}" 
 				def jsonMap =resp.data
 				jsonMap.each {
@@ -332,9 +327,9 @@ private def getNeurioAppliances(locationId) {
 					appliances[dni] = applianceLabel
 				}				                
 			} else {
-				msg= "trying to get list of Appliances, http status: ${resp.status}"
-				log.error msg        
-				send "MyNeurioServiceMgr> $msg"
+				state?.msg= "trying to get list of Appliances, http status: ${resp.status}"
+				log.error state.msg        
+				runIn(30, "sendMsgWithDelay")
 			}
             
 		}        
@@ -418,7 +413,6 @@ def installed() {
 	log.debug "Installed with settings: ${settings}"
 
 	initialize()
-	takeAction()
 }
 
 def updated() {
@@ -443,9 +437,7 @@ private def delete_child_devices() {
 	if (!NeurioSensors) {
 		log.debug "delete_child_devices>deleting all Neurio Sensors"
 		delete = getAllChildDevices()
-	}
-	else
-	{
+	} else {
 		delete = getChildDevices().findAll { !NeurioSensors.contains(it.deviceNetworkId) }
 		log.debug "delete_child_devices>deleting ${delete.size()} Neurio Sensors"
 		deleteAppliances = getChildDevices().findAll { !NeurioAppliances.contains(it.deviceNetworkId) }
@@ -523,13 +515,7 @@ private def create_child_appliances() {
 			log.debug "create_child_appliances>found ${d.displayName} with id $dni already exists"
 		}
 	}
-
-
-
 	log.debug "create_child_appliances>created ${devices.size()} Neurio appliances"
-
-
-
 
 }
 
@@ -567,8 +553,7 @@ def takeAction() {
 		} catch (e) {
 			state?.exceptionCount=state?.exceptionCount+1        
 			log.error "MyNeurioServiceMgr>exception $e while trying to poll the device $d, exceptionCount= ${state?.exceptionCount}" 
-			                  
-    	}
+		}
 		if (pollSuccessful) {
 			log.debug "takeAction>about to get Neurio Appliance data and update Appliance objects for device $d"
 			get_neurio_appliances_data(d)
@@ -583,10 +568,6 @@ def takeAction() {
 			        
 		}        
 	}
-    
-
-    
-
 	log.trace "takeAction>end"
 }
 
