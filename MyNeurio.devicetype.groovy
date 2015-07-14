@@ -268,10 +268,6 @@ void poll() {
 	def sensorId= determine_sensor_id("") 	    
 	getLastLiveSamples(sensorId)
     
-	if (settings.trace) {
-		sendEvent name: "verboseTrace", value:
-			"poll>sensorId = ${sensorId}"
-	}
 
 	def dataEvents = [
 		userid:data?.user.id,
@@ -298,6 +294,8 @@ void poll() {
 		generateSampleStats("")
 		state.lastGeneratedDate= nowInLocalTime       
 	}
+	sendEvent name: "verboseTrace", value:
+			"poll>done for sensorId = ${sensorId}"
 
 }
 
