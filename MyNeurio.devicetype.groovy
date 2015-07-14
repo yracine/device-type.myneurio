@@ -1094,9 +1094,7 @@ void getCurrentUserInfo() {
 }
 
 
-private def refresh_tokens() 
-	throws groovyx.net.http.HttpResponseException,javax.net.ssl.SSLHandshakeException,
-    	IOException,java.net.UnknownHostException,java.net.NoRouteToHostException {
+private def refresh_tokens() {
         
 	def method = 
 	[
