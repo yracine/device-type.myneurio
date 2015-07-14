@@ -250,6 +250,9 @@ void poll() {
 	// Get Basic appliance Data
     
 	getApplianceData(applianceId)
+    
+
+
 	String nowInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
         
 	// generate all stats only once every day
@@ -264,6 +267,13 @@ void poll() {
 		generateApplianceAllStats("")
 		state.lastGeneratedStatsDate= nowInLocalTime       
         
+	}
+    
+	def exceptionCheck = device.currentValue("verboseTrace")
+	if ((exceptionCheck.contains("exception")) || (exceptionCheck.contains("error"))) {  
+	// check if there is any exception or an error reported in the verboseTrace associated to the device 
+		log.error "poll>applianceId=$applianceId, $exceptionCheck" 
+		return    
 	}
     
 	Long totalConsInPeriod =  device.currentValue("consEnergyMonth")?.toLong()
