@@ -266,8 +266,15 @@ void poll() {
 //	getCurrentUserInfo() must be called prior to poll()
 	
 	def sensorId= determine_sensor_id("") 	    
+    
 	getLastLiveSamples(sensorId)
     
+	def exceptionCheck = device.currentValue("verboseTrace")
+	if ((exceptionCheck.contains("exception")) || (exceptionCheck.contains("error"))) {  
+	// check if there is any exception or an error reported in the verboseTrace associated to the device 
+		log.error "poll>sensorId=$sensorId,$exceptionCheck" 
+		return    
+	}
 
 	def dataEvents = [
 		userid:data?.user.id,
