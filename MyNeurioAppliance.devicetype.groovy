@@ -321,6 +321,8 @@ void poll() {
 
 	generateApplianceEvents("",startDate,endDate,"",'true')
 		    
+	sendEvent name: "verboseTrace", value:
+			"poll>done for applianceId = ${applianceId}"
 
 
 }
