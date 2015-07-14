@@ -21,6 +21,29 @@
 import java.text.SimpleDateFormat
 
 // for the UI
+/**
+ *  My Neurio Device
+ *
+ *  Copyright 2015 Yves Racine
+ *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
+ *  Refer to readme file for installation instructions.
+ *
+ *  Code: https://github.com/yracine/device-type.myneurio
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License. You may obtain a copy of the License at:
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
+ *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
+ *  for the specific language governing permissions and limitations under the License.
+ *
+ */
+
+import java.text.SimpleDateFormat
+
+// for the UI
 preferences {
 	input("appKey", "text", title: "App Key (public)", description:
 		"The application (public) key given by Neurio (no spaces)")
@@ -354,6 +377,7 @@ void refresh() {
 	poll()
 }
 private def api(method, args, success={}) {
+
 	String URI_ROOT = "${get_URI_ROOT()}"
 	if (!isLoggedIn()) {
 		login()
@@ -400,6 +424,7 @@ private def api(method, args, success={}) {
 
 // Need to be authenticated in before this is called. So don't call this. Call api.
 private def doRequest(uri, args, type, success) {
+        
 	def params = [
 		uri: uri,
 		headers: [
@@ -425,15 +450,15 @@ private def doRequest(uri, args, type, success) {
 		}
 	} catch (java.net.UnknownHostException e) {
 		log.error "doRequest> Unknown host - check the URL " + params.uri
-		sendEvent name: "verboseTrace", value: "doRequest> Unknown host ${params.uri}" 
+		sendEvent name: "verboseTrace", value: "doRequest>exception $e, Unknown host ${params.uri}" 
 		throw e        
 	} catch (java.net.NoRouteToHostException e) {
 		log.error "doRequest> No route to host - check the URL " + params.uri
-		sendEvent name: "verboseTrace", value: "doRequest> No route to host ${params.uri}"
+		sendEvent name: "verboseTrace", value: "doRequest>exception $e, No route to host ${params.uri}"
 		throw e        
 	} catch (e) {
 		log.error "doRequest> exception $e " + params.uri
-		sendEvent name: "verboseTrace", value: "doRequest> exception $e at ${params.uri}" 
+		sendEvent name: "verboseTrace", value: "doRequest>exception $e at ${params.uri}" 
 		throw e        
 	}
 }
@@ -1069,7 +1094,10 @@ void getCurrentUserInfo() {
 }
 
 
-private def refresh_tokens() {
+private def refresh_tokens() 
+	throws groovyx.net.http.HttpResponseException,javax.net.ssl.SSLHandshakeException,
+    	IOException,java.net.UnknownHostException,java.net.NoRouteToHostException {
+        
 	def method = 
 	[
 		headers: [
