@@ -51,6 +51,7 @@ metadata {
 		command "generateAppliancesStats"
 		command "generateAppliancesEvents"
         
+		attribute "verboseTrace","string"
 		attribute "generationEnergy","string"
 		attribute "generationPower","string"
 		attribute "userid","string"
