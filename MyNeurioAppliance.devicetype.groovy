@@ -39,6 +39,7 @@ metadata {
 		command "generateApplianceStats"
 		command "generateApplianceEvents"
         
+		attribute "verboseTrace","string"
 		attribute "applianceId","string"
 		attribute "applianceName","string"
 		attribute "applianceLabel","string"
@@ -455,15 +456,15 @@ private def doRequest(uri, args, type, success) {
 		}
 	} catch (java.net.UnknownHostException e) {
 		log.error "doRequest> Unknown host - check the URL " + params.uri
-		sendEvent name: "verboseTrace", value: "doRequest> Unknown host ${params.uri}" 
+		sendEvent name: "verboseTrace", value: "doRequest>exception $e, Unknown host ${params.uri}" 
 		throw e        
 	} catch (java.net.NoRouteToHostException e) {
 		log.error "doRequest> No route to host - check the URL " + params.uri
-		sendEvent name: "verboseTrace", value: "doRequest> No route to host ${params.uri}"
+		sendEvent name: "verboseTrace", value: "doRequest>exception $e, No route to host ${params.uri}"
 		throw e        
 	} catch (e) {
 		log.error "doRequest> exception $e " + params.uri
-		sendEvent name: "verboseTrace", value: "doRequest> exception $e at ${params.uri}" 
+		sendEvent name: "verboseTrace", value: "doRequest>exception $e at ${params.uri}" 
 		throw e        
 	}
 }
