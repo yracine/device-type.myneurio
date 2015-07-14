@@ -547,9 +547,17 @@ def takeAction() {
 		log.debug "takeAction>looping thru Neurio Sensors, found id $dni, about to poll"
 		try {
 			d.poll()
-			pollSuccessful=true
-			// reset exception counter            
-			state?.exceptionCount=0       
+			def exceptionCheck = d.currentVerboseTrace
+			if ((exceptionCheck.contains("exception") || (exceptionCheck.contains("error")) && 
+				(!exceptionCheck.contains("Java.util.concurrent.TimeoutException")))) {  
+			// check if there is any exception reported in the verboseTrace associated to the device (except the ones linked to rate limiting).
+				state.exceptionCount=state.exceptionCount+1    
+				log.error "found exception after polling, exceptionCount= ${state?.exceptionCount}: $exceptionCheck" 
+			} else {             
+				// reset exception counter            
+				state?.exceptionCount=0   
+				pollSuccessful = true                
+			}                
 		} catch (e) {
 			state?.exceptionCount=state?.exceptionCount+1        
 			log.error "MyNeurioServiceMgr>exception $e while trying to poll the device $d, exceptionCount= ${state?.exceptionCount}" 
@@ -559,7 +567,7 @@ def takeAction() {
 			get_neurio_appliances_data(d)
 		}    	
         
-		if (state?.exceptionCount == MAX_EXCEPTION_COUNT) {
+		if (state?.exceptionCount >= MAX_EXCEPTION_COUNT) {
 			// need to re-authenticate again    
 			atomicState.authToken= null                    
 			msg = "MyNeurioServiceMgr>too many exceptions ($MAX_EXCEPTION_COUNT), need to re-authenticate at Neurio..." 
