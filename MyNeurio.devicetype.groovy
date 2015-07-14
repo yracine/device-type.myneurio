@@ -21,29 +21,6 @@
 import java.text.SimpleDateFormat
 
 // for the UI
-/**
- *  My Neurio Device
- *
- *  Copyright 2015 Yves Racine
- *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
- *  Refer to readme file for installation instructions.
- *
- *  Code: https://github.com/yracine/device-type.myneurio
- *
- *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License. You may obtain a copy of the License at:
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
- *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
- *  for the specific language governing permissions and limitations under the License.
- *
- */
-
-import java.text.SimpleDateFormat
-
-// for the UI
 preferences {
 	input("appKey", "text", title: "App Key (public)", description:
 		"The application (public) key given by Neurio (no spaces)")
