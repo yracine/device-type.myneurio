@@ -269,7 +269,7 @@ void poll() {
         
 	}
     
-	def exceptionCheck = device.currentValue("verboseTrace")
+ 	String exceptionCheck = device.currentValue("verboseTrace").toString()
 	if ((exceptionCheck.contains("exception")) || (exceptionCheck.contains("error"))) {  
 	// check if there is any exception or an error reported in the verboseTrace associated to the device 
 		log.error "poll>applianceId=$applianceId, $exceptionCheck" 
