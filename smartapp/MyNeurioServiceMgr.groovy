@@ -547,7 +547,7 @@ def takeAction() {
 		log.debug "takeAction>looping thru Neurio Sensors, found id $dni, about to poll"
 		try {
 			d.poll()
-			def exceptionCheck = d.currentVerboseTrace
+			String exceptionCheck = d.currentVerboseTrace.toString()
 			if ((exceptionCheck.contains("exception") || (exceptionCheck.contains("error")) && 
 				(!exceptionCheck.contains("Java.util.concurrent.TimeoutException")))) {  
 			// check if there is any exception reported in the verboseTrace associated to the device (except the ones linked to rate limiting).
