@@ -712,7 +712,7 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 				def errors = resp.errors
 				log.error "generateApplianceStats>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 				sendEvent name: "verboseTrace", 
-                	value:"generateApplianceStats>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
+					value:"generateApplianceStats>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
