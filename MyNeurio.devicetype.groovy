@@ -471,12 +471,12 @@ void getLastLiveSamples(sensorId) {
 					sendEvent name: "verboseTrace", value:"getLastLiveSamples>sensorId=${sensorId},consumptionPower=${consumptionPower},consumptionEnergy=${consumptionEnergy}" +
 						",generationPower=${generationPower},generationEnergy=${generationEnergy}"
 				}
-                
+				sendEvent name: "verboseTrace", value:"getLastLiveSamples>done for sensorId=${sensorId}"
 			} else {
 				def message = resp.message
             			def errors = resp.errors
-				log.error "getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors}"
+				log.error "getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors} for sensorId=${sensorId}"
+				sendEvent name: "verboseTrace", value:"getLastLiveSamples>status=${statusCode.toString()},message=${message},error=${errors} for sensorId=${sensorId}"
 			}                
 		}  /* end api call */              
 	} /* end while */
@@ -659,11 +659,12 @@ void getSampleStats(sensorId,start,end,granularity,frequency) {
                         
 					} /* end for samples */
 				} /* end if */                    
+				sendEvent name: "verboseTrace", value:"getSamplesData>done for sensorId=${sensorId}"
 			} else {
 				def message = resp.message
 				def errors = resp.errors
-				log.error "getSamplesData>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"getSamplesData>status=${statusCode.toString()},message=${message},errors=${errors}"
+				log.error "getSamplesData>status=${statusCode.toString()},message=${message},error=${errors} for sensorId=${sensorId}"
+				sendEvent name: "verboseTrace", value:"getSamplesData>status=${statusCode.toString()},message=${message},error=${errors} for sensorId=${sensorId}"
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
@@ -698,11 +699,12 @@ void getApplianceData(applianceId) {
 					sendEvent name: "verboseTrace", value:"getApplianceData>applianceId= ${applianceId}, applianceName=${applianceName}" +
 						",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
 				}
+				sendEvent name: "verboseTrace", value:"getApplianceData>done for applianceId=${applianceId}"
 			} else {
 				def message = resp.message
 				def errors = resp.errors
-				log.error "getApplianceData>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"getApplianceData>status=${statusCode.toString()},message=${message},errors=${errors}"
+				log.error "getApplianceData>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
+				sendEvent name: "verboseTrace", value:"getApplianceData>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 			}                
 		}  /* end api call */              
 	} /* end while */
@@ -712,17 +714,19 @@ void getApplianceData(applianceId) {
     
 		applianceDataJson = new groovy.json.JsonBuilder(data.appliance)
 	}
-    
+/*    
 	if (settings.trace) {
 		log.debug "getApplianceData>applianceDataJson=${applianceDataJson}"
 	}
+*/    
 	def applianceDataEvents = [
 		applianceData: "${applianceDataJson.toString()}"
 	]
+/*    
 	if (settings.trace) {
 		log.debug "getApplianceData>applianceDataEvents to be sent= ${applianceDataEvents}"
 	}
-    
+*/    
 	generateEvent(applianceDataEvents)
 
 }
@@ -770,11 +774,12 @@ void getApplianceList(locationId,postData='false') {
 					}
 					appliancesList = appliancesList + it.id + ','                     
 				} /* end each appliance */                
+				sendEvent name: "verboseTrace", value:"getApplianceList>done for locationId=${locationId}"
 			} else {
 				def message = resp.message
 				def errors = resp.errors
-				log.error "getApplianceList>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"getApplianceList>status=${statusCode.toString()},message=${message},errors=${errors}"
+				log.error "getApplianceList>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
+				sendEvent name: "verboseTrace", value:"getApplianceList>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 			}                
 		}  /* end api call */              
 	} /* end while */
@@ -784,18 +789,20 @@ void getApplianceList(locationId,postData='false') {
     
 		appliancesDataJson = new groovy.json.JsonBuilder(appliancesData)
 	}
-	
+/*	
 	if (settings.trace) {
 		log.debug "getApplianceList>appliancesDataJson=${appliancesDataJson}"
 	}
+*/    
 	def appliancesListEvents = [
 		appliancesData: "${appliancesDataJson.toString()}",
 		appliancesList: "${appliancesList.toString()}"
 	]
+/*    
 	if (settings.trace) {
 		log.debug "getApplianceList>appliancesListEvents to be sent= ${appliancesListEvents}"
 	}
-    
+*/    
 	generateEvent(appliancesListEvents)
 
 }
@@ -878,11 +885,12 @@ void generateAppliancesStats(locationId,applianceId,start,end,granularity,minPow
 						}
 					} /* end each stats */
 				} 
+				sendEvent name: "verboseTrace", value:"generateAppliancesStats>done for locationId=${locationId}"
 			} else {
 				def message = resp.message
 				def errors = resp.errors
-				log.error "generateAppliancesStats>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"generateAppliancesStats>status=${statusCode.toString()},message=${message},errors=${errors}"
+				log.error "generateAppliancesStats>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
+				sendEvent name: "verboseTrace", value:"generateAppliancesStats>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
@@ -893,17 +901,19 @@ void generateAppliancesStats(locationId,applianceId,start,end,granularity,minPow
     
 		appliancesStatsJson = new groovy.json.JsonBuilder(appliancesStatsData)
 	}
-	
+/*	
 	if (settings.trace) {
 		log.debug "generateAppliancesStats>appliancesStatsJson=${appliancesStatsJson}"
 	}
+*/    
 	def appliancesStatsEvents = [
 		appliancesStatsData: "${appliancesStatsJson.toString()}"
 	]
+/*    
 	if (settings.trace) {
 		log.debug "generateAppliancesStats>appliancesStatsEvents to be sent= ${appliancesStatsEvents}"
 	}
-    
+*/    
 	generateEvent(appliancesStatsEvents)
 }
 
@@ -977,11 +987,12 @@ void generateAppliancesEvents(locationId,applianceId,start,end,minPower="") {
 						}                                
 					} /* end each event */
 				} 
+				sendEvent name: "verboseTrace", value:"generateAppliancesEvents>done for locationId=${locationId}"
 			} else {
 				def message = resp.message
 				def errors = resp.errors
-				log.error "generateAppliancesEvents>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"generateAppliancesEvents>status=${statusCode.toString()},message=${message},errors=${errors}"
+				log.error "generateAppliancesEvents>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
+				sendEvent name: "verboseTrace", value:"generateAppliancesEvents>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
@@ -992,17 +1003,19 @@ void generateAppliancesEvents(locationId,applianceId,start,end,minPower="") {
     
 		appliancesEventsJson = new groovy.json.JsonBuilder(appliancesEventsData)
 	}
-	
+/*	
 	if (settings.trace) {
 		log.debug "generateAppliancesEvents>appliancesEventsJson=${appliancesEventsJson}"
 	}
+*/    
 	def appliancesEvents = [
 		appliancesEventsData: "${appliancesEventsJson.toString()}"
 	]
+/*    
 	if (settings.trace) {
 		log.debug "generateAppliancesEvents>appliancesEvents to be sent= ${appliancesEvents}"
 	}
-    
+*/    
 	generateEvent(appliancesEvents)
 }
 
@@ -1065,12 +1078,13 @@ void getCurrentUserInfo() {
 						} /* end each channel */                        
 					} /* end each sensor */                        
 				} /* end each location */                        
+				sendEvent name: "verboseTrace", value:"getCurrentUserInfo>done"
 			} else {
 				statusCode=data.status
 				def message = data.message
 				def errors = data.errors
-				log.error "getCurrentUserInfo>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"getCurrentUserInfo>status=${statusCode.toString()},message=${message},errors=${errors}"
+				log.error "getCurrentUserInfo>status=${statusCode.toString()},message=${message},error=${errors}"
+				sendEvent name: "verboseTrace", value:"getCurrentUserInfo>status=${statusCode.toString()},message=${message},error=${errors}"
 			} /* end if statusCode */                
 		}  /* end api call */              
 	} /* end while */
