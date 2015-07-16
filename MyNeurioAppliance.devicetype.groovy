@@ -600,11 +600,12 @@ void getApplianceData(applianceId) {
 					sendEvent name: "verboseTrace", value:"getApplianceData>applianceId= ${applianceId}, applianceName=${applianceName}" +
 						",applianceLabel=${applianceLabel},applianceTags=${applianceTags},created=${applianceCreated}, updated=${applianceUpdated}"
 				}
+				sendEvent name: "verboseTrace", value:"getApplianceData>done for applianceId=${applianceId}"
 			} else {
 				def message = resp.message
 				def errors = resp.errors
-				log.error "getApplianceData>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"getApplianceData>status=${statusCode.toString()},message=${message},errors=${errors}"
+				log.error "getApplianceData>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
+				sendEvent name: "verboseTrace", value:"getApplianceData>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 			}                
 		}  /* end api call */              
 	} /* end while */
@@ -704,20 +705,25 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 						}
 					} /* end each stats */
 				} 
+				sendEvent name: "verboseTrace", 
+                	value:"generateApplianceStats>done for applianceId=${applianceId}"
 			} else {
 				def message = resp.message
 				def errors = resp.errors
-				log.error "generateApplianceStats>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"generateApplianceStats>status=${statusCode.toString()},message=${message},errors=${errors}"
+				log.error "generateApplianceStats>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
+				sendEvent name: "verboseTrace", 
+                	value:"generateApplianceStats>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
 
 	if (nbAvgPowerRecords >0) {
 		avgPower = totalAvgConsumedPower / nbAvgPowerRecords
+/*        
 		if (settings.trace) {
 			log.debug "generateApplianceStats>avgPower= ${avgPower},totalAvgConsumedPower=${totalAvgConsumedPower},nbAvgPowerRecords=${nbAvgPowerRecords}"
 		}
+*/        
 	}                        
 
 	def applianceStatsJson=""
@@ -726,19 +732,21 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
     
 		applianceStatsJson = new groovy.json.JsonBuilder(applianceStatsData)
 	}
-	
+/*	
 	if (settings.trace) {
 		log.debug "generateApplianceStats>applianceStatsJson=${applianceStatsJson}"
 	}
+*/    
 	def applianceStatsEvents = [
 		applianceStatsData: "${applianceStatsJson.toString()}",
 		consAvgInPeriod:avgPower.toString(),       
 		consTotalInPeriod:totalConsumedEnergy.toString()
 	]
+/*    
 	if (settings.trace) {
 		log.debug "generateApplianceStats>applianceStatsEvents to be sent= ${applianceStatsEvents}"
 	}
-    
+*/    
 	generateEvent(applianceStatsEvents)
 }
 
@@ -834,11 +842,12 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
     
 					} /* end each event */
 				} 
+				sendEvent name: "verboseTrace", value:"generateApplianceEvents>done for applianceId=${applianceId}"
 			} else {
 				def message = resp.message
 				def errors = resp.errors
-				log.error "generateApplianceEvents>status=${statusCode.toString()},message=${message},errors=${errors}"
-				sendEvent name: "verboseTrace", value:"generateApplianceEvents>status=${statusCode.toString()},message=${message},errors=${errors}"
+				log.error "generateApplianceEvents>status=${statusCode.toString()},message=${message},error=${errors}"
+				sendEvent name: "verboseTrace", value:"generateApplianceEvents>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
@@ -849,15 +858,17 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
     
 		applianceEventsJson = new groovy.json.JsonBuilder(applianceEventsData)
 	}
-	
+/*	
 	if (settings.trace) {
 		log.debug "generateApplianceEvents>applianceEventsJson=${applianceEventsJson}"
 	}
+*/    
 	applianceEvents =[applianceEventsData: "${applianceEventsJson.toString()}"]
+/*    
 	if (settings.trace) {
 		log.debug "generateApplianceEvents>applianceEvents to be sent= ${applianceEvents}"
 	}
-    
+*/    
 	generateEvent(applianceEvents)
 }
 
