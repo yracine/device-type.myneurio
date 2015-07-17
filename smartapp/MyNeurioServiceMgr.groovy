@@ -544,7 +544,7 @@ def takeAction() {
 		def d = getChildDevice(dni)
         
 		log.debug "takeAction>looping thru Neurio Sensors, found id $dni, about to poll"
-        String exceptionCheck,msg
+		String exceptionCheck,msg
 		def MAX_EXCEPTION_COUNT=5    
 		try {
 			d.poll()
