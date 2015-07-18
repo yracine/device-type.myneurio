@@ -80,6 +80,9 @@ def about() {
 
 def otherSettings() {
 	dynamicPage(name: "otherSettings", title: "Other Settings", install: true, uninstall: false) {
+		section("Polling at which interval in minutes (range=[5..59],default=20 min.)?") {
+			input "givenInterval", "number", title:"Interval", required: false
+		}
 		section("Notifications") {
 			input "sendPushMessage", "enum", title: "Send a push notification?", metadata: [values: ["Yes", "No"]], required:
 				false
@@ -527,12 +530,13 @@ def initialize() {
 	delete_child_devices()	
 	create_child_devices()
     
-    
-	// set up internal poll timer
-	def pollTimer = 20
-
-	log.trace "setting poll to ${pollTimer}"
-	schedule("0 0/${pollTimer.toInteger()} * * * ?", takeAction)
+	Integer delay = givenInterval ?: 20 // By default, do it every 20 min.
+	if ((delay < 5) || (delay>59)) {
+		state?.msg= "MyNeurioServiceMgr>scheduling interval not in range (${delay} min), exiting..."
+		log.debug state.msg
+		runIn(30, "sendMsgWithDelay")
+ 		return
+	}
 }
 
 def takeAction() {
@@ -544,7 +548,7 @@ def takeAction() {
 		def d = getChildDevice(dni)
         
 		log.debug "takeAction>looping thru Neurio Sensors, found id $dni, about to poll"
-		String exceptionCheck,msg
+        String exceptionCheck,msg
 		def MAX_EXCEPTION_COUNT=5    
 		try {
 			d.poll()
