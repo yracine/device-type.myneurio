@@ -295,7 +295,7 @@ void poll() {
     
 	if (state.lastGeneratedDate != nowInLocalTime) {
 		if (settings.trace) {
-			log.debug "api> about to generateSampleStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
+			log.debug "poll>about to generateSampleStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
 		}
 		    
 		generateSampleStats("")
