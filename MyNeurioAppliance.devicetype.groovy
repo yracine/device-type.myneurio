@@ -103,9 +103,10 @@ metadata {
                  		)
 		}
 		valueTile(	"name", "device.applianceLabel",width: 2, height: 1,canChangeIcon: false,
-  					decoration: "flat"				) 
+  					decoration: "flat") 
         	{
 			state("default",
+					icon: "st.quirky.spotter.quirky-spotter-plugged",           
 					label:'${currentValue}',
 					backgroundColor: "#ffffff",
                  		)
@@ -228,7 +229,7 @@ metadata {
 			state "default", action:"polling.poll", icon:"st.secondary.refresh"
 		}
 
-		main(["power", "energy"])
+		main(["name", "power", "energy"])
 		details(["power", "energy",  "name", "usagePct", "eventCount","refresh", "consEnergyYesterday",  "consAvgPowerYesterday", "consEnergy2DaysAgo", "consAvgPower2DaysAgo",
         		"consEnergyLastWeek", "consAvgPowerLastWeek", "consEnergy2WeeksAgo","consAvgPower2WeeksAgo","consEnergyLastMonth","consAvgPowerLastMonth" ])
 
@@ -353,7 +354,7 @@ private void generateEvent(Map results) {
 // 			Energy variable names contain "energy"           
 
 			if ((name.toUpperCase().contains("ENERGY"))) {  
-				Double energyValue = getEnergy(value).toDouble().round()
+				Double energyValue = getEnergy(value.toDouble()).round()
 				String energyValueString = String.format("%5d", energyValue.intValue())                
 				def isChange = isStateChange(device, name, energyValueString)
 				isDisplayed = isChange
@@ -372,7 +373,7 @@ private void generateEvent(Map results) {
 
 // 			Time variable names contain "time"
 
- 				Double timeValue = getTimeInMinutes(value).toDouble().round()
+ 				Double timeValue = getTimeInMinutes(value.toDouble()).round()
 				String timeValueString = String.format("%5d", timeValue.intValue())                
 				def isChange = isStateChange(device, name, timeValueString)
 				isDisplayed = isChange
