@@ -259,7 +259,7 @@ void poll() {
     
 	if (state.lastGeneratedStatsDate != nowInLocalTime) {
 		if (settings.trace) {
-			log.debug "poll> about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
+			log.debug "poll>about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
 		}
         
 		// Once a day, generate all appliance stats (yesterday, 2 days ago, 1 week ago, 2 weeks ago, 1 month ago)
@@ -319,7 +319,10 @@ void poll() {
 	generateEvent(dataEvents)
     
 	Date endDate = new Date()
-	Date startDate = new Date(state.lastEndDate)    
+	Date startDate 
+	if (state?.lastEndDate) {
+		startDate = new Date(state?.lastEndDate)    
+	}    
 	if ((!startDate) || (endDate - startDate>1)) {
 		startDate= endDate -1        
 	}    
