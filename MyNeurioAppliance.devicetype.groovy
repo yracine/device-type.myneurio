@@ -490,7 +490,7 @@ void generateApplianceAllStats(applianceId) {
 // generate stats for yesterday
 
 	String dateInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone) 
-    dateInLocalTime = dateInLocalTime + " 00:00"
+	dateInLocalTime = dateInLocalTime + " 00:00"
     
 	if (settings.trace) {
 		log.debug("generateApplianceAllStats>date in local date/time= ${dateInLocalTime}")
