@@ -35,7 +35,7 @@ preferences {
 }
 
 metadata {
-	definition (name: "My Neurio Device", namespace: "yracine", author: "Yves Racine") {
+	definition (name: "My Neurio Device V2", namespace: "yracine", author: "Yves Racine") {
 		capability "Power Meter"
 		capability "Refresh"
 		capability "Polling"
@@ -487,10 +487,11 @@ void generateSampleStats(sensorId) {
 // generate stats for yesterday
 
 	String dateInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone) 
-	dateInLocalTime = dateInLocalTime + " 00:00"
+	String timezone = new Date().format("zzz", location.timeZone)
+	String dateAtMidnight = dateInLocalTime + " 00:00 " + timezone    
     
 	if (settings.trace) {
-		log.debug("generateSamplesStats>date in local date/time= ${dateInLocalTime}")
+		log.debug("generateSamplesStats>date in local date/time= ${dateAtMidnight}")
 	}
 	Date endDate = formatDate(dateInLocalTime)
 	Date startDate = (endDate -1)
@@ -549,8 +550,7 @@ void generateSampleStats(sensorId) {
 
 // generate stats for the past month
 
-    dateInLocalTime = dateInLocalTime + " 00:00"    
-	endDate = formatDate(dateInLocalTime)
+	endDate = formatDate(dateAtMidnight)
 	Calendar oneMonthAgoCal = new GregorianCalendar()
 	oneMonthAgoCal.add(Calendar.MONTH, -1)
 	Date oneMonthAgo = oneMonthAgoCal.getTime()
@@ -586,7 +586,7 @@ void generateSampleStats(sensorId) {
 }
 
 private def formatDate(dateString) {
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm zzz")
 	Date theDate = sdf.parse(dateString)
 	return theDate
 }
