@@ -289,17 +289,17 @@ void poll() {
 		generationEnergy:data?.liveSamples.generationEnergy
 	]
 	generateEvent(dataEvents)
-	String nowInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
+	String dateInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
         
 	// generate the stats only once every day
     
-	if (state.lastGeneratedDate != nowInLocalTime) {
+	if (state.lastGeneratedDate != dateInLocalTime) {
 		if (settings.trace) {
-			log.debug "poll>about to generateSampleStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
+			log.debug "poll>about to generateSampleStats,dateInLocalTime=${dateInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
 		}
 		    
 		generateSampleStats("")
-		state.lastGeneratedDate= nowInLocalTime       
+		state.lastGeneratedDate= dateInLocalTime       
 	}
 	sendEvent name: "verboseTrace", value:
 			"poll>done for sensorId = ${sensorId}"
@@ -486,8 +486,14 @@ void generateSampleStats(sensorId) {
 
 // generate stats for yesterday
 
-	Date endDate = new Date().clearTime()
-	Date startDate = (endDate -1).clearTime()
+	String dateInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone) 
+    dateInLocalTime = dateInLocalTime + " 00:00"
+    
+	if (settings.trace) {
+		log.debug("generateSamplesStats>date in local date/time= ${dateInLocalTime}")
+	}
+	Date endDate = formatDate(dateInLocalTime)
+	Date startDate = (endDate -1)
 
 	String nowInLocalTime = new Date().format("yyyy-MM-dd HH:mm", location.timeZone)
 	if (settings.trace) {
@@ -502,7 +508,7 @@ void generateSampleStats(sensorId) {
 // generate stats for 2 days ago
 
 	endDate=startDate
-	startDate = (endDate -1).clearTime()
+	startDate = (endDate -1)
 
 	if (settings.trace) {
 		log.debug("generateSampleStats>2 days ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
@@ -515,8 +521,7 @@ void generateSampleStats(sensorId) {
 
 // generate stats for the past week
 
-	endDate = new Date().clearTime()
-	startDate = (endDate -7).clearTime()
+	startDate = (endDate -7)
 
 	if (settings.trace) {
 		log.debug("generateSampleStats>past week (last 7 days): startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
@@ -531,7 +536,7 @@ void generateSampleStats(sensorId) {
 // generate stats for 2 weeks ago
 
 	endDate = startDate
-	startDate = (endDate -7).clearTime()
+	startDate = (endDate -7)
 
 	if (settings.trace) {
 		log.debug("generateSampleStats>2 weeks ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
@@ -544,10 +549,11 @@ void generateSampleStats(sensorId) {
 
 // generate stats for the past month
 
-	endDate = new Date().clearTime()
+    dateInLocalTime = dateInLocalTime + " 00:00"    
+	endDate = formatDate(dateInLocalTime)
 	Calendar oneMonthAgoCal = new GregorianCalendar()
 	oneMonthAgoCal.add(Calendar.MONTH, -1)
-	Date oneMonthAgo = oneMonthAgoCal.getTime().clearTime()
+	Date oneMonthAgo = oneMonthAgoCal.getTime()
 	
 	if (settings.trace) {
 		log.debug("generateSampleStats>past month: startDate in UTC = ${String.format('%tF %<tT',oneMonthAgo)}," +
@@ -560,10 +566,10 @@ void generateSampleStats(sensorId) {
 
 // generate stats for 2 months ago
 
-	endDate=oneMonthAgo -1
+	endDate=(oneMonthAgo -1)
 	Calendar twoMonthsAgoCal = new GregorianCalendar()
 	twoMonthsAgoCal.add(Calendar.MONTH, -2)
-	Date twoMonthsAgo = twoMonthsAgoCal.getTime().clearTime()
+	Date twoMonthsAgo = twoMonthsAgoCal.getTime()
 	
 	if (settings.trace) {
 		log.debug("generateSampleStats>2 months ago: startDate in UTC = ${String.format('%tF %<tT',twoMonthsAgo)}," +
@@ -577,6 +583,12 @@ void generateSampleStats(sensorId) {
 	generateEvent(dataStats)
 
 
+}
+
+private def formatDate(dateString) {
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+	Date theDate = sdf.parse(dateString)
+	return theDate
 }
 
 private def ISOdateFormat(date) {
