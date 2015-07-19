@@ -352,7 +352,7 @@ private void generateEvent(Map results) {
 // 			Energy variable names contain "energy"           
 
 			if ((name.toUpperCase().contains("ENERGY"))) {  
-				Double energyValue = getEnergy(value.toDouble()).round()
+				Double energyValue = getEnergy(value).toDouble().round()
 				String energyValueString = String.format("%5d", energyValue.intValue())                
 				def isChange = isStateChange(device, name, energyValueString)
 				isDisplayed = isChange
@@ -371,7 +371,7 @@ private void generateEvent(Map results) {
 
 // 			Time variable names contain "time"
 
- 				Double timeValue = getTimeInMinutes(value.toDouble()).round()
+ 				Double timeValue = getTimeInMinutes(value).toDouble().round()
 				String timeValueString = String.format("%5d", timeValue.intValue())                
 				def isChange = isStateChange(device, name, timeValueString)
 				isDisplayed = isChange
@@ -489,8 +489,7 @@ void generateApplianceAllStats(applianceId) {
 
 // generate stats for yesterday
 
-	String dateInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone) 
-	dateInLocalTime = dateInLocalTime + " 00:00"
+	String dateInLocalTime = new Date().format("yyyy-MM-dd 00:00 zzz", location.timeZone) 
     
 	if (settings.trace) {
 		log.debug("generateApplianceAllStats>date in local date/time= ${dateInLocalTime}")
@@ -573,10 +572,11 @@ void generateApplianceAllStats(applianceId) {
 }
 
 private def formatDate(dateString) {
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm")
-	Date theDate = sdf.parse(dateString)
-	return theDate
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm zzz")
+	Date aDate = sdf.parse(dateString)
+	return aDate
 }
+
 
 private def ISOdateFormat(date) {
  	SimpleDateFormat ISO8601format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
