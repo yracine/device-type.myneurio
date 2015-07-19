@@ -498,7 +498,7 @@ void generateApplianceAllStats(applianceId) {
 		log.debug("generateApplianceAllStats>date a Midnight in local date/time= ${dateAtMidnight}")
 	}
 	Date endDate = formatDate(dateAtMidnight)
-	Date startDate = (endDate -1).clearTime()
+	Date startDate = (endDate -1)
 
 	String nowInLocalTime = new Date().format("yyyy-MM-dd HH:mm", location.timeZone)
 	if (settings.trace) {
