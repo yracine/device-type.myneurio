@@ -251,22 +251,20 @@ void poll() {
 	// Get Basic appliance Data
     
 	getApplianceData(applianceId)
-    
 
-
-	String nowInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
+	String dateInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
         
 	// generate all stats only once every day
     
-	if (state.lastGeneratedStatsDate != nowInLocalTime) {
+	if (state.lastGeneratedStatsDate != dateInLocalTime) {
 		if (settings.trace) {
-			log.debug "poll>about to generateApplianceAllStats,nowInLocalTime=${nowInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
+			log.debug "poll>about to generateApplianceAllStats,dateInLocalTime=${dateInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
 		}
         
 		// Once a day, generate all appliance stats (yesterday, 2 days ago, 1 week ago, 2 weeks ago, 1 month ago)
         
 		generateApplianceAllStats("")
-		state.lastGeneratedStatsDate= nowInLocalTime       
+		state.lastGeneratedStatsDate= dateInLocalTime       
         
 	}
     
@@ -491,7 +489,13 @@ void generateApplianceAllStats(applianceId) {
 
 // generate stats for yesterday
 
-	Date endDate = new Date().clearTime()
+	String dateInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone) 
+    dateInLocalTime = dateInLocalTime + " 00:00"
+    
+	if (settings.trace) {
+		log.debug("generateApplianceAllStats>date in local date/time= ${dateInLocalTime}")
+	}
+	Date endDate = formatDate(dateInLocalTime)
 	Date startDate = (endDate -1).clearTime()
 
 	String nowInLocalTime = new Date().format("yyyy-MM-dd HH:mm", location.timeZone)
@@ -507,7 +511,7 @@ void generateApplianceAllStats(applianceId) {
 // generate stats for 2 days ago
 
 	endDate=startDate
-	startDate = (endDate -1).clearTime()
+	startDate = (endDate -1)
 
 	if (settings.trace) {
 		log.debug("generateApplianceAllStats>2 days ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
@@ -520,8 +524,8 @@ void generateApplianceAllStats(applianceId) {
 
 // generate stats for the past week
 
-	endDate = new Date().clearTime()
-	startDate = (endDate -7).clearTime()
+	endDate = formatDate(dateInLocalTime)
+	startDate = endDate -7
 
 	if (settings.trace) {
 		log.debug("generateApplianceAllStats>past week (last 7 days): startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
@@ -536,7 +540,7 @@ void generateApplianceAllStats(applianceId) {
 // generate stats for 2 weeks ago
 
 	endDate = startDate
-	startDate = (endDate -7).clearTime()
+	startDate = endDate -7
 
 	if (settings.trace) {
 		log.debug("generateApplianceAllStats>2 weeks ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
@@ -549,7 +553,7 @@ void generateApplianceAllStats(applianceId) {
 
 // generate stats for the past month
 
-	endDate = new Date().clearTime()
+	endDate = formatDate(dateInLocalTime)
 	Calendar oneMonthAgoCal = new GregorianCalendar()
 	oneMonthAgoCal.add(Calendar.MONTH, -1)
 	Date oneMonthAgo = oneMonthAgoCal.getTime().clearTime()
@@ -566,6 +570,11 @@ void generateApplianceAllStats(applianceId) {
 	generateEvent(dataStats)
 
 
+}
+
+private def formatDate(dateString) {
+	Date newDate = new Date().parse("yyyy-MM-dd HH:mm", dateString)
+	return newDate
 }
 
 private def ISOdateFormat(date) {
