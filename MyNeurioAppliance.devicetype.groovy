@@ -489,12 +489,15 @@ void generateApplianceAllStats(applianceId) {
 
 // generate stats for yesterday
 
-	String dateInLocalTime = new Date().format("yyyy-MM-dd 00:00 zzz", location.timeZone) 
-    
+	String dateInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone) 
+	String timezone = new Date().format("zzz", location.timeZone)
+	String dateAtMidnight = dateInLocalTime + " 00:00 " + timezone    
+
+   
 	if (settings.trace) {
-		log.debug("generateApplianceAllStats>date in local date/time= ${dateInLocalTime}")
+		log.debug("generateApplianceAllStats>date a Midnight in local date/time= ${dateAtMidnight}")
 	}
-	Date endDate = formatDate(dateInLocalTime)
+	Date endDate = formatDate(dateAtMidnight)
 	Date startDate = (endDate -1).clearTime()
 
 	String nowInLocalTime = new Date().format("yyyy-MM-dd HH:mm", location.timeZone)
@@ -524,7 +527,7 @@ void generateApplianceAllStats(applianceId) {
 // generate stats for the past week
 
 	endDate = formatDate(dateInLocalTime)
-	startDate = endDate -7
+	startDate = (endDate -7)
 
 	if (settings.trace) {
 		log.debug("generateApplianceAllStats>past week (last 7 days): startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
@@ -539,7 +542,7 @@ void generateApplianceAllStats(applianceId) {
 // generate stats for 2 weeks ago
 
 	endDate = startDate
-	startDate = endDate -7
+	startDate = (endDate -7)
 
 	if (settings.trace) {
 		log.debug("generateApplianceAllStats>2 weeks ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
@@ -552,7 +555,7 @@ void generateApplianceAllStats(applianceId) {
 
 // generate stats for the past month
 
-	endDate = formatDate(dateInLocalTime)
+	endDate = formatDate(dateAtMidnight)
 	Calendar oneMonthAgoCal = new GregorianCalendar()
 	oneMonthAgoCal.add(Calendar.MONTH, -1)
 	Date oneMonthAgo = oneMonthAgoCal.getTime().clearTime()
