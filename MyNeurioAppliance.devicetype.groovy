@@ -573,8 +573,9 @@ void generateApplianceAllStats(applianceId) {
 }
 
 private def formatDate(dateString) {
-	Date newDate = new Date().parse("yyyy-MM-dd HH:mm", dateString)
-	return newDate
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+	Date theDate = sdf.parse(dateString)
+	return theDate
 }
 
 private def ISOdateFormat(date) {
