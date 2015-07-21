@@ -526,7 +526,7 @@ void generateApplianceAllStats(applianceId) {
 
 // generate stats for the past week
 
-	endDate = formatDate(dateInLocalTime)
+	endDate = formatDate(dateAtMidnight)
 	startDate = (endDate -7)
 
 	if (settings.trace) {
