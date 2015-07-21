@@ -572,10 +572,10 @@ def takeAction() {
 			get_neurio_appliances_data(d)
 		}    	
         
-		if (state?.exceptionCount >= MAX_EXCEPTION_COUNT) {
+		if ((state?.exceptionCount>=MAX_EXCEPTION_COUNT) || (exceptionCheck.contains("Unauthorized"))) {
 			// need to re-authenticate again    
 			atomicState.authToken= null                    
-			msg = "MyNeurioServiceMgr>too many exceptions, $exceptionCheck (${state?.exceptionCount} errors), need to re-login at Neurio..." 
+			msg = "MyNeurioServiceMgr>too many exceptions/errors or unauthorized exception, $exceptionCheck (${state?.exceptionCount} errors), need to re-login at Neurio..." 
 			log.error msg
 			send msg
 			        
