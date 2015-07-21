@@ -493,7 +493,7 @@ void generateSampleStats(sensorId) {
 	if (settings.trace) {
 		log.debug("generateSamplesStats>date in local date/time= ${dateAtMidnight}")
 	}
-	Date endDate = formatDate(dateInLocalTime)
+	Date endDate = formatDate(dateAtMidnight)
 	Date startDate = (endDate -1)
 
 	String nowInLocalTime = new Date().format("yyyy-MM-dd HH:mm", location.timeZone)
