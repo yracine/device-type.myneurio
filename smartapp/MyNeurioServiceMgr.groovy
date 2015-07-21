@@ -647,7 +647,7 @@ def swapToken() {
 	atomicState.authToken = jsonMap.access_token
 	atomicState.expiresIn=jsonMap.expires_in
 	atomicState.tokenType = jsonMap.token_type
-	def authexptime = new Date((now() + (atomicState.expiresIn * 60 * 1000))).getTime()
+	def authexptime = new Date((now() + (365 * 24 * 60 * 1000))).getTime()  // set authexptime to a year from now.
 	atomicState.authexptime = authexptime
 
 
