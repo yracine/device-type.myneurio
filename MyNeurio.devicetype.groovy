@@ -4,7 +4,8 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
- *
+ *	V1.0
+ * 
  *  Code: https://github.com/yracine/device-type.myneurio
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -35,7 +36,7 @@ preferences {
 }
 
 metadata {
-	definition (name: "My Neurio Device V2", namespace: "yracine", author: "Yves Racine") {
+	definition (name: "My Neurio Device", namespace: "yracine", author: "Yves Racine") {
 		capability "Power Meter"
 		capability "Refresh"
 		capability "Polling"
@@ -56,6 +57,11 @@ metadata {
 		attribute "generationPower","string"
 		attribute "userid","string"
 		attribute "username", "string"
+		attribute "billingCycleDay", "string"
+		attribute "billingType", "string"
+		attribute "pricingTiers", "string"
+		attribute "fixedCharge", "string"
+		attribute "taxRate", "string"				
 		attribute "email","string"
 		attribute "locationId","string"
 		attribute "locationName","string"
@@ -280,6 +286,11 @@ void poll() {
 		userid:data?.user.id,
 		username:(data?.user.name) && (data?.user.name != 'null')?data.user.name:"",
 		email:data?.user.email,
+		billingCycleDay:data.user?.billingCycleDay,
+		billingType:data.user?.billingType,
+		pricingTiers:data.user?.pricingTiers,
+		fixedCharge:data.user?.fixedCharge,
+		taxRate:data.user?.taxRate,				
 		locationName:data?.user.locations[0].name,
 		timezone:data?.user.locations[0].timezone,
 		sensorId:data?.user.locations[0]?.sensors[0]?.id,
@@ -1053,6 +1064,11 @@ void getCurrentUserInfo() {
 				def username = data.user.name
 				def email = data.user.email
 				def active = data.user.status  
+				def billingCycleDay=data.user?.billingCycleDay
+				def billingType=data.user?.billingType
+				def pricingTiers=data.user?.pricingTiers
+                def fixedCharge= data.user?.fixedCharge
+				def taxRate=data.user?.taxRate				
 				if (status != 'active') {
 					if (settings.trace) {
 						sendEvent name: "verboseTrace", value: "getCurrentUserInfo>userId=${userid},name=${username},email=${email} not active, exiting..."
@@ -1061,7 +1077,9 @@ void getCurrentUserInfo() {
 				}
                 
 				if (settings.trace) {
-					sendEvent name: "verboseTrace", value: "getCurrentUserInfo>userId=${userId},name=${username},email=${email},active=${active}"
+					sendEvent name: "verboseTrace", value: "getCurrentUserInfo>userId=${userId},name=${username},email=${email},active=${active}," +
+					"billingCycleDay=${billingCycleDay},billingType=${billingType},pricingTiers=${pricingTiers},fixedCharge= ${fixedCharge},taxRate=${taxRate}"				
+                    
 				}
 				data.user?.locationsCount = resp.data.locations.size()
 				data.user.locations.each {
@@ -1405,3 +1423,4 @@ def toQueryString(Map m) {
 private def get_URI_ROOT() {
 	return "https://api.neur.io/v1"
 }
+
