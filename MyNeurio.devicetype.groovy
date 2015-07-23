@@ -1067,7 +1067,7 @@ void getCurrentUserInfo() {
 				def billingCycleDay=data.user?.billingCycleDay
 				def billingType=data.user?.billingType
 				def pricingTiers=data.user?.pricingTiers
-                def fixedCharge= data.user?.fixedCharge
+				def fixedCharge= data.user?.fixedCharge
 				def taxRate=data.user?.taxRate				
 				if (status != 'active') {
 					if (settings.trace) {
