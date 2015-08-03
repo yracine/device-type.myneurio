@@ -561,7 +561,7 @@ void generateSampleStats(sensorId) {
 
 // generate stats for the past month
 
-	endDate = formatDate(dateAtMidnight)
+	endDate = new Date()
 	Calendar oneMonthAgoCal = new GregorianCalendar()
 	oneMonthAgoCal.add(Calendar.MONTH, -1)
 	Date oneMonthAgo = oneMonthAgoCal.getTime()
