@@ -4,6 +4,7 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
+ *  V1.0
  *
  *  Code: https://github.com/yracine/device-type.myneurio
  *
@@ -555,7 +556,7 @@ void generateApplianceAllStats(applianceId) {
 
 // generate stats for the past month
 
-	endDate = formatDate(dateAtMidnight)
+	endDate = new Date()
 	Calendar oneMonthAgoCal = new GregorianCalendar()
 	oneMonthAgoCal.add(Calendar.MONTH, -1)
 	Date oneMonthAgo = oneMonthAgoCal.getTime().clearTime()
