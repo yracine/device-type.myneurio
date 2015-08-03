@@ -559,7 +559,7 @@ void generateApplianceAllStats(applianceId) {
 	endDate = new Date()
 	Calendar oneMonthAgoCal = new GregorianCalendar()
 	oneMonthAgoCal.add(Calendar.MONTH, -1)
-	Date oneMonthAgo = oneMonthAgoCal.getTime().clearTime()
+	Date oneMonthAgo = oneMonthAgoCal.getTime()
 	
 	if (settings.trace) {
 		log.debug("generateApplianceAllStats>past month: startDate in UTC = ${String.format('%tF %<tT',oneMonthAgo)}," +
