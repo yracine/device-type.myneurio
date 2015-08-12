@@ -4,7 +4,7 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
- *	V1.0
+ *	V1.1
  * 
  *  Code: https://github.com/yracine/device-type.myneurio
  *
@@ -302,12 +302,15 @@ void poll() {
 	generateEvent(dataEvents)
 	String dateInLocalTime = new Date().format("yyyy-MM-dd", location.timeZone)
         
-	// generate the stats only once every day
     
 	if (state.lastGeneratedDate != dateInLocalTime) {
+    
+		// refresh the sensor info once a day
+		getCurrentUserInfo() 
 		if (settings.trace) {
 			log.debug "poll>about to generateSampleStats,dateInLocalTime=${dateInLocalTime},state.lastGeneratedDate= $state.lastGeneratedDate"
 		}
+		// generate the stats only once every day
 		    
 		generateSampleStats("")
 		state.lastGeneratedDate= dateInLocalTime       
