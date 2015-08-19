@@ -69,7 +69,7 @@ def about() {
  		section("About") {	
 			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration" +
 				" and polls your Neurio appliance data on a regular interval"
-			paragraph "Version 0.8.3\n\n" +
+			paragraph "Version 0.8.4\n\n" +
 			"If you like this app, please support the developer via PayPal:\n\nyracine@yahoo.com\n\n" +
 			"Copyright©2015 Yves Racine"
 			href url:"http://github.com/yracine/device-type.myneurio", style:"embedded", required:false, title:"More information...", 
@@ -647,7 +647,7 @@ def swapToken() {
 	atomicState.authToken = jsonMap.access_token
 	atomicState.expiresIn=jsonMap.expires_in
 	atomicState.tokenType = jsonMap.token_type
-	def authexptime = new Date((now() + (365 * 24 * 60 * 1000))).getTime()  // set authexptime to a year from now.
+	def authexptime = new Date((now() + (365 * 24 * 60 * 60 * 1000))).getTime()  // set authexptime to a year from now.
 	atomicState.authexptime = authexptime
 
 
