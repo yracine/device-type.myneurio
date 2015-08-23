@@ -811,7 +811,7 @@ private String formatDateInLocalTime(dateInString, timezone='') {
 	if ((dateInString==null) || (dateInString.trim()=="")) {
 		return ""    
 	}    
-	SimpleDateFormat ISODateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+	SimpleDateFormat ISODateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	Date ISODate = ISODateFormat.parse(dateInString)
 	myTimeZone=(timezone)?TimeZone.getTimeZone(timezone):location.timeZone 
 	String dateInLocalTime =new Date(ISODate.getTime()).format("yyyy-MM-dd HH:mm:ss", myTimezone)
