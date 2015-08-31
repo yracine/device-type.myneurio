@@ -4,7 +4,7 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
- *	V1.1
+ *	V1.2
  * 
  *  Code: https://github.com/yracine/device-type.myneurio
  *
@@ -512,8 +512,8 @@ void generateSampleStats(sensorId) {
 
 	String nowInLocalTime = new Date().format("yyyy-MM-dd HH:mm", location.timeZone)
 	if (settings.trace) {
-		log.debug("generateSampleStats>yesterday: local date/time= ${nowInLocalTime}, startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateSampleStats>yesterday: startDate in UTC =${startDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}" +
+			",endDate in UTC =${endDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}")        	
 	}
 	getSampleStats(sensorId,startDate,endDate,"days",null)
 	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
@@ -526,8 +526,8 @@ void generateSampleStats(sensorId) {
 	startDate = (endDate -1)
 
 	if (settings.trace) {
-		log.debug("generateSampleStats>2 days ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateSampleStats>2 days ago: startDate in UTC =${startDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}" +
+			",endDate in UTC =${endDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}")        	
 	}
 	getSampleStats(sensorId,startDate,endDate,"days",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
@@ -539,8 +539,8 @@ void generateSampleStats(sensorId) {
 	startDate = (endDate -7)
 
 	if (settings.trace) {
-		log.debug("generateSampleStats>past week (last 7 days): startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateSampleStats>past week: startDate in UTC =${startDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}" +
+			",endDate in UTC =${endDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}")        	
 	}
 	getSampleStats(sensorId, startDate,endDate,"weeks",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
@@ -554,8 +554,8 @@ void generateSampleStats(sensorId) {
 	startDate = (endDate -7)
 
 	if (settings.trace) {
-		log.debug("generateSampleStats>2 weeks ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateSampleStats>2 weeks ago: startDate in UTC =${startDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}" +
+			",endDate in UTC =${endDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}")        	
 	}
 	getSampleStats(sensorId, startDate,endDate,"weeks",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
@@ -570,8 +570,8 @@ void generateSampleStats(sensorId) {
 	Date oneMonthAgo = oneMonthAgoCal.getTime()
 	
 	if (settings.trace) {
-		log.debug("generateSampleStats>past month: startDate in UTC = ${String.format('%tF %<tT',oneMonthAgo)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateSampleStats>past month: startDate in UTC =${startDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}" +
+			",endDate in UTC =${endDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}")        	
 	}
 	getSampleStats(sensorId, oneMonthAgo,endDate,"months",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
@@ -586,8 +586,8 @@ void generateSampleStats(sensorId) {
 	Date twoMonthsAgo = twoMonthsAgoCal.getTime()
 	
 	if (settings.trace) {
-		log.debug("generateSampleStats>2 months ago: startDate in UTC = ${String.format('%tF %<tT',twoMonthsAgo)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateSampleStats>2 months ago: startDate in UTC =${startDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}" +
+			",endDate in UTC =${endDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}")        	
 	}
 	getSampleStats(sensorId, twoMonthsAgo,endDate,"months",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod").toLong()
