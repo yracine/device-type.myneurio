@@ -4,7 +4,7 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
- *  V1.0
+ *  V1.1
  *
  *  Code: https://github.com/yracine/device-type.myneurio
  *
@@ -503,8 +503,8 @@ void generateApplianceAllStats(applianceId) {
 
 	String nowInLocalTime = new Date().format("yyyy-MM-dd HH:mm", location.timeZone)
 	if (settings.trace) {
-		log.debug("generateApplianceAllStats>yesterday: local date/time= ${nowInLocalTime}, startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateApplianceAllStats>yesterday: startDate in UTC =${startDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}" +
+			",endDate in UTC =${endDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}")        	
 	}
 	generateApplianceStats("",startDate,endDate,"days",null)
 	Long totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
@@ -517,8 +517,8 @@ void generateApplianceAllStats(applianceId) {
 	startDate = (endDate -1)
 
 	if (settings.trace) {
-		log.debug("generateApplianceAllStats>2 days ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateApplianceAllStats>2 days ago: startDate in UTC =${startDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}" +
+			",endDate in UTC =${endDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}")        	
 	}
 	generateApplianceStats("",startDate,endDate,"days",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
@@ -531,8 +531,8 @@ void generateApplianceAllStats(applianceId) {
 	startDate = (endDate -7)
 
 	if (settings.trace) {
-		log.debug("generateApplianceAllStats>past week (last 7 days): startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateApplianceAllStats>past week: startDate in UTC =${startDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}" +
+			",endDate in UTC =${endDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}")        	
 	}
 	generateApplianceStats("",startDate,endDate,"weeks",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
@@ -546,8 +546,8 @@ void generateApplianceAllStats(applianceId) {
 	startDate = (endDate -7)
 
 	if (settings.trace) {
-		log.debug("generateApplianceAllStats>2 weeks ago: startDate in UTC = ${String.format('%tF %<tT',startDate)}," +
-			"date/time endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateApplianceAllStats>2 weeks ago: startDate in UTC =${startDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}" +
+			",endDate in UTC =${endDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}")        	
 	}
 	generateApplianceStats("",startDate,endDate,"weeks",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
@@ -562,8 +562,8 @@ void generateApplianceAllStats(applianceId) {
 	Date oneMonthAgo = oneMonthAgoCal.getTime()
 	
 	if (settings.trace) {
-		log.debug("generateApplianceAllStats>past month: startDate in UTC = ${String.format('%tF %<tT',oneMonthAgo)}," +
-			"endDate in UTC= ${String.format('%tF %<tT', endDate)}")
+		log.debug("generateApplianceAllStats>past month: startDate in UTC =${startDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}" +
+			",endDate in UTC =${endDate.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))}")        	
 	}
 	generateApplianceStats("",startDate,endDate,"months",null)
 	totalConsInPeriod =  device.currentValue("consTotalInPeriod")?.toLong()
