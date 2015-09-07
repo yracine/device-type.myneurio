@@ -107,7 +107,7 @@ Go to https://graph.api.smartthings.com/ide/logs
 From your phone or tablet, within the SmartThings app and on the main screen, click on '+' at the bottom, under SmartApps, scroll down to My Apps, and execute MyNeurioServiceMgr.
 
 <b>If you have upgraded to the new UI, click on the Smartapps link in the upper section of any of the following
-screens: Home, Routines & Marketspace, and then MyApps (last item in the list).</b>
+screens: Home & Marketspace, and then MyApps (last item in the list).</b>
 
 
 The smartapp will ask you to authenticate on the Neurio portal (by pressing on MyNeurio on the first page), and then
