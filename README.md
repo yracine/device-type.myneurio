@@ -100,11 +100,15 @@ Go to https://graph.api.smartthings.com/ide/logs
 
 /*******************************************************************************************************************/
 
-<b>5) Use SmartSetup and execute My NeurioServiceMgr</b>
+<b>5) Execute My NeurioServiceMgr</b>
 /*******************************************************************************************************************/
 
 
 From your phone or tablet, within the SmartThings app and on the main screen, click on '+' at the bottom, under SmartApps, scroll down to My Apps, and execute MyNeurioServiceMgr.
+
+<b>If you have upgraded to the new UI, click on the Smartapps link in the upper section of any of the following
+screens: Home, Routines & Marketspace, and then MyApps.</b>
+
 
 The smartapp will ask you to authenticate on the Neurio portal (by pressing on MyNeurio on the first page), and then
 after the authentication, will show you the list of sensor(s) under your Neurio Account (by pressing 'Next' at the top right corner). 
