@@ -69,7 +69,7 @@ def about() {
  		section("About") {	
 			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration" +
 				" and polls your Neurio appliance data on a regular interval"
-			paragraph "Version 0.8.7\n\n" +
+			paragraph "Version 0.8.8\n\n" +
 			paragraph "If you like this smartapp, please support the developer via PayPal and click on the Paypal link below " 
 				href url: "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=yracine%40yahoo%2ecom&lc=US&item_name=Maisons%20ecomatiq&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest",
 					title:"Paypal donation..."
@@ -855,7 +855,10 @@ def getChildNamespace() { "yracine" }
 
 def getChildName() { "My Neurio Device" }
 
-def getServerUrl() { return getApiServerUrl()  }
+//Not able to use getApiServerUrl: need to contact Neurio support about it
+//def getServerUrl() { return getApiServerUrl()  }
+
+def getServerUrl() { return "https://graph.api.smartthings.com" }
 
 def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" }
 
