@@ -16,7 +16,7 @@ If you like My Neurio Device, My Neurio Appliance and related smartapps, please 
 https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=yracine%40yahoo%2ecom&lc=US&item_name=Maisons%20ecomatiq&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest)
 
 
-Set up time: about 5 minutes
+Setup time: about 5 minutes
 
 =====================
 INSTALLATION STEPS
@@ -120,6 +120,8 @@ On the next page, you can then select the sensor(s) to be exposed to SmartThings
 After pressing 'Next', on the following 2 pages, you may also select the appliance(s) to be exposed to SmartThings.
 Please select not more than 3 appliances per page, to avoid any ST issues (i.e. execution time constraints, a ticket
 has been submitted to ST support about it).
+
+If you get a blank screen after pressing 'Next or you get the following error: " Error - bad state. Unable to complete page configuration", you'd need to enable oAuth as specified in step 2f) above.
 
 After pressing 'Done' on the last page, the smartapp will instantiate the MyNeurio device object under 
 
