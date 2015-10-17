@@ -16,6 +16,8 @@ If you like My Neurio Device, My Neurio Appliance and related smartapps, please 
 https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=yracine%40yahoo%2ecom&lc=US&item_name=Maisons%20ecomatiq&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest)
 
 
+Set up time: about 5 minutes
+
 =====================
 INSTALLATION STEPS
 =====================
