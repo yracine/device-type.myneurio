@@ -531,7 +531,7 @@ def initialize() {
 
 
 def rescheduleIfNeeded(evt) {
-	log.debug("rescheduleIfNeeded>$evt.name=$evt.value")
+	if (evt) log.debug("rescheduleIfNeeded>$evt.name=$evt.value")
 	Integer delay = givenInterval ?: 20 // By default, do poll every 20 min.
 	BigDecimal currentTime = now()    
 	BigDecimal lastPollTime = (currentTime - (state?.poll["last"]?:0))  
