@@ -63,7 +63,7 @@ def about() {
  		section("About") {	
 			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration" +
 				" and polls your Neurio appliance data on a regular interval"
-			paragraph "Version 0.9.2\n" 
+			paragraph "Version 0.9.3\n" 
 			paragraph "If you like this smartapp, please support the developer via PayPal and click on the Paypal link below " 
 				href url: "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=yracine%40yahoo%2ecom&lc=US&item_name=Maisons%20ecomatiq&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest",
 					title:"Paypal donation..."
@@ -423,7 +423,8 @@ private def delete_child_devices() {
 		try {    
 			deleteChildDevice(it.deviceNetworkId) 
 		} catch (e) {
-			log.debug "delete_child_devices>exception $e while deleting Neurio Sensor ${it.deviceNetworkId}"
+			log.error "delete_child_devices>exception $e while deleting Neurio Sensor ${it.deviceNetworkId}"
+			send "MyNeurioServiceMgr>exception $e while deleting Neurio Sensor ${it.deviceNetworkId}"
 		}   
 	}
 
@@ -432,7 +433,8 @@ private def delete_child_devices() {
     	try {
 			deleteChildDevice(it.deviceNetworkId) 
 		} catch (e) {
-			log.debug "delete_child_devices>exception $e while deleting Neurio Appliance ${it.deviceNetworkId}"
+			log.error "delete_child_devices>exception $e while deleting Neurio Appliance ${it.deviceNetworkId}"
+			send "MyNeurioServiceMgr>exception $e while deleting Neurio Appliance ${it.deviceNetworkId}"
 		}
 	}        
 }
