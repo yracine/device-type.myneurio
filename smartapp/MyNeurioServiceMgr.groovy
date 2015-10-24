@@ -531,7 +531,7 @@ def rescheduleIfNeeded() {
 		log.info "rescheduleIfNeeded>last poll was  ${(lastPollTime/60000).round(1).toString()} minutes ago"
 	}
 	if (((state?.poll["last"]?:0) + (delay * 60000) < currentTime) && canSchedule()) {
-		log.info "rescheduleIfNeeded>cheduling takeAction in ${delay} minutes.."
+		log.info "rescheduleIfNeeded>scheduling takeAction in ${delay} minutes.."
 		schedule("0 0/${delay} * * * ?", takeAction)
 	}
     
