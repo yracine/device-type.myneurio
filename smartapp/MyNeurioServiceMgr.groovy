@@ -34,12 +34,6 @@ preferences {
 	page(name: "about", title: "About", nextPage: "auth")
 	page(name: "auth", title: "Neurio", content:"authPage", nextPage:"deviceList")
 	page(name: "deviceList", title: "Neurio Sensors", content:"NeurioDeviceList")
-/*  
-	Removed the second page of appliance selection as this is not an efficient method to avoid ST max execution time constraint
-    
-	page(name: "applianceList", title: "Neurio Appliances", content:"NeurioApplianceList", nextPage:"applianceList2")
-	page(name: "applianceList2", title: "Neurio Appliances", content:"NeurioApplianceList2", install:true)
-*/
 	page(name: "applianceList", title: "Neurio Appliances", content:"NeurioApplianceList",nextPage:"otherSettings")
 	page(name: "otherSettings", title: "Other Settings", content:"otherSettings", install:true)
 }
@@ -69,7 +63,7 @@ def about() {
  		section("About") {	
 			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration" +
 				" and polls your Neurio appliance data on a regular interval"
-			paragraph "Version 0.8.8\n\n" +
+			paragraph "Version 0.9\n" 
 			paragraph "If you like this smartapp, please support the developer via PayPal and click on the Paypal link below " 
 				href url: "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=yracine%40yahoo%2ecom&lc=US&item_name=Maisons%20ecomatiq&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest",
 					title:"Paypal donation..."
@@ -180,33 +174,9 @@ def NeurioApplianceList() {
 	def neurioAppliances = getNeurioAppliances(state.locationId)
 
 	log.debug "device list: $neurioAppliances"
-/*
-	Removed page 2 as this is not an efficient method to avoid ST max execution time constraint
-    
-	def p = dynamicPage(name: "applianceList", title: "Select Your Appliance(s)", nextPage:"applianceList2") {
-*/
 	def p = dynamicPage(name: "applianceList", title: "Select Your Appliance(s)",  nextPage: "otherSettings") {
 		section(""){
 			paragraph "Tap below to see the list of Neurio Appliances available in your Neurio account,and select the ones you want to connect to SmartThings (max=6."
-			input(name: "NeurioAppliances", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioAppliances])
-		}
-	}
-
-	log.debug "list p: $p"
-	return p
-}
-
-def NeurioApplianceList2() {
-	log.debug "NeurioApplianceList2()"
-
-    
-	def neurioAppliances = getNeurioAppliances(state.locationId)
-
-	log.debug "device list: $neurioAppliances"
-
-	def p = dynamicPage(name: "applianceList2", title: "Select Your Appliance(s)", nextPage:"otherSettings" ) {
-		section(""){
-			paragraph "page 2: select the ones you want to connect to SmartThings (max=6 per page)."
 			input(name: "NeurioAppliances", title:"", type: "enum", required:true, multiple:true, description: "Tap to choose", metadata:[values:neurioAppliances])
 		}
 	}
@@ -529,32 +499,75 @@ def initialize() {
 	log.debug "initialize"
 	state?.exceptionCount=0
 	state?.msg=null    
+	state?.poll = [ last: 0, rescheduled: now() ]
+
 	delete_child_devices()	
 	create_child_devices()
     
-	Integer delay = givenInterval ?: 20 // By default, do it every 20 min.
+	Integer delay = givenInterval ?: 20 // By default, do poll every 20 min.
 	if ((delay < 5) || (delay>59)) {
 		state?.msg= "MyNeurioServiceMgr>scheduling interval not in range (${delay} min), exiting..."
 		log.debug state.msg
 		runIn(30, "sendMsgWithDelay")
  		return
 	}
+	//Subscribe to different events (ex. sunrise and sunset events) to trigger rescheduling if needed
+	subscribe(location, "sunrise", rescheduleIfNeeded)
+	subscribe(location, "sunset", rescheduleIfNeeded)
+	subscribe(location, "mode", rescheduleIfNeeded)
+	subscribe(location, "sunriseTime", rescheduleIfNeeded)
+	subscribe(location, "sunsetTime", rescheduleIfNeeded)
+
+	log.trace "initialize>polling delay= ${delay}..."
+	rescheduleIfNeeded()   
 }
+
+
+def rescheduleIfNeeded() {
+	Integer delay = givenInterval ?: 20 // By default, do poll every 20 min.
+	BigDecimal currentTime = now()    
+	BigDecimal lastPollTime = (currentTime - (state?.poll["last"]?:0))  
+	if (lastPollTime != currentTime) {    
+		log.info "rescheduleIfNeeded>last poll was  ${(lastPollTime/60000).round(1).toString()} minutes ago"
+	}
+	if (((state?.poll["last"]?:0) + (delay * 60000) < currentTime) && canSchedule()) {
+		log.info "rescheduleIfNeeded>cheduling takeAction in ${delay} minutes.."
+		schedule("0 0/${delay} * * * ?", takeAction)
+	}
+    
+	takeAction()
+    
+	// Update rescheduled state
+    
+	if (!evt) state.poll["rescheduled"] = now()
+}
+
 
 def takeAction() {
 	log.trace "takeAction>begin"
+	Integer delay = givenInterval ?: 20 // By default, do poll every 20 min.
+	state?.poll["last"] = now()
+	def exceptionCheck=" ",msg
+		
+	//schedule the scheduleIfNeeded() function
+    
+	if (((state?.poll["rescheduled"]?:0) + (delay * 60000)) < now()) {
+		log.info "takeAction>scheduling rescheduleIfNeeded() in ${delay} minutes.."
+		schedule("0 0/${delay} * * * ?", rescheduleIfNeeded)
+		// Update rescheduled state
+		state?.poll["rescheduled"] = now()
+	}
+
     
 	def devices = NeurioSensors.collect { dni ->
     
 		Boolean pollSuccessful=false    
 		def d = getChildDevice(dni)
-        
 		log.debug "takeAction>looping thru Neurio Sensors, found id $dni, about to poll"
-		String exceptionCheck,msg
 		def MAX_EXCEPTION_COUNT=5    
 		try {
 			d.poll()
-			exceptionCheck = d.currentVerboseTrace.toString()
+			exceptionCheck = d.currentVerboseTrace
 			if ((exceptionCheck.contains("exception") || (exceptionCheck.contains("error")) && 
 				(!exceptionCheck.contains("Java.util.concurrent.TimeoutException")))) {  
 			// check if there is any exception reported in the verboseTrace associated to the device (except the ones linked to rate limiting).
@@ -815,7 +828,7 @@ private String formatDateInLocalTime(dateInString, timezone='') {
 	}    
 	SimpleDateFormat ISODateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	Date ISODate = ISODateFormat.parse(dateInString)
-	myTimeZone=(timezone)?TimeZone.getTimeZone(timezone):location.timeZone 
+	myTimezone=(timezone)?TimeZone.getTimeZone(timezone):location.timeZone 
 	String dateInLocalTime =new Date(ISODate.getTime()).format("yyyy-MM-dd HH:mm:ss", myTimezone)
 	log.debug("formatDateInLocalTime>dateInString=$dateInString, dateInLocalTime=$dateInLocalTime")    
 	return dateInLocalTime
