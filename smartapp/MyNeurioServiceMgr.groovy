@@ -63,7 +63,7 @@ def about() {
  		section("About") {	
 			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration" +
 				" and polls your Neurio appliance data on a regular interval"
-			paragraph "Version 0.9\n" 
+			paragraph "Version 0.9.1\n" 
 			paragraph "If you like this smartapp, please support the developer via PayPal and click on the Paypal link below " 
 				href url: "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=yracine%40yahoo%2ecom&lc=US&item_name=Maisons%20ecomatiq&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest",
 					title:"Paypal donation..."
@@ -528,7 +528,8 @@ def rescheduleIfNeeded() {
 	BigDecimal currentTime = now()    
 	BigDecimal lastPollTime = (currentTime - (state?.poll["last"]?:0))  
 	if (lastPollTime != currentTime) {    
-		log.info "rescheduleIfNeeded>last poll was  ${(lastPollTime/60000).round(1).toString()} minutes ago"
+		BigDecimal lastPollTimeInMinutes = (lastPollTime/60000).round(1)      
+		log.info "rescheduleIfNeeded>last poll was  ${lastPollTimeInMinutes.toString()} minutes ago"
 	}
 	if (((state?.poll["last"]?:0) + (delay * 60000) < currentTime) && canSchedule()) {
 		log.info "rescheduleIfNeeded>scheduling takeAction in ${delay} minutes.."
