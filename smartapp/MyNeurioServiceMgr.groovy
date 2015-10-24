@@ -63,7 +63,7 @@ def about() {
  		section("About") {	
 			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration" +
 				" and polls your Neurio appliance data on a regular interval"
-			paragraph "Version 0.9.1\n" 
+			paragraph "Version 0.9.2\n" 
 			paragraph "If you like this smartapp, please support the developer via PayPal and click on the Paypal link below " 
 				href url: "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=yracine%40yahoo%2ecom&lc=US&item_name=Maisons%20ecomatiq&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest",
 					title:"Paypal donation..."
@@ -417,19 +417,24 @@ private def delete_child_devices() {
 		log.debug "delete_child_devices>deleting ${delete.size()} Neurio Sensors"
 		deleteAppliances = getChildDevices().findAll { !NeurioAppliances.contains(it.deviceNetworkId) }
 		log.debug "delete_child_devices>deleting ${deleteAppliances.size()} Neurio Appliances"
+	}	
+
+	delete.each { 
+		try {    
+			deleteChildDevice(it.deviceNetworkId) 
+		} catch (e) {
+			log.debug "delete_child_devices>exception $e while deleting Neurio Sensor ${it.deviceNetworkId}"
+		}   
 	}
 
-	try { 
-		delete.each { deleteChildDevice(it.deviceNetworkId) }
-	} catch (e) {
-		log.debug "delete_child_devices>exception $e while deleting ${delete.size()} Neurio Sensors"
-	}
-	try { 
-
-		deleteAppliances.each { deleteChildDevice(it.deviceNetworkId) }
-	} catch (e) {
-		log.debug "delete_child_devices>exception $e while deleting ${deleteAppliances.size()} Neurio Appliances"
-	}
+	
+	deleteAppliances.each {
+    	try {
+			deleteChildDevice(it.deviceNetworkId) 
+		} catch (e) {
+			log.debug "delete_child_devices>exception $e while deleting Neurio Appliance ${it.deviceNetworkId}"
+		}
+	}        
 }
 
 
@@ -528,7 +533,7 @@ def rescheduleIfNeeded() {
 	BigDecimal currentTime = now()    
 	BigDecimal lastPollTime = (currentTime - (state?.poll["last"]?:0))  
 	if (lastPollTime != currentTime) {    
-		BigDecimal lastPollTimeInMinutes = (lastPollTime/60000).round(1)      
+		Double lastPollTimeInMinutes = (lastPollTime/60000).toDouble().round(1)      
 		log.info "rescheduleIfNeeded>last poll was  ${lastPollTimeInMinutes.toString()} minutes ago"
 	}
 	if (((state?.poll["last"]?:0) + (delay * 60000) < currentTime) && canSchedule()) {
