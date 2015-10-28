@@ -4,7 +4,7 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
- *	V1.3
+ *	V1.4
  * 
  *  Code: https://github.com/yracine/device-type.myneurio
  *
@@ -459,7 +459,9 @@ private def doRequest(uri, args, type, success) {
 		def exceptionCheck=device.currentValue("verboseTrace")
 		if (!(exceptionCheck.contains("TimeoutException"))) {
 			// introduce a 1 second delay before re-attempting any other command                    
-			delay(1000)                    
+			def cmd= []           
+			cmd << "delay(1000)"                    
+			cmd            
 		}            
 		throw e        
 	}
@@ -497,7 +499,9 @@ void getLastLiveSamples(sensorId) {
 				log.error "getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors} for sensorId=${sensorId}"
 				sendEvent name: "verboseTrace", value:"getLastLiveSamples>status=${statusCode.toString()},message=${message},error=${errors} for sensorId=${sensorId}"
 				// introduce a 1 second delay before re-attempting any other command                    
-				delay(1000)                    
+				def cmd= []           
+				cmd << "delay(1000)"                    
+				cmd            
 			}                
 		}  /* end api call */              
 	} /* end while */
@@ -699,7 +703,9 @@ void getSampleStats(sensorId,start,end,granularity,frequency) {
 				log.error "getSamplesData>status=${statusCode.toString()},message=${message},error=${errors} for sensorId=${sensorId}"
 				sendEvent name: "verboseTrace", value:"getSamplesData>status=${statusCode.toString()},message=${message},error=${errors} for sensorId=${sensorId}"
 				// introduce a 1 second delay before re-attempting any other command                    
-				delay(1000)                    
+				def cmd= []           
+				cmd << "delay(1000)"                    
+				cmd            
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
@@ -741,7 +747,9 @@ void getApplianceData(applianceId) {
 				log.error "getApplianceData>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 				sendEvent name: "verboseTrace", value:"getApplianceData>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 				// introduce a 1 second delay before re-attempting any other command                    
-				delay(1000)                    
+				def cmd= []           
+				cmd << "delay(1000)"                    
+				cmd            
 			}                
 		}  /* end api call */              
 	} /* end while */
@@ -818,7 +826,9 @@ void getApplianceList(locationId,postData='false') {
 				log.error "getApplianceList>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 				sendEvent name: "verboseTrace", value:"getApplianceList>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 				// introduce a 1 second delay before re-attempting any other command                    
-				delay(1000)                    
+				def cmd= []           
+				cmd << "delay(1000)"                    
+				cmd            
 			}                
 		}  /* end api call */              
 	} /* end while */
@@ -931,7 +941,9 @@ void generateAppliancesStats(locationId,applianceId,start,end,granularity,minPow
 				log.error "generateAppliancesStats>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 				sendEvent name: "verboseTrace", value:"generateAppliancesStats>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 				// introduce a 1 second delay before re-attempting any other command                    
-				delay(1000)                    
+				def cmd= []           
+				cmd << "delay(1000)"                    
+				cmd            
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
@@ -1035,7 +1047,9 @@ void generateAppliancesEvents(locationId,applianceId,start,end,minPower="") {
 				log.error "generateAppliancesEvents>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 				sendEvent name: "verboseTrace", value:"generateAppliancesEvents>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 				// introduce a 1 second delay before re-attempting any other command                    
-				delay(1000)                    
+				def cmd= []           
+				cmd << "delay(1000)"                    
+				cmd            
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
@@ -1136,7 +1150,9 @@ void getCurrentUserInfo() {
 				log.error "getCurrentUserInfo>status=${statusCode.toString()},message=${message},error=${errors}"
 				sendEvent name: "verboseTrace", value:"getCurrentUserInfo>status=${statusCode.toString()},message=${message},error=${errors}"
 				// introduce a 1 second delay before re-attempting any other command                    
-				delay(1000)                    
+				def cmd= []           
+				cmd << "delay(1000)"                    
+				cmd            
 			} /* end if statusCode */                
 		}  /* end api call */              
 	} /* end while */
