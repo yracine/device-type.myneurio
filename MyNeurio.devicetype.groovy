@@ -4,7 +4,7 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
- *	V1.2
+ *	V1.3
  * 
  *  Code: https://github.com/yracine/device-type.myneurio
  *
@@ -456,6 +456,11 @@ private def doRequest(uri, args, type, success) {
 	} catch (e) {
 		log.error "doRequest> exception $e " + params.uri
 		sendEvent name: "verboseTrace", value: "doRequest>exception $e at ${params.uri}" 
+		def exceptionCheck=device.currentValue("verboseTrace")
+		if (!(exceptionCheck.contains("TimeoutException"))) {
+			// introduce a 1 second delay before re-attempting any other command                    
+			delay(1000)                    
+		}            
 		throw e        
 	}
 }
@@ -491,6 +496,8 @@ void getLastLiveSamples(sensorId) {
             			def errors = resp.errors
 				log.error "getLastLiveSamples>status=${statusCode.toString()},message=${message},errors=${errors} for sensorId=${sensorId}"
 				sendEvent name: "verboseTrace", value:"getLastLiveSamples>status=${statusCode.toString()},message=${message},error=${errors} for sensorId=${sensorId}"
+				// introduce a 1 second delay before re-attempting any other command                    
+				delay(1000)                    
 			}                
 		}  /* end api call */              
 	} /* end while */
@@ -691,6 +698,8 @@ void getSampleStats(sensorId,start,end,granularity,frequency) {
 				def errors = resp.errors
 				log.error "getSamplesData>status=${statusCode.toString()},message=${message},error=${errors} for sensorId=${sensorId}"
 				sendEvent name: "verboseTrace", value:"getSamplesData>status=${statusCode.toString()},message=${message},error=${errors} for sensorId=${sensorId}"
+				// introduce a 1 second delay before re-attempting any other command                    
+				delay(1000)                    
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
@@ -731,6 +740,8 @@ void getApplianceData(applianceId) {
 				def errors = resp.errors
 				log.error "getApplianceData>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 				sendEvent name: "verboseTrace", value:"getApplianceData>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
+				// introduce a 1 second delay before re-attempting any other command                    
+				delay(1000)                    
 			}                
 		}  /* end api call */              
 	} /* end while */
@@ -806,6 +817,8 @@ void getApplianceList(locationId,postData='false') {
 				def errors = resp.errors
 				log.error "getApplianceList>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 				sendEvent name: "verboseTrace", value:"getApplianceList>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
+				// introduce a 1 second delay before re-attempting any other command                    
+				delay(1000)                    
 			}                
 		}  /* end api call */              
 	} /* end while */
@@ -917,6 +930,8 @@ void generateAppliancesStats(locationId,applianceId,start,end,granularity,minPow
 				def errors = resp.errors
 				log.error "generateAppliancesStats>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 				sendEvent name: "verboseTrace", value:"generateAppliancesStats>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
+				// introduce a 1 second delay before re-attempting any other command                    
+				delay(1000)                    
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
@@ -1019,6 +1034,8 @@ void generateAppliancesEvents(locationId,applianceId,start,end,minPower="") {
 				def errors = resp.errors
 				log.error "generateAppliancesEvents>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 				sendEvent name: "verboseTrace", value:"generateAppliancesEvents>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
+				// introduce a 1 second delay before re-attempting any other command                    
+				delay(1000)                    
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
@@ -1118,6 +1135,8 @@ void getCurrentUserInfo() {
 				def errors = data.errors
 				log.error "getCurrentUserInfo>status=${statusCode.toString()},message=${message},error=${errors}"
 				sendEvent name: "verboseTrace", value:"getCurrentUserInfo>status=${statusCode.toString()},message=${message},error=${errors}"
+				// introduce a 1 second delay before re-attempting any other command                    
+				delay(1000)                    
 			} /* end if statusCode */                
 		}  /* end api call */              
 	} /* end while */
@@ -1162,10 +1181,15 @@ private def refresh_tokens() {
 		log.error "refresh_tokens> Authentication error, neurio servers cannot be reached at "
 		sendEvent name: "verboseTrace", value: "refresh_tokens> Auth error"
 		return false
-	} catch (any) {
-		log.error "refresh_tokens> general error " + method.uri
+	} catch (e) {
+		log.error "refresh_tokens>exception $e " + method.uri
 		sendEvent name: "verboseTrace", value:
-			"refresh_tokens> general error at ${method.uri}"
+			"refresh_tokens>exception $e at ${method.uri}"
+		def exceptionCheck=device.currentValue("verboseTrace")
+		if (!(exceptionCheck.contains("TimeoutException"))) {
+			// introduce a 1 second delay before re-attempting any other command                    
+			delay(1000)                    
+		}            
 		return false
 	}
 	def authexptime = new Date((now() + (data.auth.expires_in * 60 * 1000))).getTime()
