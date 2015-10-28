@@ -1201,11 +1201,6 @@ private def refresh_tokens() {
 		log.error "refresh_tokens>exception $e " + method.uri
 		sendEvent name: "verboseTrace", value:
 			"refresh_tokens>exception $e at ${method.uri}"
-		def exceptionCheck=device.currentValue("verboseTrace")
-		if (!(exceptionCheck.contains("TimeoutException"))) {
-			// introduce a 1 second delay before re-attempting any other command                    
-			delay(1000)                    
-		}            
 		return false
 	}
 	def authexptime = new Date((now() + (data.auth.expires_in * 60 * 1000))).getTime()
