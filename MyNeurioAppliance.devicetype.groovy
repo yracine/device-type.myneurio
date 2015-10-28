@@ -4,7 +4,7 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
- *  V1.3
+ *  V1.3.1
  *
  *  Code: https://github.com/yracine/device-type.myneurio
  *
@@ -484,7 +484,7 @@ private def doRequest(uri, args, type, success) {
 		if (!(exceptionCheck.contains("TimeoutException"))) {
 			// introduce a 1 second delay before re-attempting any other command                    
 			def cmd= []           
-			cmd << "delay(1000)"                    
+			cmd << "delay 1000"                    
 			cmd            
 		}            
 		throw e        
@@ -633,7 +633,7 @@ void getApplianceData(applianceId) {
 				sendEvent name: "verboseTrace", value:"getApplianceData>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 				// introduce a 1 second delay before re-attempting any other command                    
 				def cmd= []           
-				cmd << "delay(1000)"                    
+				cmd << "delay 1000"                    
 				cmd            
 			}                
 		}  /* end api call */              
@@ -744,7 +744,7 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 					value:"generateApplianceStats>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 				// introduce a 1 second delay before re-attempting any other command                    
 				def cmd= []           
-				cmd << "delay(1000)"                    
+				cmd << "delay 1000"                    
 				cmd            
 			} /* end if statusCode */               
 		}  /* end api call */              
@@ -883,7 +883,7 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 				sendEvent name: "verboseTrace", value:"generateApplianceEvents>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 				// introduce a 1 second delay before re-attempting any other command                    
 				def cmd= []           
-				cmd << "delay(1000)"                    
+				cmd << "delay 1000"                    
 				cmd            
 			} /* end if statusCode */               
 		}  /* end api call */              
