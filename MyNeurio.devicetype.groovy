@@ -4,7 +4,7 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
- *	V1.4
+ *	V1.4.1
  * 
  *  Code: https://github.com/yracine/device-type.myneurio
  *
@@ -460,7 +460,7 @@ private def doRequest(uri, args, type, success) {
 		if (!(exceptionCheck.contains("TimeoutException"))) {
 			// introduce a 1 second delay before re-attempting any other command                    
 			def cmd= []           
-			cmd << "delay(1000)"                    
+			cmd << "delay 1000"                    
 			cmd            
 		}            
 		throw e        
@@ -500,7 +500,7 @@ void getLastLiveSamples(sensorId) {
 				sendEvent name: "verboseTrace", value:"getLastLiveSamples>status=${statusCode.toString()},message=${message},error=${errors} for sensorId=${sensorId}"
 				// introduce a 1 second delay before re-attempting any other command                    
 				def cmd= []           
-				cmd << "delay(1000)"                    
+				cmd << "delay 1000"                    
 				cmd            
 			}                
 		}  /* end api call */              
@@ -704,7 +704,7 @@ void getSampleStats(sensorId,start,end,granularity,frequency) {
 				sendEvent name: "verboseTrace", value:"getSamplesData>status=${statusCode.toString()},message=${message},error=${errors} for sensorId=${sensorId}"
 				// introduce a 1 second delay before re-attempting any other command                    
 				def cmd= []           
-				cmd << "delay(1000)"                    
+				cmd << "delay 1000"                    
 				cmd            
 			} /* end if statusCode */               
 		}  /* end api call */              
@@ -748,7 +748,7 @@ void getApplianceData(applianceId) {
 				sendEvent name: "verboseTrace", value:"getApplianceData>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 				// introduce a 1 second delay before re-attempting any other command                    
 				def cmd= []           
-				cmd << "delay(1000)"                    
+				cmd << "delay 1000"                    
 				cmd            
 			}                
 		}  /* end api call */              
@@ -827,7 +827,7 @@ void getApplianceList(locationId,postData='false') {
 				sendEvent name: "verboseTrace", value:"getApplianceList>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 				// introduce a 1 second delay before re-attempting any other command                    
 				def cmd= []           
-				cmd << "delay(1000)"                    
+				cmd << "delay 1000"                    
 				cmd            
 			}                
 		}  /* end api call */              
@@ -942,7 +942,7 @@ void generateAppliancesStats(locationId,applianceId,start,end,granularity,minPow
 				sendEvent name: "verboseTrace", value:"generateAppliancesStats>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 				// introduce a 1 second delay before re-attempting any other command                    
 				def cmd= []           
-				cmd << "delay(1000)"                    
+				cmd << "delay 1000"                    
 				cmd            
 			} /* end if statusCode */               
 		}  /* end api call */              
@@ -1048,7 +1048,7 @@ void generateAppliancesEvents(locationId,applianceId,start,end,minPower="") {
 				sendEvent name: "verboseTrace", value:"generateAppliancesEvents>status=${statusCode.toString()},message=${message},error=${errors} for locationId=${locationId}"
 				// introduce a 1 second delay before re-attempting any other command                    
 				def cmd= []           
-				cmd << "delay(1000)"                    
+				cmd << "delay 1000"                    
 				cmd            
 			} /* end if statusCode */               
 		}  /* end api call */              
@@ -1151,7 +1151,7 @@ void getCurrentUserInfo() {
 				sendEvent name: "verboseTrace", value:"getCurrentUserInfo>status=${statusCode.toString()},message=${message},error=${errors}"
 				// introduce a 1 second delay before re-attempting any other command                    
 				def cmd= []           
-				cmd << "delay(1000)"                    
+				cmd << "delay 1000"                    
 				cmd            
 			} /* end if statusCode */                
 		}  /* end api call */              
