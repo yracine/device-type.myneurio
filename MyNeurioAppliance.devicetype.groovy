@@ -4,7 +4,7 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
- *  V1.1
+ *  V1.2
  *
  *  Code: https://github.com/yracine/device-type.myneurio
  *
@@ -480,6 +480,11 @@ private def doRequest(uri, args, type, success) {
 	} catch (e) {
 		log.error "doRequest> exception $e " + params.uri
 		sendEvent name: "verboseTrace", value: "doRequest>exception $e at ${params.uri}" 
+		def exceptionCheck=device.currentValue("verboseTrace")
+		if (!(exceptionCheck.contains("TimeoutException"))) {
+			// introduce a 1 second delay before re-attempting any other command                    
+			delay(1000)                    
+		}            
 		throw e        
 	}
 }
@@ -624,6 +629,8 @@ void getApplianceData(applianceId) {
 				def errors = resp.errors
 				log.error "getApplianceData>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 				sendEvent name: "verboseTrace", value:"getApplianceData>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
+				// introduce a 1 second delay before re-attempting any other command                    
+				delay(1000)                    
 			}                
 		}  /* end api call */              
 	} /* end while */
@@ -731,6 +738,8 @@ void generateApplianceStats(applianceId,start,end,granularity,minPower,postData=
 				log.error "generateApplianceStats>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
 				sendEvent name: "verboseTrace", 
 					value:"generateApplianceStats>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
+				// introduce a 1 second delay before re-attempting any other command                    
+				delay(1000)                    
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
@@ -866,6 +875,8 @@ void generateApplianceEvents(applianceId,start,end,minPower,postData='false') {
 				def errors = resp.errors
 				log.error "generateApplianceEvents>status=${statusCode.toString()},message=${message},error=${errors}"
 				sendEvent name: "verboseTrace", value:"generateApplianceEvents>status=${statusCode.toString()},message=${message},error=${errors} for applianceId=${applianceId}"
+				// introduce a 1 second delay before re-attempting any other command                    
+				delay(1000)                    
 			} /* end if statusCode */               
 		}  /* end api call */              
 	} /* end while */
