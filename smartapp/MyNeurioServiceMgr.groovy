@@ -885,3 +885,4 @@ def getServerUrl() { return "https://graph.api.smartthings.com" }
 def getSmartThingsClientId() { "kjPlS3AAQtaUGlmB30IU9g" }
 
 def getSmartThingsPrivateKey() { "6Qg0niXeQDSk-dkfU475og" }
+
