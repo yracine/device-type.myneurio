@@ -4,7 +4,7 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
- *	V1.4.1
+ *	V1.4.2
  * 
  *  Code: https://github.com/yracine/device-type.myneurio
  *
@@ -456,13 +456,6 @@ private def doRequest(uri, args, type, success) {
 	} catch (e) {
 		log.error "doRequest> exception $e " + params.uri
 		sendEvent name: "verboseTrace", value: "doRequest>exception $e at ${params.uri}" 
-		def exceptionCheck=device.currentValue("verboseTrace")
-		if (!(exceptionCheck.contains("TimeoutException"))) {
-			// introduce a 1 second delay before re-attempting any other command                    
-			def cmd= []           
-			cmd << "delay 1000"                    
-			cmd            
-		}            
 		throw e        
 	}
 }
