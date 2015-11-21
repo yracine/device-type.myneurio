@@ -6,7 +6,6 @@ linkedIn profile:   ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
 
 Date:               2015-03-15
 
-Code: http://github.com/yracine/device-type.myneurio
 
 **************************************************************************************************
 If you like My Neurio Device, My Neurio Appliance and related smartapps, please support the developer:
