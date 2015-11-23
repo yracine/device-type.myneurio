@@ -12,7 +12,7 @@
  *
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *  *
+ *
  */
  
 import groovy.json.JsonSlurper
@@ -63,7 +63,7 @@ def about() {
  		section("About") {	
 			paragraph "MyNeurioServiceMgr, the smartapp that connects your Neurio Sensor(s) to SmartThings via cloud-to-cloud integration" +
 				" and polls your Neurio appliance data on a regular interval"
-			paragraph "Version 0.9.4\n" 
+			paragraph "Version 0.9.5\n" 
 			paragraph "If you like this smartapp, please support the developer via PayPal and click on the Paypal link below " 
 				href url: "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=yracine%40yahoo%2ecom&lc=US&item_name=Maisons%20ecomatiq&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest",
 					title:"Paypal donation..."
@@ -577,8 +577,8 @@ def takeAction() {
 		try {
 			d.poll()
 			exceptionCheck = d.currentVerboseTrace
-			if ((exceptionCheck.contains("exception") || (exceptionCheck.contains("error")) && 
-				(!exceptionCheck.contains("Java.util.concurrent.TimeoutException")))) {  
+			if ((exceptionCheck) && ((exceptionCheck.contains("exception") || (exceptionCheck.contains("error")) && 
+				(!exceptionCheck.contains("Java.util.concurrent.TimeoutException"))))) {  
 			// check if there is any exception reported in the verboseTrace associated to the device (except the ones linked to rate limiting).
 				state.exceptionCount=state.exceptionCount+1    
 				log.error "found exception after polling, exceptionCount= ${state?.exceptionCount}: $exceptionCheck" 
@@ -596,7 +596,7 @@ def takeAction() {
 			get_neurio_appliances_data(d)
 		}    	
         
-		if ((state?.exceptionCount>=MAX_EXCEPTION_COUNT) || (exceptionCheck.contains("Unauthorized"))) {
+		if ((state?.exceptionCount>=MAX_EXCEPTION_COUNT) || ((exceptionCheck) && (exceptionCheck.contains("Unauthorized")))) {
 			// need to re-authenticate again    
 			atomicState.authToken= null                    
 			msg = "MyNeurioServiceMgr>too many exceptions/errors or unauthorized exception, $exceptionCheck (${state?.exceptionCount} errors), need to re-login at Neurio..." 
