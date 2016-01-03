@@ -4,7 +4,7 @@
  *  Copyright 2015 Yves Racine
  *  linkedIn profile: ca.linkedin.com/pub/yves-racine-m-sc-a/0/406/4b/
  *  Refer to readme file for installation instructions.
- *	V1.4.3
+ *	V1.4.4
  *
  *  Developer retains all right, title, copyright, and interest, including all copyright, patent rights, trade secret 
  *  in the Background technology. May be subject to consulting fees under the Agreement between the Developer and the Customer. 
@@ -115,7 +115,7 @@ metadata {
 				)
 		}
 		valueTile(	"energy", "device.energy", unit:'kWh',width: 1, height: 1,canChangeIcon: false
-				) 
+			) 
         	{
 			state("energy",
 					label:'Energy\n ${currentValue}kWh',
@@ -378,16 +378,17 @@ private def api(method, args, success={}) {
 	if (!isLoggedIn()) {
 		login()
 	}
+/* Y.R. No need to check if the tokens are expired as they are valid for a year and no refresh method is available at Neur.io    
 	if (isTokenExpired()) {
 		if (settings.trace) {
 			log.debug "api> need to refresh tokens"
 		}
-/*
+
 		refresh_tokens()
 
-*/
 		login()
 	}
+*/
 	def methods = [
 		'currentUserInfo': 
 			[uri:"${URI_ROOT}/users/current", type: 'get'],
