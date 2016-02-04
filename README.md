@@ -105,7 +105,7 @@ Go to https://graph.api.smartthings.com/ide/logs
 /*******************************************************************************************************************/
 
 
-<b>Click on the Smartapps link in the upper section of the following Marketsspace screen (last icon at the bottom), and then MyApps (last item in the list).</b>
+<b>Under the ST app, click on the Smartapps link in the upper section of the following Marketspace screen (last icon at the bottom), and then MyApps (last item in the list).</b>
 
 
 The smartapp will ask you to authenticate on the Neurio portal (by pressing on MyNeurio on the first page), and then
@@ -127,7 +127,7 @@ You can click on any new My Neurio object created and see its populated attribut
 
 /*******************************************************************************************************************/
 
-<b>6) Go under MyHome/Smartapps and execute MyNeurioServiceMgr again to create the Neurio Appliances this time</b>
+<b>6) Under the ST app. go under MyHome/Smartapps and execute MyNeurioServiceMgr again to create the Neurio Appliances this time</b>
 /*******************************************************************************************************************/
 
 If you want to create also some Neurio Appliances under ST, execute MyNeurioServiceMgr again
@@ -146,7 +146,7 @@ You can click on any new My Appliance objects created and see their populated at
 /*******************************************************************************************************************/
 
 7) Under the SmartThings app (on your tablet or smartphone), you should then
-see the new Neurio Objects under the 'Things' shortcut on the dashboard
+see the new Neurio Objects under the 'myHome/Things' shortcut on the dashboard
 
 /*******************************************************************************************************************/
 
