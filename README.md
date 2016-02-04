@@ -24,6 +24,7 @@ INSTALLATION STEPS
 
 
 /*******************************************************************************************************************/
+
 <b>1) Create a new device type (My Neurio Device) for your sensor(s)</b>
 /*******************************************************************************************************************/
 
@@ -43,6 +44,7 @@ e) Hit the create button at the bottom
 f) Hit the "publish/for me" button at the top right corner (in the code window)
 
 /*******************************************************************************************************************/
+
 <b>2) Create a new device type (My Neurio Appliance) for your appliances</b>
 /*******************************************************************************************************************/
 
@@ -63,6 +65,7 @@ e) Hit the create button at the bottom
 f) Hit the "publish/for me" button at the top right corner (in the code window)
 
 /*******************************************************************************************************************/
+
 <b>3) Create a new smartapp (MyNeurioServiceMgr)</b>
 /*******************************************************************************************************************/
 
@@ -87,6 +90,7 @@ f) <b>Make sure that enable OAuth in Smartapp settings is active</b>
 g) Go back to the code window, and hit the "publish/for me" button at the top right corner 
 
 /*******************************************************************************************************************/
+
 <b>4) Optionally, you can activate live logging for more tracing</b> 
 /*******************************************************************************************************************/
 
@@ -96,11 +100,12 @@ Go to https://graph.api.smartthings.com/ide/logs
 
 
 /*******************************************************************************************************************/
+
 <b>5) Execute My NeurioServiceMgr</b>
 /*******************************************************************************************************************/
 
 
-<b>Click on the Smartapps link in the upper section of the following screen: Marketspace, and then MyApps (last item in the list).</b>
+<b>Click on the Smartapps link in the upper section of the following Marketsspace screen (last icon at the bottom), and then MyApps (last item in the list).</b>
 
 
 The smartapp will ask you to authenticate on the Neurio portal (by pressing on MyNeurio on the first page), and then
@@ -121,6 +126,7 @@ https://graph.api.smartthings.com/device/list
 You can click on any new My Neurio object created and see its populated attributes.
 
 /*******************************************************************************************************************/
+
 <b>6) Go under MyHome/Smartapps and execute MyNeurioServiceMgr again to create the Neurio Appliances this time</b>
 /*******************************************************************************************************************/
 
