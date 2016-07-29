@@ -17,6 +17,14 @@ www.ecomatiqhomes.com/#!store/tc3yr
 Setup time: about 5 minutes
 
 =====================
+PREREQUISITES
+=====================
+
+- Your Neurio device fully operational
+- Your Neurio credentials (username/password)
+- Developer access to SmartThings (http://graph.api.smartthings.com/)
+
+=====================
 INSTALLATION STEPS
 =====================
 
