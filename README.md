@@ -129,9 +129,12 @@ If you get a blank screen after pressing 'Next or you get the following error: "
 
 **********************************************************************************************************
 For new ST users, check if you're on a different shard then graph-na01.
+
+Check this thread for more details:
+
 https://community.smartthings.com/t/faq-how-to-find-out-what-shard-cloud-slice-ide-url-your-account-location-is-on/53923
 
-If you are on the different shard, the redirect url in neurio needs to be changed.
+If you are on the different shard, the redirect url in Neurio needs to be changed.
 
 To do so, go to 
 
