@@ -138,13 +138,14 @@ If you are on the different shard, the redirect url in Neurio needs to be change
 
 To do so, go to 
 
-1) https://my.neur.io/#settings/applications
+a) https://my.neur.io/#settings/applications
 
-2) register a new app at my.neurio, and make sure the callback url is set to https://graph-na02-useast1.api.smartthings.com (or your actual shard if different)
+b) register a new app at my.neurio, and make sure the callback url is set to https://graph-na02-useast1.api.smartthings.com (or your actual shard if different)
 
-3) Change the following in  MyNeurioServiceMgr at the end of the file:
-a) def getServerUrl() for https://graph-na02-useast1.api.smartthings.com (or your actual shard)
-b) Change the public and private keys for the new ones for your app at My Neurio.
+c) Change the following in  MyNeurioServiceMgr at the end of the file:
+
+- def getServerUrl() for https://graph-na02-useast1.api.smartthings.com (or your actual shard)
+- Change the public and private keys for the new ones for your app at My Neurio.
 
 **********************************************************************************************************
 
