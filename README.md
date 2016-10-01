@@ -127,6 +127,22 @@ has been submitted to ST support about it).
 
 If you get a blank screen after pressing 'Next or you get the following error: " Error - bad state. Unable to complete page configuration", you'd need to enable oAuth as specified in step 2f) above.
 
+**********************************************************************************************************
+For new ST users, check if you're on a different shard then graph-na01.
+https://community.smartthings.com/t/faq-how-to-find-out-what-shard-cloud-slice-ide-url-your-account-location-is-on/53923
+
+If you are on the different shard, the redirect url in neurio needs to be changed.
+
+To do so, go to 
+
+1) https://my.neur.io/#settings/applications
+
+2) register a new app at my.neurio, and make sure the callback url is set to https://graph-na02-useast1.api.smartthings.com
+
+3) Change the private and public keys in MyNeurioServiceMgr at the end of the file for yours.
+
+**********************************************************************************************************
+
 After pressing 'Done' on the last page, the smartapp will instantiate the MyNeurio device object under 
 
 https://graph.api.smartthings.com/device/list
