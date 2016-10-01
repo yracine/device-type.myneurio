@@ -140,9 +140,11 @@ To do so, go to
 
 1) https://my.neur.io/#settings/applications
 
-2) register a new app at my.neurio, and make sure the callback url is set to https://graph-na02-useast1.api.smartthings.com
+2) register a new app at my.neurio, and make sure the callback url is set to https://graph-na02-useast1.api.smartthings.com (or your actual shard if different)
 
-3) Change the private and public keys in MyNeurioServiceMgr at the end of the file for yours.
+3) Change the following in  MyNeurioServiceMgr at the end of the file:
+a) def getServerUrl() for https://graph-na02-useast1.api.smartthings.com (or your actual shard)
+b) Change the public and private keys for the new ones for your app at My Neurio.
 
 **********************************************************************************************************
 
