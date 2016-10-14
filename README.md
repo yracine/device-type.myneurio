@@ -34,7 +34,7 @@ https://community.smartthings.com/t/faq-how-to-find-out-what-shard-cloud-slice-i
 
 If you are on a different shard, you need to change the links below for your right shard. Also, please take note of the extra tasks involved in step 5.
 
-As an example, in the North America,
+As an example, in North America,
 
 replace https://graph.api.smartthings.com/ide/devices by https://graph-na02-useast1.api.smartthings.com
 
