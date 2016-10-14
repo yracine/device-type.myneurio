@@ -14,7 +14,7 @@ My Neur.io device is now available at my store:
 www.ecomatiqhomes.com/#!store/tc3yr
 
 
-Setup time: about 5 minutes
+Setup time: about 5-10 minutes
 
 =====================
 PREREQUISITES
@@ -56,8 +56,7 @@ b) Hit the "+New Device Handler" at the top right corner
 
 c) Hit the "From Code" tab on the left corner
 
-d) Copy and paste the code from neurio.devicetype under 
-http://github.com/yracine/device-type.myneurio/blob/master/myNeurio.devicetype
+d) Copy and paste the code from the related text file in the zip that was sent to you
 
 e) Hit the create button at the bottom
 
@@ -76,9 +75,7 @@ b) Hit the "+New Device Handler" at the top right corner
 
 c) Hit the "From Code" tab on the left corner
 
-d) Copy and paste the code from neurio.devicetype under 
-
-https://github.com/yracine/device-type.myneurio/blob/master/MyNeurioAppliance.devicetype
+d) Copy and paste the code from the related text file in the zip that was sent to you
 
 e) Hit the create button at the bottom
 
@@ -96,8 +93,7 @@ b) Hit the "+New SmartApp" at the top right corner
 
 c) Hit the "From Code" tab on the left corner
 
-d) Copy and paste the code from MyNeurioServiceMgr
-under https://github.com/yracine/device-type.myneurio/tree/master/smartapp
+d) Copy and paste the code from MyNeurioServiceMgr from the text file in the zip that was sent to you.
 
 e) Hit the create button at the bottom
 
