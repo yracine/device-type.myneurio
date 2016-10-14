@@ -164,11 +164,11 @@ You can click on any new My Neurio object created and see its populated attribut
 
 /*******************************************************************************************************************/
 
-<b>6) Under the ST app. go under MyHome/Smartapps and execute MyNeurioServiceMgr again to create the Neurio Appliances this time</b>
+<b>6) Under the ST app, go under Automations/Smartapps and execute MyNeurioServiceMgr again to create the Neurio Appliances this time</b>
 /*******************************************************************************************************************/
 
 If you want to create also some Neurio Appliances under ST, execute MyNeurioServiceMgr again
-under My Home/Smartapps
+under Automations/Smartapps
 
 You then just need to press 'Next' till the last page where your appliances are selected.  Then,
 you press 'Done' to confirm the creation.
