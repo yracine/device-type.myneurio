@@ -205,5 +205,12 @@ Edit the preferences of MyNeurio or My Appliance devices to enable more tracing
 - Set the trace input parameter to true 
 - Save the changes by clicking 'Save' at the bottom.
 
+N.B. You can also edit the preferences under Things/Your Ecobee device/Edit Device using the ST mobile app.
 
+You only need to edit the above parameters
+
+
+    P.S. Don't enter any values the Neurio serial number or for the appKey as the values are only
+    used for the PIN authentication method.  If you do it, you may
+    experience authentication issues when used with MyNeurioServiceMgr smartapp.
 
