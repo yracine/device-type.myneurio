@@ -14,7 +14,7 @@ My Neur.io device is now available at my store:
 www.ecomatiqhomes.com/#!store/tc3yr
 
 
-Setup time: about 5-10 minutes
+Setup time: about 5-10 minutes depending on your ST skills.
 
 =====================
 PREREQUISITES
