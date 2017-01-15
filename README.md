@@ -209,8 +209,7 @@ N.B. You can also edit the preferences under Things/Your Ecobee device/Edit Devi
 
 You only need to edit the above parameters
 
-
-    P.S. Don't enter any values the Neurio serial number or for the appKey as the values are only
+    P.S. Don't enter any values the neurioId or for the appKey as the values are only
     used for the PIN authentication method.  If you do it, you may
     experience authentication issues when used with MyNeurioServiceMgr smartapp.
 
