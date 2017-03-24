@@ -16,7 +16,7 @@ www.ecomatiqhomes.com/#!store/tc3yr
 
 Setup time: about 10-15 minutes depending on your ST skills.
 
-=====================
+
 PREREQUISITES
 =====================
 
@@ -42,7 +42,6 @@ As an example, in North America,
 
 replace https://graph.api.smartthings.com/ide/devices by https://graph-na02-useast1.api.smartthings.com
 
-=====================
 INSTALLATION STEPS
 =====================
 
