@@ -216,7 +216,7 @@ see the all the new Neurio Objects under the 'myHome/Things' shortcut on the das
 /*******************************************************************************************************************/
 
 
-N.B. For all appliances, press the "refresh" tile in order to get the fields populated in the UI.
+<b>N.B. For all appliances, press the "refresh" tile in order to get the fields populated in the UI.</b>
 
 /*******************************************************************************************************************/
 
