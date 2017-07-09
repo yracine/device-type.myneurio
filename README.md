@@ -195,11 +195,9 @@ https://graph.api.smartthings.com/device/list
 You can click on any new My Appliance objects created and see their populated attributes.
 
 
-/*******************************************************************************************************************/
 
 # 8) View your Neurio Objects Under the SmartThings app
 
-/*******************************************************************************************************************/
 
 
 On your tablet or smartphone, you should then see the all the new Neurio Objects under the 'myHome/Things' shortcut on the dashboard
