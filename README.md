@@ -178,7 +178,7 @@ https://graph.api.smartthings.com/device/list
 
 You can click on any new My Neurio object created and see its populated attributes.
 
-# 7) Under the ST mobile app,execute MyNeurioAppliancesMgr to create the Neurio Appliances this time</b>
+# 7) Under the ST mobile app,execute MyNeurioAppliancesMgr to create the Neurio Appliances (optional)
 
 If you want to create also some Neurio Appliances under ST, execute MyNeurioAppliancesMgr 
 under Marketspace/Smartapps/MyApps.
