@@ -104,7 +104,7 @@ f) <b>Make sure that enable OAuth in Smartapp settings is active</b>
 g) Go back to the code window, and hit the "publish/for me" button at the top right corner 
 
 
-# 4) Create a new smartapp (MyNeurioAppliancesMgr)</b>
+# 4) (Optional) Create a new smartapp (MyNeurioAppliancesMgr)
 
 This step is not required if you do not want to expose your appliances to ST.
 
@@ -178,7 +178,7 @@ https://graph.api.smartthings.com/device/list
 
 You can click on any new My Neurio object created and see its populated attributes.
 
-# 7) Under the ST mobile app,execute MyNeurioAppliancesMgr to create the Neurio Appliances (optional)
+# 7) (Optional) Under the ST mobile app,execute MyNeurioAppliancesMgr to create the Neurio Appliances 
 
 If you want to create also some Neurio Appliances under ST, execute MyNeurioAppliancesMgr 
 under Marketspace/Smartapps/MyApps.
@@ -205,7 +205,7 @@ On your tablet or smartphone, you should then see the all the new Neurio Objects
 <b> N.B. For all appliances, press the "refresh" tile in order to get the fields populated in the UI.</b>
 
 
-# 9) Optional Device's Preferences
+# 9) (Optional) Set Device's Preferences
 
 After instantiation of MyNeurio and My Appliance Objects, you can enable more tracing 
 at the device level (for debugging only, can affect performance)
