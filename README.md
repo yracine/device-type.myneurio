@@ -56,7 +56,7 @@ INSTALLATION STEPS
 
 
 
-a) Go to https://graph.api.smartthings.com/ide/devices
+a) Go to https://graph.api.smartthings.com/ide/devices    (or whatever your shard is)
 
 b) Hit the "+New Device Handler" at the top right corner
 
@@ -72,7 +72,7 @@ f) Hit the "publish/for me" button at the top right corner (in the code window)
 # 2) Create a new device handler (My Neurio Appliance) for your appliances
 
 
-a) Go to https://graph.api.smartthings.com/ide/devices
+a) Go to https://graph.api.smartthings.com/ide/devices   (or whatever your shard is)
 
 b) Hit the "+New Device Handler" at the top right corner
 
@@ -88,7 +88,7 @@ f) Hit the "publish/for me" button at the top right corner (in the code window)
 # 3) Create a new smartapp (MyNeurioServiceMgr)
 
 
-a) Go to https://graph.api.smartthings.com/ide/apps
+a) Go to https://graph.api.smartthings.com/ide/apps    (or whatever your shard is)
 
 b) Hit the "+New SmartApp" at the top right corner
 
@@ -111,7 +111,7 @@ g) Go back to the code window, and hit the "publish/for me" button at the top ri
 
 This step is not required if you do not want to expose your appliances to ST.
 
-a) Go to https://graph.api.smartthings.com/ide/apps
+a) Go to https://graph.api.smartthings.com/ide/apps    (or whatever your shard is)
 
 b) Hit the "+New SmartApp" at the top right corner
 
@@ -134,8 +134,8 @@ g) Go back to the code window, and hit the "publish/for me" button at the top ri
 # 5) Optionally, you can activate live logging for more tracing</b> 
 
 This is useful for debugging in case of any error/exception.
-
-Go to https://graph.api.smartthings.com/ide/logs
+  
+Go to https://graph.api.smartthings.com/ide/logs    (or whatever your shard is)
 
 
 
