@@ -139,7 +139,7 @@ Go to https://graph.api.smartthings.com/ide/logs    (or whatever your shard is)
 
 
 
-# 6) Under the ST mobile App, execute My NeurioServiceMgr
+# 6) Under the ST mobile App, execute My NeurioServiceMgr (MarketSpace>Smartapps>MyApps)
 
 
 <b>Under the ST app, click on the Smartapps link in the upper section of the following Marketspace screen (last icon at the bottom), and then MyApps (last item in the list).</b>
