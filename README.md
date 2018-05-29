@@ -38,7 +38,7 @@ Or the SmartThings documentation here:
 http://docs.smartthings.com/en/latest/publishing/index.html#ensure-proper-location
 
 
- <b>If you are on a different shard, you need to change the links below for your right shard. Also, please take note of the extra tasks involved in step 5. </b>
+ <b>If you are on a different shard, you need to change the links below for your right shard. Also, please take note of the extra tasks involved in step 6. </b>
 
 As an example, in North America,
 
