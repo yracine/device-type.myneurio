@@ -56,7 +56,7 @@ INSTALLATION STEPS
 
 
 
-a) Go to https://graph.api.smartthings.com/ide/devices    (or whatever your shard is)
+a) Go to https://graph.api.smartthings.com/ide/devices    (or whatever your shard is and click on My Device Handlers in the IDE's top menu)
 
 b) Hit the "+New Device Handler" at the top right corner
 
@@ -71,8 +71,7 @@ f) Hit the "publish/for me" button at the top right corner (in the code window)
 
 # 2) Create a new device handler (My Neurio Appliance) for your appliances
 
-
-a) Go to https://graph.api.smartthings.com/ide/devices   (or whatever your shard is)
+a) Go to https://graph.api.smartthings.com/ide/devices   (or whatever your shard is and click on My Device Handlers in the IDE's top menu)
 
 b) Hit the "+New Device Handler" at the top right corner
 
@@ -88,7 +87,7 @@ f) Hit the "publish/for me" button at the top right corner (in the code window)
 # 3) Create a new smartapp (MyNeurioServiceMgr)
 
 
-a) Go to https://graph.api.smartthings.com/ide/apps    (or whatever your shard is)
+a) Go to https://graph.api.smartthings.com/ide/apps    (or whatever your shard is and click on My Smartapps in the IDE's top menu)
 
 b) Hit the "+New SmartApp" at the top right corner
 
@@ -111,7 +110,7 @@ g) Go back to the code window, and hit the "publish/for me" button at the top ri
 
 This step is not required if you do not want to expose your appliances to ST.
 
-a) Go to https://graph.api.smartthings.com/ide/apps    (or whatever your shard is)
+a) Go to https://graph.api.smartthings.com/ide/apps    (or whatever your shard is and click on My Smartapps in the IDE's top menu)
 
 b) Hit the "+New SmartApp" at the top right corner
 
@@ -135,8 +134,7 @@ g) Go back to the code window, and hit the "publish/for me" button at the top ri
 
 This is useful for debugging in case of any error/exception.
   
-Go to https://graph.api.smartthings.com/ide/logs    (or whatever your shard is)
-
+Go to https://graph.api.smartthings.com/ide/logs    (or whatever your shard is and click on Live logging in the IDE's top menu)
 
 
 # 6) Under the ST mobile App, execute My NeurioServiceMgr (MarketSpace>Smartapps>MyApps)
@@ -177,7 +175,8 @@ c) Change the following in  MyNeurioServiceMgr at the end of the file:
 
 After pressing 'Done' on the last page, the smartapp will instantiate the MyNeurio device object(s) under 
 
-https://graph.api.smartthings.com/device/list
+https://graph.api.smartthings.com/device/list    (or whatever your shard is and click on My Devices in the IDE's top menu)
+
 
 You can click on any new My Neurio object created and see its populated attributes.
 
@@ -193,7 +192,7 @@ If you have recurrent ST timeout issues in live logging, then you should execute
 
 After pressing 'Done' on the last page, the smartapp will instantiate the MyNeurioAppliance objects under 
 
-https://graph.api.smartthings.com/device/list
+https://graph.api.smartthings.com/device/list (or whatever your shard is and click on My Devices in the IDE's top menu)
 
 You can click on any new My Appliance objects created and see their populated attributes.
 
@@ -215,7 +214,7 @@ at the device level (for debugging only, can affect performance)
 
 Edit the preferences of MyNeurio or My Appliance devices to enable more tracing
 
-- Go to https://graph.api.smartthings.com/device/list
+- Go to https://graph.api.smartthings.com/device/list (or whatever your shard is and click on My Devices in the IDE's top menu)
 - Click on the My Neurio object in the list
 - Edit the preferences by clicking on 'edit' (middle of the page) 
 - Set the trace input parameter to true 
