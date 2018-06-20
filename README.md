@@ -33,7 +33,8 @@ https://support.smartthings.com/hc/en-us/articles/205956850-How-to-edit-Location
 
 https://community.smartthings.com/t/faq-how-to-find-out-what-shard-cloud-slice-ide-url-your-account-location-is-on/53923
 
-Or the SmartThings documentation here:
+Or the SmartThings documentation here for more details:
+
 
 http://docs.smartthings.com/en/latest/publishing/index.html#ensure-proper-location
 
