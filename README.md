@@ -62,7 +62,7 @@ b) Hit the "+New Device Handler" at the top right corner
 
 c) Hit the "From Code" tab on the left corner
 
-d) Copy and paste the code from the related text file in the zip that was sent to you
+d) Copy and paste the code from the corresponding txt file in the zip 
 
 e) Hit the create button at the bottom
 
@@ -77,7 +77,7 @@ b) Hit the "+New Device Handler" at the top right corner
 
 c) Hit the "From Code" tab on the left corner
 
-d) Copy and paste the code from the related text file in the zip that was sent to you
+d) Copy and paste the code from the corresponding txt file in the zip
 
 e) Hit the create button at the bottom
 
@@ -93,7 +93,7 @@ b) Hit the "+New SmartApp" at the top right corner
 
 c) Hit the "From Code" tab on the left corner
 
-d) Copy and paste the code from MyNeurioServiceMgr from the text file in the zip that was sent to you.
+d) Copy and paste the code from MyNeurioServiceMgr from the txt file in the zip 
 
 e) Hit the create button at the bottom
 
