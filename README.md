@@ -130,6 +130,10 @@ f) <b>Make sure that enable OAuth in Smartapp settings is active</b>
 g) Go back to the code window, and hit the "publish/for me" button at the top right corner 
 
 
+Refer to the troubleshooting section below if the instructions above are not clear enough, some pictures have been added to the section:
+
+http://thingsthataresmart.wiki/index.php?title=MyNeurioServiceMgr#Issue_.231:_I_don.27t_know_how_to_create_a_custom_smartapp
+
 
 # 5) Optionally, you can activate live logging for more tracing</b> 
 
