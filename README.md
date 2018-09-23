@@ -25,7 +25,7 @@ PREREQUISITES
 - (c) Developer access to SmartThings (http://graph.api.smartthings.com/)
 - (d) <b>Location set for your ST account  </b>
 
-Under the ST mobile app, click on the 3-horizontal lines- "hamburger"- menu in the upper left corner, and then the "gear'" icon to review your location and save it.
+Under the ST classic mobile app, click on the 3-horizontal lines- "hamburger"- menu in the upper left corner, and then the "gear'" icon to review your location and save it.
 
 https://support.smartthings.com/hc/en-us/articles/205956850-How-to-edit-Location-settings
 
@@ -146,7 +146,7 @@ This is useful for debugging in case of any error/exception.
 Go to https://graph.api.smartthings.com/ide/logs    (or whatever your shard is and click on Live logging in the IDE's top menu)
 
 
-# 6) Under the ST mobile App, execute My NeurioServiceMgr (MarketSpace>Smartapps>MyApps)
+# 6) Under the ST classic mobile App, execute My NeurioServiceMgr (MarketSpace>Smartapps>MyApps)
 
 
 <b>Under the ST app, click on the Smartapps link in the upper section of the following Marketspace screen (last icon at the bottom), and then MyApps (last item in the list).</b>
@@ -229,7 +229,7 @@ Edit the preferences of MyNeurio or My Appliance devices to enable more tracing
 - Set the trace input parameter to true 
 - Save the changes by clicking 'Save' at the bottom.
 
-N.B. You can also edit the preferences under Things/Your Ecobee device/Edit Device using the ST mobile app.
+N.B. You can also edit the preferences under Things/Your Ecobee device/Edit Device using the ST classic mobile app.
 
 You only need to edit the above parameters
 
