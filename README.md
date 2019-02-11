@@ -157,7 +157,7 @@ after the authentication, will show you the list of sensor(s) under your Neurio 
 
 On the next page, you can then select the sensor(s) to be exposed to SmartThings.
 
-If you get a blank screen after pressing 'Next or you get the following error: " Error - bad state. Unable to complete page configuration", you'd need to enable oAuth as specified in step 2f) above.
+If you get a blank screen after pressing 'Next or you get the following error: " Error - bad state' or 'Java.lang.NullPointerException: Cannot get property 'accessToken' on null object" in the IDE', <b>you'd need to enable oAuth as specified in step 3f) above.</b>
 
 **********************************************************************************************************
 If you have the message "{"error": true, "type": "AccessDenied","message:"This request is not authorized by the specified access token"}", this message can appear for new ST users as you're on a different shard then graph-na01.
