@@ -157,7 +157,17 @@ after the authentication, will show you the list of sensor(s) under your Neurio 
 
 On the next page, you can then select the sensor(s) to be exposed to SmartThings.
 
-If you get a blank screen after pressing 'Next or you get the following error: " Error - bad state' or 'Java.lang.NullPointerException: Cannot get property 'accessToken' on null object" in the IDE', <b>you'd need to enable oAuth as specified in step 3f) above.</b>
+*************************************************************************************************************************************
+N.B.
+
+If you get a blank screen after pressing 'Next or you get the following error: "Error - bad state' or 'Java.lang.NullPointerException: Cannot get property 'accessToken' on null object" in the IDE', you'd need to enable oAuth as specified in step 2f) above.
+
+<b> At the end of the authorization flow,  if you have the following error message: "Unexpected error" even if you press several times, this probably means that you have not "saved & published" one of the Device Handler Types (MyNeurioDevice,MyNeurioAppliance) under the right shard.  Refer to the prerequisites & steps 1 & 2 for more details.
+ 
+Also, depending on the ST platform status, you may have to press "Save" several times if you have the following error message: "Error processing your request - please try again".  This is due to some ST platform timeouts due to rate limiting.</b> 
+ 
+*************************************************************************************************************************************
+
 
 
 **********************************************************************************************************
