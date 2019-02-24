@@ -159,8 +159,11 @@ On the next page, you can then select the sensor(s) to be exposed to SmartThings
 
 If you get a blank screen after pressing 'Next or you get the following error: " Error - bad state' or 'Java.lang.NullPointerException: Cannot get property 'accessToken' on null object" in the IDE', <b>you'd need to enable oAuth as specified in step 3f) above.</b>
 
+
 **********************************************************************************************************
 If you have the message "{"error": true, "type": "AccessDenied","message:"This request is not authorized by the specified access token"}", this message can appear for new ST users as you're on a different shard then graph-na01.
+
+
 
 Check this thread for more details:
 
@@ -182,7 +185,9 @@ c) Change the following in  MyNeurioServiceMgr at the end of the file:
 
 **********************************************************************************************************
 
-After pressing 'Done' on the last page, the smartapp will instantiate the MyNeurio device object(s) under 
+At the end of the authorization flow, you may have to press "Save" several times if you have have the following error message: "Error processing your request - please try again" or "Unexcepted error".  This is due to some ST platform timeouts due to rate limiting.
+
+The smartapp will instantiate the MyNeurio device object(s) under 
 
 https://graph.api.smartthings.com/device/list    (or whatever your shard is and click on My Devices in the IDE's top menu)
 
