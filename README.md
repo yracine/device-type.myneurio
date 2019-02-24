@@ -161,16 +161,8 @@ On the next page, you can then select the sensor(s) to be exposed to SmartThings
 N.B.
 
 If you get a blank screen after pressing 'Next or you get the following error: "Error - bad state' or 'Java.lang.NullPointerException: Cannot get property 'accessToken' on null object" in the IDE', you'd need to enable oAuth as specified in step 2f) above.
-
-<b> At the end of the authorization flow,  if you have the following error message: "Unexpected error" even if you press several times, this probably means that you have not "saved & published" one of the Device Handler Types (MyNeurioDevice,MyNeurioAppliance) under the right shard.  Refer to the prerequisites & steps 1 & 2 for more details.
  
-Also, depending on the ST platform status, you may have to press "Save" several times if you have the following error message: "Error processing your request - please try again".  This is due to some ST platform timeouts due to rate limiting.</b> 
- 
-*************************************************************************************************************************************
 
-
-
-**********************************************************************************************************
 If you have the message "{"error": true, "type": "AccessDenied","message:"This request is not authorized by the specified access token"}", this message can appear for new ST users as you're on a different shard then graph-na01.
 
 
@@ -193,9 +185,14 @@ c) Change the following in  MyNeurioServiceMgr at the end of the file:
 - Change the public and private keys for the new ones from your Neur.io app.  Make sure to paste the keys without any extra characters or spaces.
 
 
-**********************************************************************************************************
+*************************************************************************************************************************************
+N.B.
 
-At the end of the authorization flow, you may have to press "Save" several times if you have the following error message: "Error processing your request - please try again" or "Unexpected error".  This is due to some ST platform timeouts due to rate limiting.
+<b> At the end of the authorization flow,  if you have the following error message: "Unexpected error" even if you press several times, this probably means that you have not "saved & published" one of the Device Handler Types (MyNeurioDevice,MyNeurioAppliance) under the right shard.  Refer to the prerequisites & steps 1 & 2 for more details.
+ 
+Also, depending on the ST platform status, you may have to press "Save" several times if you have the following error message: "Error processing your request - please try again".  This is due to some ST platform timeouts due to rate limiting.</b> 
+ 
+*************************************************************************************************************************************
 
 The smartapp will instantiate the MyNeurio device object(s) under 
 
