@@ -185,7 +185,7 @@ c) Change the following in  MyNeurioServiceMgr at the end of the file:
 
 **********************************************************************************************************
 
-At the end of the authorization flow, you may have to press "Save" several times if you have have the following error message: "Error processing your request - please try again" or "Unexcepted error".  This is due to some ST platform timeouts due to rate limiting.
+At the end of the authorization flow, you may have to press "Save" several times if you have the following error message: "Error processing your request - please try again" or "Unexcepted error".  This is due to some ST platform timeouts due to rate limiting.
 
 The smartapp will instantiate the MyNeurio device object(s) under 
 
