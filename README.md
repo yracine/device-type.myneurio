@@ -158,7 +158,7 @@ after the authentication, will show you the list of sensor(s) under your Neurio 
 On the next page, you can then select the sensor(s) to be exposed to SmartThings.
 
 *************************************************************************************************************************************
-N.B.
+N.B. If you have any errors:
 
 If you get a blank screen after pressing 'Next or you get the following error: "Error - bad state' or 'Java.lang.NullPointerException: Cannot get property 'accessToken' on null object" in the IDE', you'd need to enable oAuth as specified in step 2f) above.
  
