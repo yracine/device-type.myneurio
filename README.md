@@ -153,7 +153,7 @@ Go to https://graph.api.smartthings.com/ide/logs    (or whatever your shard is a
 
 
 The smartapp will ask you to authenticate on the Neurio portal (by pressing on MyNeurio on the first page), and then
-after the authentication (you need to press 'done') , will show you the list of sensor(s) under your Neurio Account (by pressing 'Next' at the top right corner). 
+after the authentication (you need to press 'done') , the next page will show you the list of sensor(s) under your Neurio Account (by pressing 'Next' at the top right corner). 
 
 On the next page, you can then select the sensor(s) to be exposed to SmartThings.
 
