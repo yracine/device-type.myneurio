@@ -153,8 +153,6 @@ Go to https://graph.api.smartthings.com/ide/logs    (or whatever your shard is a
 <b>Click on the Smartapp name (MyNeurioServiceMgr) in the list of smartapps under the Custom section</b>
 
 
-<b>Under the ST app, click on the Smartapps link in the upper section of the following Marketspace screen (last icon at the bottom), and then MyApps (last item in the list).</b>
-
 
 The smartapp will ask you to authenticate on the Neurio portal (by pressing on MyNeurio on the first page), and then
 after the authentication (you need to press 'done') , the next page will show you the list of sensor(s) under your Neurio Account (by pressing 'Next' at the top right corner). 
