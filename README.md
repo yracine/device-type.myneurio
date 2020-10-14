@@ -23,13 +23,10 @@ PREREQUISITES
 - (a) Your Neurio device fully operational
 - (b) Your Neurio credentials (username/password)
 - (c) Developer access to SmartThings (http://graph.api.smartthings.com/)
-- (d) <b>Location set for your ST account under the ST classic mobile app </b>
-
-Under the ST classic mobile app, click on the 3-horizontal lines- "hamburger"- menu in the upper left corner, and then the "gear'" icon to review your location and save it.
 
 https://support.smartthings.com/hc/en-us/articles/205956850-How-to-edit-Location-settings
 
-- (e) <b> Determine your shard, please consult this thread: </b>
+- (d) <b> Determine your shard, please consult this thread: </b>
 
 https://community.smartthings.com/t/faq-how-to-find-out-what-shard-cloud-slice-ide-url-your-account-location-is-on/53923
 
@@ -147,7 +144,11 @@ This is useful for debugging in case of any error/exception.
 Go to https://graph.api.smartthings.com/ide/logs    (or whatever your shard is and click on Live logging in the IDE's top menu)
 
 
-# 6) Under the ST classic mobile App, execute My NeurioServiceMgr (MarketSpace>Smartapps>MyApps)
+# 6) Under the new Samsung connect app, execute MyNeurioServiceMgr (under + in the upper right corner/Smartapp)
+
+
+
+<b>Click on the Smartapp name (MyNeurioServiceMgr) in the list of smartapps under the Custom section</b>
 
 
 <b>Under the ST app, click on the Smartapps link in the upper section of the following Marketspace screen (last icon at the bottom), and then MyApps (last item in the list).</b>
@@ -202,10 +203,8 @@ https://graph.api.smartthings.com/device/list    (or whatever your shard is and 
 
 You can click on any new My Neurio object created and see its populated attributes.
 
-# 7) (Optional) Under the ST mobile app,execute MyNeurioAppliancesMgr to create the Neurio Appliances 
+# 7) (Optional)Under the new Samsung connect app, execute  MyNeurioAppliancesMgr  (under + in the upper right corner/Smartapp) to create the Neurio Appliances 
 
-If you want to create also some Neurio Appliances under ST, execute MyNeurioAppliancesMgr 
-under Marketspace/Smartapps/MyApps.
 
 You just need to authenticate to Neurio Portal,  press 'Next' till the last page where your appliances are selected.  Then,
 you press 'Done' to confirm the creation.  In some instances, due to ST timeouts, you may want to press 'done' multiple
@@ -242,7 +241,6 @@ Edit the preferences of MyNeurio or My Appliance devices to enable more tracing
 - Set the trace input parameter to true 
 - Save the changes by clicking 'Save' at the bottom.
 
-N.B. You can also edit the preferences under Things/Your Ecobee device/Edit Device using the ST classic mobile app.
 
 You only need to edit the above parameters
 
