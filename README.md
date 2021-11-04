@@ -1,3 +1,5 @@
+(DEPRECATED)
+
 # device-type.myneurio
 
 *** The devices can be created using the Samsung connect app ****
